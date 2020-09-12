@@ -1,0 +1,6 @@
+# Configuration folders
+.vs
+.vscode
+
+# Unneeded directories
+Archives
