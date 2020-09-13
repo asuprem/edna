@@ -153,8 +153,7 @@ def main(dir, skip):
                                     json_final["quoted_status"][field] = json_line["quoted_status"][field]
                         
                         json_final["timestamp_ms"] = int(to_datetime(json_final["created_at"]).timestamp())
-                        
-                        # Write to compressed file
+                        #
                         compressed_gzip_writer.write(json.dumps(json_final).encode('utf8') + b"\n")
 
                     except ValueError as e:
