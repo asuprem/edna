@@ -126,7 +126,24 @@ sudo docker network inspect bridge | jid
 
 For example, mine is `172.18.0.0/16`.
 
-### Install `metallb`
+
+## Testing.
+Run the following lines:
+
+```
+sudo kind create cluster --name kind
+sudo kind get clusters
+sudo kubectl get nodes
+
+sudo kubectl create deployment hello-node --image=k8s.gcr.io/echoserver:1.4
+sudo kubectl get deployments
+sudo kubectl get pods
+sudo kubectl get events
+sudo kubectl config view
+sudo kubectl expose deployment hello-node --type=LoadBalancer --port=8080
+```
+
+## Install `metallb`
 Now we install metallb to allow external connections to the clusters when needed.
 
 ```
@@ -160,21 +177,7 @@ Then apply it with:
 $ sudo kubectl apply -f metallbconfig.yaml
 ```
 
-## Testing.
-Run the following lines:
-
-```
-sudo kind create cluster --name kind
-sudo kind get clusters
-sudo kubectl get nodes
-
-sudo kubectl create deployment hello-node --image=k8s.gcr.io/echoserver:1.4
-sudo kubectl get deployments
-sudo kubectl get pods
-sudo kubectl get events
-sudo kubectl config view
-sudo kubectl expose deployment hello-node --type=LoadBalancer --port=8080
-```
+## Checking if we get a response
 
 Next we get the available services:
 ```
