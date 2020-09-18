@@ -128,10 +128,12 @@ For example, mine is `172.18.0.0/16`.
 
 
 ## Testing.
-Run the following lines:
+Run the following lines.
+
+Note: You can use the cluster.yaml file provided to launch a cluster. It will create a cluster with 1 control node and 1 worker node.
 
 ```
-sudo kind create cluster --name kind
+sudo kind create cluster --name kind --config cluster.yaml
 sudo kind get clusters
 sudo kubectl get nodes
 
