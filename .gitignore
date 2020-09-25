@@ -30,6 +30,4 @@ MANIFEST
 # Unneeded directories
 Archives
 Readme\ Collections
-examples/*/src
-examples/*/setup*
 examples
