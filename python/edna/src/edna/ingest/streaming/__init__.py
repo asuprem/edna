@@ -4,11 +4,14 @@ from edna.emit import BaseEmit
 from edna.ingest import BaseIngest
 from edna.serializers import Serializable
 
+from edna.core.types.enums import IngestPattern
+
 class StreamingIngestBase(BaseIngest):
     """StreamingIngest is the base class for obtaining records from a streaming source.
     
     Any edna.ingest function that inherits from StreamingIngest implements the stream() function.
     """    
+    execution_mode = IngestPattern.SERVER_SIDE_STREAM
     def __init__(self, serializer: Serializable):
         super().__init__(serializer=serializer)
 
