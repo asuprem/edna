@@ -1,7 +1,7 @@
 # Setting up and testing Kafka on Kubernetes
 
 ## Apache Kafka
-Kafka is an open-source disttributed event streaming platform...you are probably better off reading the [wikipedia article](https://en.wikipedia.org/wiki/Apache_Kafka) and the [apache kafka page](https://kafka.apache.org/).
+Kafka is an open-source distributed event streaming platform...you are probably better off reading the [wikipedia article](https://en.wikipedia.org/wiki/Apache_Kafka) and the [apache kafka page](https://kafka.apache.org/).
 
 In any case, Kafka is highly durable, fast, and operates as a pub/sub interface. This makes it perfect for streaming, and it's used essentially everywhere.
 
