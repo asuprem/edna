@@ -5,6 +5,7 @@ setup(
     name="edna",
 
     install_requires=[
+        "pyyaml>=5.3.1"
         "requests2>=2.16.0",
         "confluent-kafka>=1.5"
     ],
