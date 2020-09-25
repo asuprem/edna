@@ -1,11 +1,11 @@
 # Setup instructions
 
-These steps will help you set up a development environment for the EBKA framework to run a LITMUS application.
+These steps will help you set up a development environment for the EDNA engine running the EBKA framework to run a LITMUS application.
 
 ## Environment
 <span style="color:red; font-weight:bold">Note: At the moment, I highly recommend you follow the WSL2 steps if you have Windows.</span>
 
-EBKA is designed to run on a kubernetes deployment. At the moment, I have only tested on *nix systems, but since kubernetes is platform independent, EBKA should run on any system.
+EDNA is designed to run on a kubernetes deployment. At the moment, I have only tested on *nix systems, but since kubernetes is platform independent, EDNA should run on any system.
 
 You can follow the following steps for Mac and Windows:
 

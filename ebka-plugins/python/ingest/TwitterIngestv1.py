@@ -1,7 +1,7 @@
-from ebka.ingest.streaming import StreamingIngestBase
-from ebka.process import BaseProcess
-from ebka.emit import BaseEmit
-from ebka.serializers.EmptySerializer import EmptyStringSerializer
+from edna.ingest.streaming import StreamingIngestBase
+from edna.process import BaseProcess
+from edna.emit import BaseEmit
+from edna.serializers.EmptySerializer import EmptyStringSerializer
 
 from tweepy import OAuthHandler, Stream, StreamListener
 from sys import stdout

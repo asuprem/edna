@@ -1,10 +1,10 @@
-from ebka.serializers import Serializable
+from edna.serializers import Serializable
 
 class BaseEmit(object):
-    """BaseEmit is the base class for writing records from an ebka.process to a sink, 
+    """BaseEmit is the base class for writing records from an edna.process to a sink, 
     such as a filestream, sql database, or Kafka topic.
 
-    Any ebka.emit function inherits from BaseEmit and must implement the write() function.
+    Any edna.emit function inherits from BaseEmit and must implement the write() function.
     """  
     def __init__(self, serializer: Serializable):
         self.serializer = serializer

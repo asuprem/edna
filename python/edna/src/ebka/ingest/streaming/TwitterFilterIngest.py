@@ -1,5 +1,5 @@
-from ebka.ingest.streaming import TwitterIngestBase
-from ebka.serializers.EmptySerializer import EmptyStringSerializer
+from edna.ingest.streaming import TwitterIngestBase
+from edna.serializers.EmptySerializer import EmptyStringSerializer
 import requests
 from typing import List, Dict
 

@@ -1,6 +1,6 @@
-from ebka.ingest.streaming import TwitterIngestBase
+from edna.ingest.streaming import TwitterIngestBase
 from typing import List
-from ebka.serializers.EmptySerializer import EmptyStringSerializer
+from edna.serializers.EmptySerializer import EmptyStringSerializer
 
 class TwitterStreamIngest(TwitterIngestBase):
     base_url = "https://api.twitter.com/2/tweets/sample/stream?"

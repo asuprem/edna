@@ -1,4 +1,4 @@
-from ebka.serializers import Serializable
+from edna.serializers import Serializable
 
 class BaseIngest(object):
     def __init__(self, serializer: Serializable):

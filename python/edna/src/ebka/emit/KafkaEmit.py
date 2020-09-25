@@ -1,5 +1,5 @@
-from ebka.emit import BaseEmit
-from ebka.serializers import Serializable
+from edna.emit import BaseEmit
+from edna.serializers import Serializable
 
 from confluent_kafka import Producer
 import socket

@@ -1,4 +1,4 @@
-from ebka.emit import BaseEmit
+from edna.emit import BaseEmit
 
 from sys import stdout
 

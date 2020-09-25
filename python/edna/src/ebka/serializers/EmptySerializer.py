@@ -1,4 +1,4 @@
-from ebka.serializers import Serializable
+from edna.serializers import Serializable
 
 class EmptyStringSerializer(Serializable):
     def read(self, in_stream: str):

@@ -4,7 +4,7 @@ from __future__ import annotations
 class BaseProcess(object):
     """BaseProcess is the base class for performing operations on streaming messages.
 
-    Any ebka.process function inherits from BaseProcess and must implement the process() function.
+    Any edna.process function inherits from BaseProcess and must implement the process() function.
 
     If the subclass overrides the constructor, it must make sure to invoke the base class constructor 
     before finishing.
