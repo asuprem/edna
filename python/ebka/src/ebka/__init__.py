@@ -1,7 +1,5 @@
 # Entry point
-from .EbkaEmit import BaseEmit
-from .EbkaIngest import BaseIngest
-from .EbkaProcess import BaseProcess
+__VERSION__ = 0.1
 
-def joke():
-    return ("Hello")
+def version():
+    return __VERSION__

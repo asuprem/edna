@@ -5,7 +5,8 @@ setup(
     name="ebka",
 
     install_requires=[
-        "Click>=7.0",
+        "requests2>=2.16.0",
+        "confluent-kafka>=1.5"
     ],
 
 )
