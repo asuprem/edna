@@ -3,14 +3,14 @@
 These steps will help you set up a development environment for the EDNA engine running the EBKA framework to run a LITMUS application.
 
 ## Environment
-<span style="color:red; font-weight:bold">Note: At the moment, I highly recommend you follow the WSL2 steps if you have Windows.</span>
+<span style="color:maroon; font-weight:bold">Note: At the moment, I highly recommend you follow the WSL2 steps if you have Windows.</span>
 
 EDNA is designed to run on a kubernetes deployment. At the moment, I have only tested on *nix systems, but since kubernetes is platform independent, EDNA should run on any system.
 
-You can follow the following steps for Mac and Windows:
+You can follow the following steps for Mac and Windows. For MacOS, I cannot offer as much help because I don't have a mac :/. However, you can search around for any issues, or let me know and I will try my best.
 
 - Mac: [Tutorial : Getting Started with Kubernetes with Docker on Mac](https://rominirani.com/tutorial-getting-started-with-kubernetes-with-docker-on-mac-7f58467203fd#:~:text=%20Tutorial%20%3A%20Getting%20Started%20with%20Kubernetes%20with,now%20to%20expose%20our%20basic%20Nginx...%20More%20)
-- Windows: <span style="font-weight:bold;color:red">Note: Follow WSL2 steps below in `Setting up on Windows`, not the link here.</span> 
+- Windows: <span style="font-weight:bold;color:maroon">Note: Follow WSL2 steps below in `Setting up on Windows`, not the link here.</span> 
     - [Deploy on Kubernetes](https://docs.docker.com/docker-for-windows/kubernetes/)
 - *Nix: [How to Install and Configure Kubernetes and Docker on Ubuntu 18.04 LTS](https://www.howtoforge.com/tutorial/how-to-install-kubernetes-on-ubuntu/#:~:text=%20How%20to%20Install%20and%20Configure%20Kubernetes%20and,Nodes%20to%20the%20Kubernetes%20Cluster.%20In...%20More%20)
 
@@ -32,7 +32,7 @@ I highly recommend following these steps for Windows, instead of the links above
         $ wsl -l -v
         ```
 
-4. <strong><span style="font-weight:bold;color:red">Bug fix</span></strong>: There is a bug in wsl2 that makes its virtual machine use up all memory. To fix this, we will need to force WSL2 to use a specific amount of memory. For more details, take a look at [this medium post](https://blog.simonpeterdebbarma.com/2020-04-memory-and-wsl/)
+4. <strong><span style="font-weight:bold;color:maroon">Bug fix</span></strong>: There is a bug in wsl2 that makes its virtual machine use up all memory. To fix this, we will need to force WSL2 to use a specific amount of memory. For more details, take a look at [this medium post](https://blog.simonpeterdebbarma.com/2020-04-memory-and-wsl/)
 
     1. Create a `%UserProfile%\.wslconfig` file
     2. Populate file with the following:
@@ -130,7 +130,7 @@ For example, mine is `172.18.0.0/16`.
 ## Testing.
 Run the following lines.
 
-Note: You can use the cluster.yaml file provided to launch a cluster. It will create a cluster with 1 control node and 1 worker node.
+Note: You can use the provided `cluster.yaml` file to launch a cluster. It will create a cluster with 1 control node and 1 worker node.
 
 ```
 sudo kind create cluster --name kind --config cluster.yaml
@@ -144,6 +144,12 @@ sudo kubectl get events
 sudo kubectl config view
 sudo kubectl expose deployment hello-node --type=LoadBalancer --port=8080
 ```
+
+<span style="color:maroon; font-weight:bold">If you get errors</span>
+
+- If you cannot create a cluster because you get an apiVersion error, try replacing `kind.sigs.k8s.io/v1alpha3` in the `cluster.yaml` file with `kind.x-k8s.io/v1alpha4`.
+- If you get other deployment errors, try installing `yamllint` from [here](https://github.com/adrienverge/yamllint#installation) and verifying any YAML files
+- With some students, I have found copy-pasting commands into the terminal introduces weird artifacts, so you might need to manually type them
 
 ## Install `metallb`
 Now we install metallb to allow external connections to the clusters when needed.
@@ -171,7 +177,7 @@ data:
       - 172.18.255.1-172.18.255.250
 ```
 
-NOTE: replace the subnet with your own from docker bridge (i.e. mine was 172.18)
+You can use the provided `metallbconfig.yaml`. Important: Replace the subnet with your own from docker bridge (i.e. mine was 172.18)
 
 Then apply it with:
 
@@ -192,8 +198,12 @@ Copy the external IP and the port, and make a request:
 curl http://<External-IP>:8080
 ```
 
-You should get a response. Delete the cluster with:
+You should get a response. 
+
+Delete the resources and cluster with:
 
 ```
+sudo kubectl delete pod hello-node
+sudo kubectl delete service hello-node
 sudo kind delete cluster --name kind
 ```
