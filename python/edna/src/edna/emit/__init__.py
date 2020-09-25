@@ -6,7 +6,7 @@ class BaseEmit(object):
 
     Any edna.emit function inherits from BaseEmit and must implement the write() function.
     """  
-    def __init__(self, serializer: Serializable):
+    def __init__(self, serializer: Serializable, *args, **kwargs):
         self.serializer = serializer
 
     def __call__(self, message):
