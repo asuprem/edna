@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+ name: alpine-base
+ labels:
+  app: alpine
+spec:
+ containers:
+  - name: alpine-base
+    image: "localhost:5000/alpine"
