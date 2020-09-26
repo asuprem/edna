@@ -1,9 +1,9 @@
-from edna.ingest.streaming import TwitterIngestBase
+from edna.ingest.streaming.BaseTwitterIngest import BaseTwitterIngest
 from edna.serializers.EmptySerializer import EmptyStringSerializer
 import requests
 from typing import List, Dict
 
-class TwitterFilterIngest(TwitterIngestBase):
+class TwitterFilteredIngest(BaseTwitterIngest):
     base_url = "https://api.twitter.com/2/tweets/search/stream?"
     def __init__(self, serializer: EmptyStringSerializer, bearer_token: str, filters: List[str], tweet_fields: List[str] = None, user_fields: List[str] = None, media_fields: List[str] = None, 
                     poll_fields: List[str] = None, place_fields: List[str] = None, *args, **kwargs):

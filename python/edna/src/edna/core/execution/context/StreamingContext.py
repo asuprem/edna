@@ -15,7 +15,7 @@ class StreamingContext(EdnaContext):
             for streaming_item in self.ingest:  # This calls __next__
                 self.emit(self.process(streaming_item)) # Serialization verification TODO
         if self.ingest.execution_mode == IngestPattern.SERVER_SIDE_STREAM:
-            self.ingest.stream(self.process, self.emit) # here process does not need optimization, because it should be empty for speed.
+            raise NotImplementedError
             
 
         

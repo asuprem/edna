@@ -1,13 +1,14 @@
-from edna.ingest.streaming import StreamingIngestBase
+from __future__ import annotations
+from edna.ingest.streaming import BaseStreamingIngest
 from edna.process import BaseProcess
 from edna.emit import BaseEmit
 from edna.serializers.EmptySerializer import EmptyStringSerializer
 
 from urllib.parse import urlencode
 import requests
-from typing import List, Dict
+from typing import Generator, List, Dict
 
-class TwitterIngestBase(StreamingIngestBase):
+class BaseTwitterIngest(BaseStreamingIngest):
     tweet_fields = {    "id": str, "text": str, "attachments": dict, "author_id": str, "context_annotations": list, "conversation_id": str,
                         "created_at":str, "entities": dict, "geo": dict, "in_reply_to_user_id": str, "lang": str, "possibly_sensitive": bool,
                         "public_metrics": dict, "referenced_tweets": list, "source": str, "withheld": dict
@@ -25,7 +26,7 @@ class TwitterIngestBase(StreamingIngestBase):
                         "place_type": str
                         }
 
-    base_url = None
+    base_url : str
 
     def __init__(self, serializer: EmptyStringSerializer, bearer_token: str, tweet_fields: List[str] = None, user_fields: List[str] = None, media_fields: List[str] = None, 
                     poll_fields: List[str] = None, place_fields: List[str] = None, *args, **kwargs):
@@ -39,8 +40,23 @@ class TwitterIngestBase(StreamingIngestBase):
         self.url = self.build_url(tweet_fields, user_fields, media_fields, poll_fields, place_fields)
         self.bearer_token = bearer_token
         self.headers = self.create_headers(self.bearer_token)
+        self.running = False
+        self.response = Generator
         self.setup(*args, **kwargs)
         super().__init__(serializer=serializer)
+
+    def next(self):
+        if not self.running:
+            self.response = self.build_response()
+            self.running = True
+        return next(self.response)
+            
+    def build_response(self):
+        response = requests.request("GET", self.url, headers= self.headers, stream=True)
+        if response.status_code != 200:
+            raise Exception("Cannot get stream (HTTP {}): {}".format(response.status_code, response.text))
+        for record in response.iter_lines():
+            yield record
 
     def verify_fields(self, passed_field: List[str], referenced_field: Dict[str, str]):
         if passed_field is not None:
@@ -70,16 +86,5 @@ class TwitterIngestBase(StreamingIngestBase):
     def create_headers(self, bearer_token: str):
         return {"Authorization": "Bearer {}".format(bearer_token)}
 
-    def stream(self, process: BaseProcess, emitter: BaseEmit):
-        response = requests.request("GET", self.url, headers= self.headers, stream=True)
-        if response.status_code != 200:
-            raise Exception(
-                "Cannot get stream (HTTP {}): {}".format(
-                    response.status_code, response.text
-                )
-            )
-        for response_line in response.iter_lines():
-            if response_line:
-                emitter(process(self.serializer.read(response_line))) # TODO change this so user does NOT have to write stream function -- they need to write a setup-stream function or something like that
     def setup(self, *args, **kwargs):
         pass

@@ -6,21 +6,25 @@ from edna.serializers import Serializable
 
 from edna.core.types.enums import IngestPattern
 
-class StreamingIngestBase(BaseIngest):
-    """StreamingIngest is the base class for obtaining records from a streaming source.
+from typing import Iterator
+
+class BaseStreamingIngest(BaseIngest, Iterator):
+    """BaseStreamingIngest is the base class for generating records from a streaming source, e.g. Kafka.
     
-    Any edna.ingest function that inherits from StreamingIngest implements the stream() function.
+    Any edna.ingest function that inherits from BaseStreamingIngest must implement the next() function.
     """    
-    execution_mode = IngestPattern.SERVER_SIDE_STREAM
+    execution_mode = IngestPattern.CLIENT_SIDE_STREAM
     def __init__(self, serializer: Serializable):
-        super().__init__(serializer=serializer)
+        super().__init__(serializer)
+    
+    def __iter__(self):
+        return self
 
-    def __call__(self, process: BaseProcess, emitter: BaseEmit):
-        self.stream(process, emitter)
+    def __next__(self):
+        return self.next()
 
-    def stream(self, process: BaseProcess, emitter: BaseEmit):
+    def next(self):
         raise NotImplementedError
 
-from .TwitterIngestBase import TwitterIngestBase
-from .TwitterFilterIngest import TwitterFilterIngest
-from .TwitterStreamIngest import TwitterStreamIngest
+from .TwitterStreamingIngest import TwitterStreamingIngest
+from .TwitterFilteredIngest import TwitterFilteredIngest
