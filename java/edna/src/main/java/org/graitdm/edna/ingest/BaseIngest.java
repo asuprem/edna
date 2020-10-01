@@ -7,11 +7,11 @@ import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 
-public abstract class IngestBase<T extends Serializable> implements IngestablePrimitive<T> {
+public abstract class BaseIngest<T extends Serializable> implements IngestablePrimitive<T> {
     private static final EIngestPattern executionMode = EIngestPattern.CLIENT_SIDE_STREAM;
-    private final Serializable serializer;
+    protected final Serializable serializer;
 
-    public  IngestBase(T serializer){
+    public BaseIngest(T serializer){
         this.serializer = serializer;
     }
 }
