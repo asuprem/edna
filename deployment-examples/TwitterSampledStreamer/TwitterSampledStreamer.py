@@ -9,7 +9,8 @@ def main():
     context = StreamingContext()
     ingest_serializer = EmptyStringSerializer
     emit_serializer = EmptyStringSerializer
-    ingest = TwitterStreamingIngest(serializer=ingest_serializer, bearer_token=context.getVariable("bearer_token"), 
+    ingest = TwitterStreamingIngest(serializer=ingest_serializer, 
+        bearer_token=context.getVariable("bearer_token"), 
         tweet_fields=context.getVariable("tweet_fields"), 
         user_fields=context.getVariable("user_fields"), 
         place_fields=context.getVariable("place_fields"), 
