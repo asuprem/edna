@@ -28,6 +28,8 @@ Then download the `registry-config.yaml` and the `kind-with-registry.sh` files.
 - `registry-config.yaml` sets up access to the registry
 - `kind-with-registry.sh` sets up the actual registry. By default, I set it up with 1 control-plane node and 1 worker node. In the future, this may need to be increased. If so, you would just add a new line in the file around line 60 where it sets up the cluster, and add a new node with `- role: worker`
 
+**Important note**: You might need to download files to a path that has no spaces. So this directory name ("Part 3 - Creating a Docker Registry") would not be valid. I did it by creating a directory `kinddocker` in my home directory, so my directory path for the files for this part was `~/kinddocker/*`
+
 ## Deploying the registry
 
 First run the shell script:
