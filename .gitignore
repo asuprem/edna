@@ -51,8 +51,11 @@ hs_err_pid*
 
 #-----------------------
 
-
+#!deployment-examples/TwitterSampledStreamer
 # Unneeded directories
 Archives
 Readme\ Collections
-deployment-examples
+deployment-examples/TwitterFilteredStream
+deployment-examples/TwitterSampledStreamerToKafka
+deployment-examples/workflow*
+deployment-examples/Dockerfile.jinja2
