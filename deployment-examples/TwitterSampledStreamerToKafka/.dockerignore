@@ -1,0 +1,7 @@
+# Ignore .git and .cache
+.git
+.cache
+
+# Ignore config yaml files
+config.yaml
+deployment.yaml

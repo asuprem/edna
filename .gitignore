@@ -56,6 +56,6 @@ hs_err_pid*
 Archives
 Readme\ Collections
 deployment-examples/TwitterFilteredStream
-deployment-examples/TwitterSampledStreamerToKafka
-deployment-examples/workflow*
-deployment-examples/Dockerfile.jinja2
+#deployment-examples/TwitterSampledStreamerToKafka
+deployment-examples/workflow
+#deployment-examples/Dockerfile.jinja2

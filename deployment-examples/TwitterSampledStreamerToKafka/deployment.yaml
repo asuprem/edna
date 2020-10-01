@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: edna-twitter-streamer
+  labels:
+    app: edna-twitter-streamer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: edna-twitter-streamer
+  template:
+    metadata:
+      labels:
+        app: edna-twitter-streamer
+    spec:
+      containers:
+      - name: edna-twitter-streamer-pod
+        image: localhost:5000/edna-twitter-streamer-kafka:latest
