@@ -7,6 +7,7 @@ from edna.core.execution.context import StreamingContext
 def main():
     
     context = StreamingContext()
+    
     ingest_serializer = EmptyStringSerializer
     emit_serializer = EmptyStringSerializer
     ingest = TwitterStreamingIngest(serializer=ingest_serializer, 

@@ -1,6 +1,6 @@
 ---
 variables:
-  bearer_token: TOKEN-HERE
+  bearer_token: "BEARER-TOKEN-HERE"
   tweet_fields:
     - author_id
     - conversation_id
