@@ -12,8 +12,4 @@ Read setup/readme.md
 2. Convert to pipelined model
     - 
 
-    91 993 761 5816 Jeja
-    91 706 455 2980 Meena Mousi
     
-    201 004 1372 <-- PIN >
-    559 272 0942 <-- phone >
