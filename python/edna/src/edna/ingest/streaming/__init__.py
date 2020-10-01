@@ -11,7 +11,7 @@ from typing import Iterator
 class BaseStreamingIngest(BaseIngest, Iterator):
     """BaseStreamingIngest is the base class for generating records from a streaming source, e.g. Kafka.
     
-    Any edna.ingest function that inherits from BaseStreamingIngest must implement the next() function.
+    Any edna.ingest function that inherits from BaseStreamingIngest must implement the next() and __init__(), and call the super __init__() function.
     """    
     execution_mode = IngestPattern.CLIENT_SIDE_STREAM
     def __init__(self, serializer: Serializable):
@@ -21,7 +21,7 @@ class BaseStreamingIngest(BaseIngest, Iterator):
         return self
 
     def __next__(self):
-        return self.next()
+        return self.serializer.read(self.next())
 
     def next(self):
         raise NotImplementedError
