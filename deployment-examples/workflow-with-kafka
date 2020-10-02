@@ -21,14 +21,6 @@ kubectl run ebka-twitter --rm -i --tty --image localhost:5000/ebka-twitter-strea
 (press enter once to see shell #, if it is not visible)
 
 
-import confluent_kafka as kafka
-from kafka import admin
-
-adminclient = admin.AdminClient(conf)
-topic = admin.NewTopic(topic="test-topic",num_partitions=1)
-adminclient.create_topics([topic])
-
-
 sudo kubectl -n default run kafka-consumer -ti --image=strimzi/kafka:0.19.0-kafka-2.5.0 --rm=true --restart=Never -- bin/kafka-console-consumer.sh --bootstrap-server edna-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092 --topic test-topic --from-beginning
 
 
@@ -45,5 +37,8 @@ sudo kubectl -n default run kafka-consumer -ti --image=strimzi/kafka:0.19.0-kafk
 5. docker build -t edna-twitter-streamer-kafka:latest .
 6. docker tag edna-twitter-streamer-kafka:latest localhost:5000/edna-twitter-streamer-kafka:latest
 7. docker push localhost:5000/edna-twitter-streamer-kafka:latest
+
+
+sudo kubectl -n default run kafka-consumer -ti --image=strimzi/kafka:0.19.0-kafka-2.5.0 --rm=true --restart=Never -- bin/kafka-console-consumer.sh --bootstrap-server edna-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092 --topic twitter-sampled-stream --from-beginning
 
 kubectl run edna-twitter --rm -i --tty --image localhost:5000/edna-twitter-streamer-kafka:latest -- sh
