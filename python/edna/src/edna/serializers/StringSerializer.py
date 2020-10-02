@@ -2,8 +2,7 @@ from edna.serializers import Serializable
 import msgpack
 
 class StringSerializer(Serializable):
-    """Serializer for strings.
-    """
+    """Serializer for strings."""
 
     @classmethod
     def read(cls, in_stream: bytes):
