@@ -2,6 +2,9 @@ from edna.core.configuration import EdnaConfiguration
 from typing import Dict
 
 class StreamingConfiguration(EdnaConfiguration):
+    """The interface representing a StreamingConfiguration. It implements `set_variables()` function.
+    
+    """
     def set_variables(self, configuration: Dict[str, str]):
         for key in configuration["variables"]:
             self.setVariable(key, configuration["variables"][key])

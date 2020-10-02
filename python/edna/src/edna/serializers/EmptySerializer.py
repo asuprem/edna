@@ -1,6 +1,8 @@
 from edna.serializers import Serializable
 
 class EmptyStringSerializer(Serializable):
+    """EmptyStringSerializer class expects str and passes it.
+    """
     @classmethod
     def read(cls, in_stream: str):
         return in_stream
@@ -9,6 +11,8 @@ class EmptyStringSerializer(Serializable):
         return out_stream
 
 class EmptyBoolSerializer(Serializable):
+    """EmptyBoolSerializer class expects str and passes it.
+    """
     @classmethod
     def read(cls, in_stream: bool):
         return in_stream
@@ -17,6 +21,8 @@ class EmptyBoolSerializer(Serializable):
         return out_stream
 
 class EmptyIntSerializer(Serializable):
+    """EmptyIntSerializer class expects str and passes it.
+    """
     @classmethod
     def read(cls, in_stream: int):
         return in_stream
@@ -25,6 +31,8 @@ class EmptyIntSerializer(Serializable):
         return out_stream
 
 class EmptyFloatSerializer(Serializable):
+    """EmptyFloatSerializer class expects str and passes it.
+    """
     @classmethod
     def read(cls, in_stream: float):
         return in_stream
@@ -33,6 +41,8 @@ class EmptyFloatSerializer(Serializable):
         return out_stream
 
 class EmptyByteSerializer(Serializable):
+    """EmptyByteSerializer class expects str and passes it.
+    """
     @classmethod
     def read(cls, in_stream: bytes):
         return in_stream
