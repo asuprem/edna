@@ -63,6 +63,7 @@ class BaseStreamingIngest(BaseIngest, Iterator):
 
 from .TwitterStreamingIngest import TwitterStreamingIngest
 from .TwitterFilteredIngest import TwitterFilteredIngest
+from .KafkaIngest import KafkaIngest
 
 __pdoc__ = {}
 __pdoc__["BaseStreamingIngest.__iter__"] = True
