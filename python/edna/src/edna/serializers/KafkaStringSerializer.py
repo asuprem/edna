@@ -1,8 +1,10 @@
 from edna.serializers import Serializable
-import msgpack
+import codecs
 
-class StringSerializer(Serializable):
-    """Serializer for strings."""
+class KafkaStringSerializer(Serializable):
+    """Serializer for strings into and from Kafka. This is useful for debugging with 
+    the console, because the console producers and consumers do not create messaegpack 
+    objects."""
 
     @classmethod
     def read(cls, in_stream: bytes):
@@ -14,7 +16,7 @@ class StringSerializer(Serializable):
         Returns:
             (str): Decoded bytes into utf-8 encoded strings
         """
-        return msgpack.unpackb(in_stream, raw=False)
+        return codecs.decode(in_stream, encoding="utf-8")
     @classmethod
     def write(cls, out_stream: str):
         """Writes an input string as a byte output.
@@ -25,4 +27,5 @@ class StringSerializer(Serializable):
         Returns:
             (byte): Encoded bytes from utf-8 encoded strings
         """
-        return msgpack.packb(out_stream, use_bin_type=True)
+        return bytes(out_stream, encoding="utf-8")
+        
