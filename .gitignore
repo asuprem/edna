@@ -6,6 +6,7 @@
 #-----------------------
 # Python
 __pycache__/
+edna_env
 
 # Jupyter Notebook
 .ipynb_checkpoints
@@ -55,7 +56,19 @@ hs_err_pid*
 # Unneeded directories
 Archives
 Readme\ Collections
+
+#------------------------
+# Removing deployment examples subfiles
 deployment-examples/TwitterFilteredStream
-#deployment-examples/TwitterSampledStreamerToKafka
-deployment-examples/workflow
+deployment-examples/*/src
+deployment-examples/*/setup.py
+deployment-examples/*/setup.cfg
+
+deployment-examples/*/*.sh
+deployment-examples/*/setup.cfg
+deployment-examples/*/setup.cfg
+deployment-examples/*/Dockerfile
+deployment-examples/*/.dockerignore
+deployment-examples/*/deployment.yaml
+
 #deployment-examples/Dockerfile.jinja2
