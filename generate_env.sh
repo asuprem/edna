@@ -1,45 +1,55 @@
 #!/bin/bash
 set -o errexit
+
+# Setup the print
+CYAN='\033[1;36m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+colored_print(){
+    printf ${CYAN}"$(date +"%T") -- $1"${NC}"\n"
+}
+error_print(){
+    printf ${RED}"$(date +"%T") -- $1"${NC}"\n"
+}
+
 if ! [ -x "$(command -v virtualenv)" ]; then
-  echo 'Error: virtualenv not installed'
+  error_print "Virtualenv not installed. Installing for this user."
   pip3 install --user virtualenv
 fi
 ENVNAME="edna_env"
 DIRECTORY="./${ENVNAME}"
 if [ -d "$DIRECTORY" ]; then
     # Control will enter here if $DIRECTORY exists.
-    echo "$(date +"%T") -- ${ENVNAME} exists."
+    error_print "${ENVNAME} exists."
     # remove the environment and generate it again
-    echo "$(date +"%T") -- Removing ${ENVNAME}."
+    error_print "Removing ${ENVNAME}."
     rm -rf ${ENVNAME} 
-    echo "$(date +"%T") -- Generating virtual environment ${ENVNAME}"
+    colored_print "Generating virtual environment ${ENVNAME}"
     virtualenv -p python3.7 ${ENVNAME}
-
 else
-    echo "$(date +"%T") -- ${ENVNAME} does not exist."
-    echo "$(date +"%T") -- Generating virtual environment ${ENVNAME}"
+    colored_print "${ENVNAME} does not exist."
+    colored_print "Generating virtual environment ${ENVNAME}"
     virtualenv -p python3.7 ${ENVNAME}
 fi
     
-echo "$(date +"%T") -- Activating virtual environment ${ENVNAME}"
+colored_print "Activating virtual environment ${ENVNAME}"
 source ./${ENVNAME}/bin/activate
 
 if [ $? -eq 0 ]; then
-    echo "$(date +"%T") -- Beginning package installs."
-    echo "$(date +"%T") -- Installing basic packages"
+    colored_print "Beginning package installs."
+    colored_print "Installing basic packages"
     
-    echo "$(date +"%T") -- Installing edna"
+    colored_print "Installing edna"
     cd python/edna
     pip3 install --no-cache-dir -e .
     cd ../../
 
-    echo "$(date +"%T") -- Installing interface tools"
+    colored_print "Installing interface tools"
     # Interface utilities
     pip3 install --no-cache-dir click==7.1.0 j2cli==0.3.10
 else
-    echo "FAILED TO ACTIVATE virtual environment $DIRECTORY."
+    error_print "FAILED TO ACTIVATE virtual environment $DIRECTORY."
     exit 1
 fi
 
-
-echo "$(date +"%T") -- Finished."
+colored_print "Finished."
