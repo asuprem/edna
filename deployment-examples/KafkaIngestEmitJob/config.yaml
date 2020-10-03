@@ -14,5 +14,3 @@ template:
     jobvariables:
       import_topic: "in-topic"
       import_key: "out-topic"
-
-    
