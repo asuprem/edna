@@ -5,11 +5,15 @@ set -o errexit
 # Get the job directory
 entrydir=$1
 env=$2
-CYAN='\033[0;36m'
+CYAN='\033[1;36m'
 NC='\033[0m' # No Color
 
 # Setup the print
 colored_print(){
+    printf ${CYAN}"$(date +"%T") -- $1"${NC}"\n"
+}
+# Setup the print
+finished_print(){
     printf ${CYAN}"$1"${NC}"\n"
 }
 
@@ -48,9 +52,17 @@ rm setup.py
 rm setup.cfg
 
 # Generate the deployment
-colored_print "Generating the Kubernetes deploment"
+colored_print "Generating the Kubernetes deployment"
 ../$2/bin/j2 ../deployment.yaml.jinja2 config.yaml > deployment.yaml
 
-colored_print "\n\nDeployment generated!"
-colored_print "\n\nYou can run this after cd'ing into ${entrydir} with:"
-colored_print "\n\t\tkubectl apply -f deployment.yaml"
+finished_print "\n\nDeployment generated!"
+finished_print "\n\nYou can run this after cd'ing into ${entrydir} with:"
+finished_print "\n\tkubectl apply -f deployment.yaml"
+
+IMAGEADDRESS=$(grep -e registryaddress config.yaml | awk '{print $2}' | tr -d '\r')
+IMAGENAME=$(grep -e imagename config.yaml | awk '{print $2}' | tr -d '\r')
+IMAGETAG=$(grep -e imagetag config.yaml | awk '{print $2}' | tr -d '\r')
+JOBNAME=$(grep -e jobname config.yaml | awk '{print $2}' | tr -d '\r')
+
+finished_print "\n\nYou can debug with an interactive pod with:"
+finished_print "\n\tkubectl run ${JOBNAME}-debug-pod --rm -i --tty --image ${IMAGEADDRESS}/${IMAGENAME}:${IMAGETAG} -- sh"
