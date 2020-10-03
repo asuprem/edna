@@ -23,3 +23,4 @@ class Serializable:
         raise NotImplementedError
 
 from .StringSerializer import StringSerializer
+from .KafkaStringSerializer import KafkaStringSerializer
