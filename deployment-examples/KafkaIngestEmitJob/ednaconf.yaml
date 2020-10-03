@@ -1,6 +1,6 @@
 variables:
-  import_topic: "in-topic"
-  export_topic: "out-topic"
+  import_key: "in-topic"
+  export_key: "out-topic"
   bootstrap_server: edna-cluster-kafka-bootstrap.kafka.svc.cluster.local
   bootstrap_port: 9092
   
