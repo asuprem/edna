@@ -8,7 +8,7 @@ This time, we will run a more complex EDNA job on kubernetes that pulls together
 2. Python 3.7
 3. Running Kind cluster with 1 control plane node, 1 worker node, and docker registry (Part 3)
 4. Kafka broker on kubernetes (Part 2)
-5. Virtual environment (Part 3)
+5. Virtual environment (Part 4)
 
 ## Setup -- Additional Python packages
 
