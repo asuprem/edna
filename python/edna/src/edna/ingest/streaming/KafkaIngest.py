@@ -2,7 +2,7 @@ from edna.serializers import Serializable
 from edna.ingest.streaming import BaseStreamingIngest
 
 from typing import Dict
-import confluent_kafka
+import confluent_kafka, confluent_kafka.admin
 from time import sleep
 import socket
 
@@ -45,6 +45,10 @@ class KafkaIngest(BaseStreamingIngest):
         kafka_message = None
         while kafka_message is None:
             kafka_message = self.consumer.poll(timeout=1.0)
+            if kafka_message is None:
+                # There is no message to retrieve (methinks)    TODO
+                sleep(0.1)
+                continue
             if kafka_message.error():
                 if kafka_message.error().code() == confluent_kafka.KafkaError._PARTITION_EOF:
                     kafka_message = None
@@ -54,7 +58,7 @@ class KafkaIngest(BaseStreamingIngest):
                     #                    (kafka_message.topic(), kafka_message.partition(), kafka_message.offset()))
                 elif kafka_message.error():
                     raise confluent_kafka.KafkaException(kafka_message.error())
-        return kafka_message
+        return kafka_message.value()
 
     def create_topic(self, topic_name: str, conf: Dict):
         """Helper function to create a topic. Blocks until topic is created.
@@ -67,5 +71,5 @@ class KafkaIngest(BaseStreamingIngest):
         topic = confluent_kafka.admin.NewTopic(topic=topic_name, num_partitions=1)
         response = adminclient.create_topics([topic])
         while not response[topic_name].done():
-            sleep(0.001)    # TODO this is super hacky. There is bound to be a better way to do this.
+            sleep(0.1)    # TODO this is super hacky. There is bound to be a better way to do this.
         del adminclient
