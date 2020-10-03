@@ -6,7 +6,7 @@ template:
     jobtype: internal
     jobimage: 
       registryaddress: localhost:5000
-      imagename: edna-twitter-streamer-kafka
+      imagename: edna-single-kafka-test
       imagetag: latest
     jobgraph:
       import_key: "in-topic"
