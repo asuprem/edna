@@ -1,0 +1,10 @@
+variables:
+  import_key: use-this-for-a-kafka-ingest
+  export_key: use-this-for-a-kafka-emit
+  VARIABLE1: value
+  VARIABLE2:
+    - List element 1
+    - List element 2
+  VARIABLE3: 
+    KEY1: value1
+    KEY2: value2

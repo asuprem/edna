@@ -1,0 +1,16 @@
+template:
+    applicationname: application-name-here
+    jobname: job-name-here-with-dashes-for-long-name
+    filename: PythonFileNameWithoutExtension
+    jobcontext: ednaconf
+    jobreplicas: 1
+    jobtype: internal
+    jobimage: 
+      registryaddress: localhost:5000
+      imagetag: latest-or-some-other-tag
+    jobgraph:
+      import_key: "in-topic --> for now, I don't use this, but let's keep it for consistency"
+      export_key: "out-topic --> for now, I don't use this, but let's keep it for consistency"
+    jobvariables:
+      import_topic: "in-topic --> for now, I don't use this, but let's keep it for consistency"
+      import_key: "out-topic --> for now, I don't use this, but let's keep it for consistency"
