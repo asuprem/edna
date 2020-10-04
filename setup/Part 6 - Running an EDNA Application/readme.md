@@ -1,8 +1,8 @@
-# Running Multiple Jobs as a Sequence
+# Running an EDNA Appplication
 
-This is what we have been building towards, but we will actually cover a complete Application in the next part.
+This is what we have been building towards, but we will actually cover a useful Application in the next part.
 
-Let's distinguish between an application and a job:
+Let's distinguish between an Application and a Job:
 
 - An EDNA application consists of several Jobs
 - An EDNA job is a small executable that contains an Ingest, Process, and Emit primitive
