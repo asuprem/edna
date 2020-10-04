@@ -1,0 +1,7 @@
+> Update deployment examples readmes to incorporate ./generate_job_python.sh
+
+
+
+> Major changes
+- Added KafkaStringSerializer
+- Added generate_job_python
