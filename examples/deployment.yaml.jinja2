@@ -16,4 +16,4 @@ spec:
     spec:
       containers:
       - name: {{ template.jobname }}-pod
-        image: {{ template.jobimage.registryaddress }}/{{ template.jobimage.imagename }}:{{ template.jobimage.imagetag }}
+        image: {{ template.jobimage.registryaddress }}/{{ template.applicationname }}-{{ template.jobname }}:{{ template.jobimage.imagetag }}
