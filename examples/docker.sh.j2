@@ -2,7 +2,7 @@
 # Build the docker image
 docker build -t {{ template.applicationname }}-{{ template.jobname }}:latest .
 # Tag the image
-docker tag {{ template.applicationname }}-{{ template.jobname }}:latest {{ template.jobimage.registryaddress }}/{{ template.jobimage.imagename }}:{{ template.jobimage.imagetag }}
+docker tag {{ template.applicationname }}-{{ template.jobname }}:latest {{ template.jobimage.registryaddress }}/{{ template.applicationname }}-{{ template.jobname }}:{{ template.jobimage.imagetag }}
 # Push the tag to registry
 docker push {{ template.jobimage.registryaddress }}/{{ template.applicationname }}-{{ template.jobname }}:{{ template.jobimage.imagetag }}
 

@@ -23,6 +23,7 @@ finished_print(){
 }
 
 # Enter the job directory
+colored_print "Entering working directory $1"
 cd $1
 
 # Get variables

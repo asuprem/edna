@@ -59,16 +59,15 @@ Readme\ Collections
 
 #------------------------
 # Removing deployment examples subfiles
-deployment-examples/TwitterFilteredStream
-deployment-examples/*/src
-deployment-examples/*/setup.py
-deployment-examples/*/setup.cfg
+examples/*/*/src
+examples/*/*/setup.py
+examples/*/*/setup.cfg
 
-deployment-examples/*/*.sh
-deployment-examples/*/setup.cfg
-deployment-examples/*/setup.cfg
-deployment-examples/*/Dockerfile
-deployment-examples/*/.dockerignore
-deployment-examples/*/deployment.yaml
+examples/*/*/*.sh
+examples/*/*/setup.cfg
+examples/*/*/setup.cfg
+examples/*/*/Dockerfile
+examples/*/*/.dockerignore
+examples/*/*/deployment.yaml
 
 #deployment-examples/Dockerfile.jinja2
