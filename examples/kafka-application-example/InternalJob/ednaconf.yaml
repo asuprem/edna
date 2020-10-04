@@ -1,0 +1,4 @@
+variables:
+  import_key: source-job-stream
+  export_key: job1-stream
+  bootstrap_server: edna-cluster-kafka-bootstrap.kafka.svc.cluster.local
