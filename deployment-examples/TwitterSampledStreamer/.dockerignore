@@ -1,6 +1,0 @@
-# Ignore .git and .cache
-.git
-.cache
-
-# Ignore all yaml files
-**/*.yaml

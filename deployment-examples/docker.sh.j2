@@ -1,8 +1,0 @@
-#!/bin/bash
-# Build the docker image
-docker build -t {{ template.jobimage.imagename }}:latest .
-# Tag the image
-docker tag {{ template.jobimage.imagename }}:latest {{ template.jobimage.registryaddress }}/{{ template.jobimage.imagename }}:{{ template.jobimage.imagetag }}
-# Push the tag to registry
-docker push {{ template.jobimage.registryaddress }}/{{ template.jobimage.imagename }}:{{ template.jobimage.imagetag }}
-
