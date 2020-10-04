@@ -1,0 +1,16 @@
+template:
+    applicationname: edna
+    jobname: twitter-kafka
+    filename: TwitterSampledStreamerToKafka
+    jobcontext: ednaconf
+    jobreplicas: 1
+    jobtype: internal
+    jobimage: 
+      registryaddress: localhost:5000
+      imagetag: latest
+    jobgraph:
+      import_key: "in-topic"
+      export_key: "out-topic"
+    jobvariables:
+      import_topic: "in-topic"
+      import_key: "out-topic"

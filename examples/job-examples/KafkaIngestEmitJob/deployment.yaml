@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-emit-test
+  labels:
+    app: kafka-emit-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-emit-test
+  template:
+    metadata:
+      labels:
+        app: kafka-emit-test
+    spec:
+      containers:
+      - name: kafka-emit-test-pod
+        image: localhost:5000/edna-twitter-streamer-kafka:latest
