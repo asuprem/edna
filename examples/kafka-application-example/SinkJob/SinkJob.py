@@ -20,7 +20,7 @@ def main():
     process = BaseProcess()                     # e.g. BaseProcess
     emit = KafkaEmit(emit_serializer, 
         kafka_topic=context.getVariable("export_key"),
-        bootstrap_server=context.getVariable("bootsrap_server"))           # e.g. KafkaEmit
+        bootstrap_server=context.getVariable("bootstrap_server"))           # e.g. KafkaEmit
 
     context.addIngest(ingest=ingest)        # Registers the ingest primitive
     context.addProcess(process=process)     # Registers the process primitive
