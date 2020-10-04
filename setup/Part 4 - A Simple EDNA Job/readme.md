@@ -36,7 +36,9 @@ Normally, you would do this each time you pull, but that beecomes cumbersome. So
 
 # Execution
 
-Now `cd` into `deployment-examples/TwitterSampledStreamer`. You will see a python file, 2 yaml files, and a *.dockerignore* file. Ignore (ha) the *.dockerignore* and `config.yaml`. 
+**Note**: This has been changed from an earlier version, since I reordered the directories.
+
+Now `cd` into `examples/job-examples/TwitterSampledStreamer`. You will see a python file, 2 yaml files, and a *.dockerignore* file. Ignore (ha) the *.dockerignore* and `config.yaml`. 
 
 Open `ednaconf.yaml` and add your Bearer Token into the Bearer Token field. You won't need the quotes. **<span style="color:maroon">Be careful in pushing any code with API keys. You don't want your API key to be on a public site.</span>**
 

@@ -36,14 +36,11 @@ colored_print "Activating virtual environment ${ENVNAME}"
 source ./${ENVNAME}/bin/activate
 
 if [ $? -eq 0 ]; then
-    colored_print "Beginning package installs."
-    colored_print "Installing basic packages"
-    
+    colored_print "Beginning package installs."    
     colored_print "Installing edna"
     cd python/edna
     pip3 install --no-cache-dir -e .
     cd ../../
-
     colored_print "Installing interface tools"
     # Interface utilities
     pip3 install --no-cache-dir click==7.1.0 j2cli==0.3.10

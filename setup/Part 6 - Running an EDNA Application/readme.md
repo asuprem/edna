@@ -1,5 +1,17 @@
 # Running an EDNA Appplication
 
+## A preliminary note
+
+Since you should be more familiar with virtualenvs now (if you weren't before), I took the liberty of creating a script that generates a virtual environment for python. You can find it in the root directory at `generate_env.sh`.
+
+It will create a directory called `edna_env` (it will delete any existing `edna_env` directory, so watch out!) and install the virtual environment there. You can run it froom the root directory of this repo with:
+
+```
+bash generate_env.bash
+```
+
+## Forward into the unknown (not really)
+
 This is what we have been building towards, but we will actually cover a useful Application in the next part.
 
 Let's distinguish between an Application and a Job:
@@ -88,13 +100,15 @@ We are basically testing the following interactions:
 # Running the Application
 
 ## Generating the Jobs
-First we'll generate the jobs.
+First we'll generate the jobs with `examples/generate_job_python.bash`. This script expects a virtual environment in the root directory as the second argument (in my case, this is `edna_env`). This virtual environment (if you did not use `generate_env.bash` should have at the very least the `j2cli` package from pypi).
+
+Take a look inside the Job generator to see what is going on.
 
 ```
 cd examples
-./generate_job_python.sh kafka-application-example/SourceJob edna_env
-./generate_job_python.sh kafka-application-example/InternalJob edna_env
-./generate_job_python.sh kafka-application-example/SinkJob edna_env
+./generate_job_python.bash kafka-application-example/SourceJob <edna_env name>
+./generate_job_python.bash kafka-application-example/InternalJob <edna_env name>
+./generate_job_python.bash kafka-application-example/SinkJob <edna_env name>
 ```
 
 ## Running the jobs

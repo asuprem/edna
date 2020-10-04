@@ -8,7 +8,7 @@ This time, we will run a more complex EDNA job on kubernetes that pulls together
 2. Python 3.7
 3. Running Kind cluster with 1 control plane node, 1 worker node, and docker registry (Part 3)
 4. Kafka broker on kubernetes (Part 2)
-5. Virtual environment (Part 3)
+5. Virtual environment (Part 4)
 
 ## Setup -- Additional Python packages
 
@@ -25,7 +25,7 @@ Jinja2 is a powerful templating engine that allows you to create extensible file
 
 ## Reviewing the Code
 
-We will work on the `deployment-examples/TwitterSampledStreamerToKafka` example. Take a look at the code right now in `TwitterSampledStreamerToKafka.py`. It contains an EDNA job with the following specifications:
+We will work on the `examples/job-examples/TwitterSampledStreamerToKafka` example. Take a look at the code right now in `TwitterSampledStreamerToKafka.py`. It contains an EDNA job with the following specifications:
 
 - Ingest with a TwitterStreamingIngest primitive
 - Process with BaseProcess (which is an empty primitive that doesn't do anything)
@@ -141,7 +141,7 @@ There is a naive way to create the docker image: simple use the python base dock
 
 So we will use something called a multistage docker file. We will start with the `python3.7-slim` image from dockerhub. This is much smaller than the base python image. We will use this image to compile our job file (`TwitterSampledStreamToKafka.py`) into a C program. This will significantly reduce the dependencies we require, plus make our program faster since we are compiling to C. Then we will copy the compiled C file to a fresh image that has no installation debris, so to speak.
 
-Take a look at `Dockerfile.jinja2` in `deployment-examples`. It has enough comments to explain what is going on.
+Take a look at `Dockerfile.jinja2` in `examples`. It has enough comments to explain what is going on.
 
 Since it is a **jinja2** file, it has some template variables in there, such as `{{ template.filename }}`. This allows us to use this Dockerfile for different types of jobs by creating a compilation configuration file.
 
@@ -150,7 +150,7 @@ Now go back inside the `TwitterSampledStreamerToKafka` directory. There is a `co
 Inside the `TwitterSampledStreamerToKafka` directory, create the Dockerfile through Jinja2 with:
 
 ```
-j2 ../Dockerfile.jinja2 config.yaml > Dockerfile
+j2 /path/to/repo/examples/Dockerfile.jinja2 config.yaml > Dockerfile
 ```
 
 Take a look at thhe generated Dockerfile. It should have replaced the template with the correct names
@@ -162,26 +162,26 @@ Before creating the image, we still need to make sure it can add the EDNA librar
 So, copy the edna python library (I have provided relative paths below that should work):
 
 ```
-cp -r ../../python/edna/src .
-cp ../../python/edna/setup.py .
-cp ../../python/edna/setup.cfg .
+cp -r /path/to/repo/python/edna/src .
+cp /path/to/repo/python/edna/setup.py .
+cp /path/to/repo/python/edna/setup.cfg .
 ```
 
 **Note** Make sure you added your bearer-token to the `ednaconf.yaml` file.
 
 ### Build the image
 
-I am going to choose the name `edna-twitter-streamer-kafka` as the name for the image. Build the image with:
+I am going to choose the name `edna-twitter-kafka` as the name for the image. Build the image with:
 
 ```
-docker build -t edna-twitter-streamer-kafka:latest .
+docker build -t edna-twitter-kafka:latest .
 ```
 
 Then push to the registry with:
 
 ```
-docker tag edna-twitter-streamer-kafka:latest localhost:5000/edna-twitter-streamer-kafka:latest
-docker push localhost:5000/edna-twitter-streamer-kafka:latest
+docker tag edna-twitter-kafka:latest localhost:5000/edna-twitter-kafka:latest
+docker push localhost:5000/edna-twitter-kafka:latest
 ```
 
 You can check whether the push worked by using `joxit` image or with the registry API (see the Docker Registry Setup instructions). You can also check the image size with:
@@ -197,8 +197,8 @@ It should be 141MB, which is still fairly large. There are ways to make it even 
 Next, we will run the job. The `deployment.yaml` sets it up. Keep note of the following:
 
 - `replicas: 1` : We want a  a single pod
-- `name: edna-twitter-streamer-pod`: Sets the name of the pod
-- `image: localhost:5000/edna-twitter-streamer-kafka:latest`: Sets the image of the pod
+- `name: twitter-kafka`: Sets the name of the pod
+- `image: localhost:5000/edna-twitter-kafka:latest`: Sets the image of the pod
 
 If you are working on Custom Resources these configurations are useful things to add to a custom resource (along with the template `config.yaml` for the Dockerfile) -- this way, you can automate the overall process.
 
