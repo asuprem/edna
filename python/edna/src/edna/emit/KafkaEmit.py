@@ -6,9 +6,11 @@ from typing import Dict
 from time import sleep
 import confluent_kafka
 import socket
+from typing import List
 class KafkaEmit(BaseEmit):
     """An Emitter that writes to a Kafka topic."""
-    def __init__(self, serializer: Serializable, kafka_topic: str, bootstrap_server: str = "localhost", bootstrap_port: int = 9092):   # For java, need to ensure it is a bytesSerializer
+    def __init__(self, serializer: Serializable, kafka_topic: str, bootstrap_server: str = "localhost", bootstrap_port: int = 9092, 
+        emit_buffer_batch_size: int = 10, emit_buffer_timeout_ms: int = 100,):   # For java, need to ensure it is a bytesSerializer
         """Connects to a specified kafka topic and sets up the emitter.
 
         Args:
@@ -27,15 +29,16 @@ class KafkaEmit(BaseEmit):
         self.create_topic(topic_name=kafka_topic, conf=conf)
         
         self.producer = confluent_kafka.Producer(conf)
-        super().__init__(serializer=serializer)
+        super().__init__(serializer=serializer, emit_buffer_batch_size=emit_buffer_batch_size,emit_buffer_timeout_ms=emit_buffer_timeout_ms)
 
-    def write(self, message: bytes):
-        """Publishes a message to the instance's saved kafka topic.
-
-        Args:
-            message (bytes): Serialized byte-encoded message to publish.
+    def write(self):
+        """Publishes the internal buffer message to the instance's saved kafka topic. Since
+        kafka already handles high-throughput low-latency message production asynchronously, 
+        `write()` sends messages one by one from the emit_buffer
         """
-        self.producer.produce(self.kafka_topic, value = message)    # Already serialized.
+
+        for buffer_idx in range(self.emit_buffer_index+1):
+            self.producer.produce(self.kafka_topic, value = self.emit_buffer[buffer_idx])    # Already serialized.
 
     def create_topic(self, topic_name: str, conf: Dict):
         """Creates a kafka topic using the admin-client api from confluent.
