@@ -39,7 +39,7 @@ if [ $? -eq 0 ]; then
     colored_print "Beginning package installs."    
     colored_print "Installing edna"
     cd python/edna
-    pip3 install --no-cache-dir -e .
+    pip3 install --no-cache-dir -e .[full]
     cd ../../
     colored_print "Installing interface tools"
     # Interface utilities
