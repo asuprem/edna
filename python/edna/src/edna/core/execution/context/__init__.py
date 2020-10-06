@@ -40,10 +40,10 @@ class EdnaContext(ABC):
         """                
         self.dir = dir
         self.configuration_path = os.path.join(self.dir, confpath)
-        self.configuration = self._get_configuration(self.configuration_path, confclass)
+        self.configuration = self._getConfiguration(self.configuration_path, confclass)
 
     
-    def _get_configuration(self, confpath: str, confclass: EdnaConfiguration):
+    def _getConfiguration(self, confpath: str, confclass: EdnaConfiguration):
         """Sets up a
 
         Args:
