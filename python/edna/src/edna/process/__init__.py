@@ -25,7 +25,7 @@ class BaseProcess(object):
         """
         self.chained_process = process if process is not None else lambda x: x
 
-    def __call__(self,message):
+    def __call__(self, message):
         """This is the entrypoint to this primitive to process a message. For example, you can do the following
 
         ```
@@ -51,6 +51,8 @@ class BaseProcess(object):
             (obj): A processed message
         """
         return message
+
+from .map import Map
 
 __pdoc__ = {}
 __pdoc__["BaseProcess.__call__"] = True
