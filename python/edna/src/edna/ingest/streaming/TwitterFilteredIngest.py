@@ -30,10 +30,10 @@ class TwitterFilteredIngest(BaseTwitterIngest):
             place_fields (List[str], optional): List of place fields to retrieve. Defaults to None.
         """
         super().__init__(serializer, bearer_token, tweet_fields, user_fields, media_fields, poll_fields, place_fields, *args, **kwargs)
-        self.delete_all_filters(self.get_filters())
-        self.set_filters(filters)
+        self.deleteAllFilters(self.getFilters())
+        self.setFilters(filters)
 
-    def get_filters(self):
+    def getFilters(self):
         """Helper function to get the list of filters
 
         Raises:
@@ -51,7 +51,7 @@ class TwitterFilteredIngest(BaseTwitterIngest):
             )
         return response.json()
 
-    def delete_all_filters(self, filters: Dict[str, str]):
+    def deleteAllFilters(self, filters: Dict[str, str]):
         """Helper function to delete filters.
 
         Args:
@@ -77,7 +77,7 @@ class TwitterFilteredIngest(BaseTwitterIngest):
                 )
             )
 
-    def set_filters(self, filters: List[str]):
+    def setFilters(self, filters: List[str]):
         """Helper functions to set new filters.
 
         Args:
