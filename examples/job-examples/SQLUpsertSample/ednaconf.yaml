@@ -6,3 +6,8 @@ variables:
   upsert_fields:
     - first_name
     - last_name
+  database: sakila
+  host: "172.28.144.1"
+  user: asuprem
+  password": PASSWORD
+  table: actor

@@ -27,11 +27,11 @@ def main():
     ingest = SimulatedIngest(serializer=EmptyStringSerializer, stream_list=list_of_inserts)
     process = ObjectToSQL(process=JsonToObject(), tuple_factory=tuple_factory)
     emit = SQLUpsertEmit(serializer=EmptyObjectSerializer, 
-        database="sakila", 
-        host="172.28.144.1", 
-        user="asuprem", 
-        password="scientia",
-        table="actor",
+        database=context.getVariable("database"), 
+        host=context.getVariable("host"), 
+        user=context.getVariable("user"), 
+        password=context.getVariable("password"),
+        table=context.getVariable("table"),
         tuple_factory=tuple_factory)
 
     context.addIngest(ingest=ingest)
