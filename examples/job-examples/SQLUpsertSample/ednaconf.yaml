@@ -1,0 +1,8 @@
+variables:
+  sql_fields:
+    - actor_id
+    - first_name
+    - last_name
+  upsert_fields:
+    - first_name
+    - last_name
