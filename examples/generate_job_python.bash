@@ -1,26 +1,37 @@
 #!/bin/bash
-# Usage: sudo ./generate_job_python.sh appdir/jobdir edna_env
+# Usage: bash ./generate_job_python.sh appdir/jobdir edna_env
 set -o errexit
-
-# Get the job directory
-entrydir=$1
-env=$2
-# Get the root path
-cd ..
-rootpath=$PWD
-cd examples
-
 CYAN='\033[1;36m'
+RED='\033[1;31m'
 NC='\033[0m' # No Color
 
 # Setup the print
 colored_print(){
     printf ${CYAN}"$(date +"%T") -- $1"${NC}"\n"
 }
+error_print(){
+    printf ${RED}"$(date +"%T") -- $1"${NC}"\n"
+}
 # Setup the print
 finished_print(){
     printf ${CYAN}"$1"${NC}"\n"
 }
+
+me=`basename "$0"`
+if [ ! -e "$me" ]; then
+    error_print "Not in repo/examples/ directory. Run from inside the example directory. Exiting"
+    exit 0
+fi 
+# Get the job directory
+entrydir=$1
+env=$2
+# Get the root path
+colored_print "Getting repo directory"
+cd ..
+rootpath=$PWD
+cd examples
+
+
 
 # Enter the job directory
 colored_print "Entering working directory $1"
