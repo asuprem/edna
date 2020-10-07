@@ -106,9 +106,9 @@ Take a look inside the Job generator to see what is going on.
 
 ```
 cd examples
-./generate_job_python.bash kafka-application-example/SourceJob <edna_env name>
-./generate_job_python.bash kafka-application-example/InternalJob <edna_env name>
-./generate_job_python.bash kafka-application-example/SinkJob <edna_env name>
+bash generate_job_python.bash kafka-application-example/SourceJob <edna_env name>
+bash generate_job_python.bash kafka-application-example/InternalJob <edna_env name>
+bash generate_job_python.bash kafka-application-example/SinkJob <edna_env name>
 ```
 
 ## Running the jobs
