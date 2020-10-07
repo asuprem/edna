@@ -19,7 +19,17 @@ COPY {{ template.jobcontext }}.yaml .
 COPY setup.py .
 COPY setup.cfg .
 COPY ./src ./src/
+# Copy any extra file dependencies. Separate dependencies with space
+{% if template.filedependencies is defined and template.filedependencies != None -%}
+COPY {{ template.filedependencies }} ./
+{% endif %}
+# Check for dependencies and install package
+{% if template.jobdependencies is defined and template.jobdependencies != None -%}
+RUN pip install --user .[{{ template.jobdependencies }}]
+{% else %}
 RUN pip install --user .
+{% endif %}
+
 # ----
 
 # Transpile 'main.py' to 'main.c'
