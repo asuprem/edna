@@ -1,5 +1,7 @@
-> Update deployment examples readmes to incorporate ./generate_job_python.sh
-
+> Update deployment examples readmes to incorporate ./generate_job_python.sh -- DONE
+> Set up install_requirements -- 
+    So we have the minimal installs for edna, plus additional installs...
+        extras_require...
 
 
 > Major changes
