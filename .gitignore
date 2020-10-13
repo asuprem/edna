@@ -70,4 +70,8 @@ examples/*/*/Dockerfile
 examples/*/*/.dockerignore
 examples/*/*/deployment.yaml
 
+# Allow specific files for some examples
+!examples/job-examples/TwitterSampledStreamerToKafka/.dockerignore
+!examples/job-examples/TwitterSampledStreamerToKafka/deploymenta.yaml
+
 #deployment-examples/Dockerfile.jinja2
