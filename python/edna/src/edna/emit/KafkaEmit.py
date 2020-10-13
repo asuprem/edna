@@ -4,7 +4,7 @@ from edna.serializers import Serializable
 
 from typing import Dict
 from time import sleep
-import confluent_kafka
+import confluent_kafka, confluent_kafka.admin
 import socket
 from typing import List
 class KafkaEmit(BaseEmit):
