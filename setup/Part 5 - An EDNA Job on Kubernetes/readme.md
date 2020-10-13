@@ -55,7 +55,7 @@ We then create two serializers:
 
 ```
 ingest_serializer = EmptyStringSerializer()
-emit_serializer = StringSerializer()
+emit_serializer = EmptyStringSerializer()
 ```
 
 Serialization is an important part of streaming (andany networking). Serialization is technically two tasks:
@@ -64,7 +64,7 @@ Serialization is an important part of streaming (andany networking). Serializati
 
 Twitter provides a stream of newline-separated strings. So our `ingest_serializer` does not need to do anything, because we already get a string directly from Twitter.
 
-We do need an emit serializer, though, since we want our emitter to send the information to Kafka, which expects bytes. Since our internal representation is a String, we will use a StringSerializer.
+We do need an emit serializer, though, since we want our emitter to send the information to Kafka, which expects bytes. ~~Since our internal representation is a String, we will use a StringSerializer.~~<span style="color:maroon">This has been updated to EmptyStringSerializer, since Twitter now provides bytes as its message payload, so we don't need to do anything to encode the message.</span>
 
 If you look inside `edna.emit.BaseEmit` class, you will see that the `__call__` method is:
 
@@ -153,7 +153,7 @@ Inside the `TwitterSampledStreamerToKafka` directory, create the Dockerfile thro
 j2 /path/to/repo/examples/Dockerfile.jinja2 config.yaml > Dockerfile
 ```
 
-Take a look at thhe generated Dockerfile. It should have replaced the template with the correct names
+Take a look at the generated Dockerfile. It should have replaced the template with the correct names
 
 ### Preparing the directory.
 
@@ -168,6 +168,23 @@ cp /path/to/repo/python/edna/setup.cfg .
 ```
 
 **Note** Make sure you added your bearer-token to the `ednaconf.yaml` file.
+
+### Generate the dockerignore
+
+Use the following command to generate the dockerignore if it does not exist:
+
+```
+cat <<EOF > .dockerignore
+# Ignore .git and .cache
+.git
+.cache
+
+# Ignore config yaml files and generated docker.sh file
+config.yaml
+deployment.yaml
+docker.sh
+EOF
+```
 
 ### Build the image
 
