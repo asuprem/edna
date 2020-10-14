@@ -1,0 +1,21 @@
+apiVersion: edna.graitdm.edu/v1
+kind: EdnaJob
+metadata:
+  name: job1
+spec:
+  import_key: in_tet
+  export_key: out_test
+  jobname: job1
+  applicationname: app1
+  filename: PythonJobFile
+  jobcontext: ednaconf
+  jobtype: internal
+  jobimagetag: v1
+  registryhost: localhost
+  registryport: 5000
+  jobvariablenames:
+    - var1
+    - var2
+  jobvariablevalues:
+    - value1
+    - value2
