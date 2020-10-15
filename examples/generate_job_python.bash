@@ -71,6 +71,7 @@ cp $rootpath/python/edna/setup.cfg .
 # Build the docker image and delete the generated sh file
 colored_print "Building the docker image"
 $rootpath/$2/bin/j2 $rootpath/examples/docker.sh.j2 config.yaml > docker.sh
+chmod +x docker.sh
 ./docker.sh
 colored_print "Deleting docker.sh and associated detritus"
 rm docker.sh
