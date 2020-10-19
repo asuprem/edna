@@ -3,8 +3,7 @@ from edna.process import BaseProcess
 from edna.emit import BaseEmit
 from edna.ingest import BaseIngest
 from edna.serializers import Serializable
-
-from edna.core.types.enums import IngestPattern
+from edna.types.enums import IngestPattern
 
 from typing import Iterator
 
@@ -49,9 +48,9 @@ class BaseStreamingIngest(BaseIngest, Iterator):
         """Fetches the next record from the source.
 
         Returns:
-            (obj): Single fetched record.
+            (List[obj]): Single fetched record in a singleton format.
         """
-        return self.serializer.read(self.next())
+        return [self.serializer.read(self.next())]
 
     def next(self):
         """Method that encapsulates record fetching logic.

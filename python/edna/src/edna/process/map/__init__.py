@@ -39,9 +39,9 @@ class Map(BaseProcess):
             message (obj): A message to process with this primitive
 
         Returns:
-            (obj): A processed message
+            (List[obj]): A processed message in a singleton list.
         """
-        return self.map(message)
+        return [self.map(message)]
 
     def map(self, message: object):
         """Logic for mapping. Subclasses need to implement this.

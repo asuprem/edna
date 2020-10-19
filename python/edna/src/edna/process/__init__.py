@@ -34,15 +34,16 @@ class BaseProcess(object):
         ```
 
         Args:
-            message (obj): A message to process with this primitive
+            message (List[obj]): A list of messages to process with this primitive. Usually Singleton unless the preceding is a 1-N mapping
 
         Returns:
             (obj): A processed message
         """
-        return self.process(self.chained_process(message))
+        for item in message:
+            return self.process(self.chained_process(item))
     
     def process(self, message):
-        """Logic for message processing. Inheriting classes should implement this.
+        """Logic for message processing. Inheriting classes should implement this. We return a singleton to work with Emit
 
         Args:
             message (obj): The message to process with this logic
@@ -50,7 +51,7 @@ class BaseProcess(object):
         Returns:
             (obj): A processed message
         """
-        return message
+        return [message]
 
 from .map import Map
 

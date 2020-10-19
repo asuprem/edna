@@ -43,8 +43,12 @@ class BaseEmit(object):
         """Wrapper for emitting a record using the emitter's logic. This is the entry point for emitting and should not be modified.
 
         Args:
-            message (object): A message that should be Serializable to bytes with `serializer`
+            message (List[object]): A list of messagse that should be Serializable to bytes with `serializer`
         """
+        for item in message:
+            self.call(item)
+        
+    def call(self, message):
         self.emit_buffer_index += 1
         self.emit_buffer[self.emit_buffer_index] = self.serializer.write(message)
         # Write buffer and clear if throughput barriers are met
@@ -52,7 +56,7 @@ class BaseEmit(object):
             self.write_buffer()
         if self.emit_buffer_index+1 == self.emit_buffer_batch_size: # Buffer too large
             self.write_buffer()
-        
+
 
     def write_buffer(self):
         """Calls `write()` to write the buffer and resets the buffer"""
