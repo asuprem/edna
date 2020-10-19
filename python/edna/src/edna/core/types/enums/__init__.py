@@ -1,1 +1,0 @@
-from .IngestPattern import IngestPattern
