@@ -1,6 +1,6 @@
 from edna.core.execution.context import EdnaContext
 from edna.core.configuration import StreamingConfiguration
-from edna.core.types.enums import IngestPattern
+from edna.types.enums import IngestPattern
 
 
 class StreamingContext(EdnaContext):

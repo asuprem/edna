@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from edna.core.types.builtin import ConfigurationVariable
+from edna.types.builtin import ConfigurationVariable
 import yaml
 from typing import Dict
 from abc import ABC
