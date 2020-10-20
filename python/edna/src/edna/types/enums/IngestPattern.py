@@ -1,7 +1,7 @@
 import enum
 
 class IngestPattern(enum.Enum):
-    """Enum to determine which type of ingest the StreamingContext has received. 
+    """Enum to determine which type of ingest the SimpleStreamingContext has received. 
     This is set inside the Ingest primitive base class and can be modified by subclasses that
     themselves are primitives. 
 
