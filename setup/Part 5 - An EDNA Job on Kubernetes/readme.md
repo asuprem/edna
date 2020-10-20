@@ -31,7 +31,7 @@ We will work on the `examples/job-examples/TwitterSampledStreamerToKafka` exampl
 - Process with BaseProcess (which is an empty primitive that doesn't do anything)
 - Emit with a KafkaEmit primitive that sends results to Kafka
 
-The `ednaconf.yaml` associated with the StreamingContext has the following important fields:
+The `ednaconf.yaml` associated with the ~~StreamingContext~~ SimpleStreamingContext has the following important fields:
 - `bearer_token`: Put your bearer token here
 - `kafka_topic`: The name of the kafka topic to publish to. This will be the same topic that another EDNA job could subscribe to, for example
 - `bootstrap_server`: The address of the kafka broker. 
@@ -39,12 +39,12 @@ The `ednaconf.yaml` associated with the StreamingContext has the following impor
     - In Kubernetes, the full DNS address of a service is: `<service-name>.<namespace>.svc.cluster.local`. 
     - Resolving this gets us `edna-cluster-kafka-bootstrap.kafka.svc.cluster.local`
 
-### StreamingContext
+### ~~StreamingContext~~ SimpleStreamingContext
 
-First we create the StreamingContext:
+First we create the ~~StreamingContext~~ SimpleStreamingContext:
 
 ```
-context = StreamingContext()
+context = SimpleStreamingContext()
 ```
 
 This manages the Edna Job by configuring and executing it. We don't want to hard-code any variables for the job, because this makes management of resources and jobs difficult. Instead, we will always try for configurable jobs. In this case, the configuration is set up by passing variables into the `StreamingContext` through a configuration file. `StreamingContext` loads variables from a local file with the default name `ednaconf.yaml`. A top level field called `variables` should contain all Context variables we want to pass. 

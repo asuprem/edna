@@ -185,7 +185,7 @@ Here, each entry has a first name, a last name, and an `additional` column that 
 Next we set up the streaming context.
 
 ```
-context = StreamingContext()
+context = SimpleStreamingContext()
 ```
 
 Then we set up a tuple factory with:
