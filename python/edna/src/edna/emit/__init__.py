@@ -1,6 +1,6 @@
-from edna.serializers import Serializable
+from __future__ import annotations
+from edna.serializers import Serializable, BufferedSerializable
 import time
-from typing import List
 
 class BaseEmit(object):
     """BaseEmit is the base class for writing records from a process primitive to a sink, 
@@ -17,8 +17,16 @@ class BaseEmit(object):
 
     - modify the `__call__()` method
 
-    """  
-    def __init__(self, serializer: Serializable, emit_buffer_batch_size: int = 10, emit_buffer_timeout_ms: int = 100, *args, **kwargs):
+    """
+    serializer: Serializable
+    in_serializer: BufferedSerializable
+    out_serializer: Serializable  
+    def __init__(self, serializer: Serializable, 
+            in_serializer: Serializable = None, 
+            out_serializer: Serializable = None, 
+            emit_buffer_batch_size: int = 10, 
+            emit_buffer_timeout_ms: int = 100, 
+            *args, **kwargs):
         """Initializes the BaseEmit. This must be called by any inheriting classes using `super().__init__()`
 
         Args:
@@ -30,6 +38,18 @@ class BaseEmit(object):
                 blocking on unfilled `emit_batch` if incoming stream is slow.
         """
         self.serializer = serializer
+        if self.serializer is None:
+            if in_serializer is None:
+                raise ValueError("`in_serializer` cannot be None if serializer is `None` for Emit Primitive")
+            if out_serializer is None:
+                raise ValueError("`in_serializer` cannot be None if serializer is `None` for Emit Primitive")
+            self.in_serializer = in_serializer
+            self.out_serializer = out_serializer
+        else:
+            self.in_serializer = self.serializer
+            self.out_serializer = self.serializer
+
+
         if emit_buffer_batch_size <= 0:
             raise ValueError("emit_buffer_batch_size must be positive; received {emit_buffer_batch_size}".format(emit_buffer_batch_size = emit_buffer_batch_size))
         self.emit_buffer_batch_size = emit_buffer_batch_size
@@ -50,7 +70,7 @@ class BaseEmit(object):
         
     def call(self, message):
         self.emit_buffer_index += 1
-        self.emit_buffer[self.emit_buffer_index] = self.serializer.write(message)
+        self.emit_buffer[self.emit_buffer_index] = self.out_serializer.write(message)
         # Write buffer and clear if throughput barriers are met
         if (time.time() - self.timer) > self.emit_buffer_timeout_s:    # Buffer timeout reached
             self.write_buffer()
@@ -85,6 +105,7 @@ from .KafkaEmit import KafkaEmit
 from .StdoutEmit import StdoutEmit
 from .SQLEmit import SQLEmit
 from .SQLUpsertEmit import SQLUpsertEmit
+from .RecordCounterEmit import RecordCounterEmit
 
 __pdoc__ = {}
 __pdoc__["BaseEmit.__call__"] = True

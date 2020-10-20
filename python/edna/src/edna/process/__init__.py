@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from edna.serializers import BufferedSerializable
+
 
 class BaseProcess(object):
     """BaseProcess is the base class for performing operations on streaming messages.
@@ -14,7 +16,14 @@ class BaseProcess(object):
 
     - modify the `__call__()` method
     """  
-    def __init__(self, process: BaseProcess = None, *args, **kwargs) -> BaseProcess:
+    serializer: BufferedSerializable
+    in_serializer: BufferedSerializable
+    out_serializer: BufferedSerializable
+    def __init__(self, process: BaseProcess = None, 
+            serializer: BufferedSerializable = None, 
+            in_serializer : BufferedSerializable = None, 
+            out_serializer : BufferedSerializable = None, 
+            *args, **kwargs) -> BaseProcess:
         """Initializes the Process primitive. It can take a Process primitive as input to chain them.
 
         Args:
@@ -24,6 +33,13 @@ class BaseProcess(object):
             BaseProcess: A chained process primitive.
         """
         self.chained_process = process if process is not None else lambda x: x
+        self.serializer = serializer
+        if self.serializer is not None:
+            self.in_serializer = in_serializer
+            self.out_serializer = out_serializer
+        else:
+            self.in_serializer = self.serializer
+            self.out_serializer = self.serializer
 
     def __call__(self, message):
         """This is the entrypoint to this primitive to process a message. For example, you can do the following

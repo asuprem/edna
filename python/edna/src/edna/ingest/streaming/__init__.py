@@ -25,16 +25,16 @@ class BaseStreamingIngest(BaseIngest, Iterator):
 
     Attributes:
         execution_mode (IngestPattern): Sets this primitive as a `CLIENT_SIDE_STREAM`. 
-            The logic for execution is set up in `edna.core.execution.context.StreamingContext`.
+            The logic for execution is set up in `edna.core.execution.context.SimpleStreamingContext`.
     """    
     execution_mode = IngestPattern.CLIENT_SIDE_STREAM
-    def __init__(self, serializer: Serializable):
+    def __init__(self, serializer: Serializable, in_serializer: Serializable = None, out_serializer: Serializable = None, *args, **kwargs):
         """Initialize the primitive with the serializer.
 
         Args:
             serializer (Serializable): Serializer for deserialize the streaming records.
         """
-        super().__init__(serializer)
+        super().__init__(serializer, in_serializer, out_serializer, *args, **kwargs)
     
     def __iter__(self):
         """Returns itself as the iterator.
@@ -50,7 +50,7 @@ class BaseStreamingIngest(BaseIngest, Iterator):
         Returns:
             (List[obj]): Single fetched record in a singleton format.
         """
-        return [self.serializer.read(self.next())]
+        return [self.in_serializer.read(self.next())]
 
     def next(self):
         """Method that encapsulates record fetching logic.
