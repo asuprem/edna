@@ -1,4 +1,4 @@
-from edna.core.execution.context import StreamingContext
+from edna.core.execution.context import SimpleStreamingContext
 from edna.serializers import KafkaStringSerializer
 from edna.ingest.streaming import KafkaIngest
 from edna.process import BaseProcess
@@ -6,7 +6,7 @@ from edna.emit import KafkaEmit
 
 
 def main():
-    context = StreamingContext()
+    context = SimpleStreamingContext()
     ingestSerializer = KafkaStringSerializer()
     emitSerializer = KafkaStringSerializer()
 

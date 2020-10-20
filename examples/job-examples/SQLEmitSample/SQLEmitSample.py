@@ -1,4 +1,4 @@
-from edna.core.execution.context import StreamingContext
+from edna.core.execution.context import SimpleStreamingContext
 
 from edna.ingest.streaming import SimulatedIngest
 from edna.process.map import JsonToObject, ObjectToSQL
@@ -21,7 +21,7 @@ def main():
             '{"first_name":"jessica", "last_name":"xi", "additional":"unneeded9"}',
             '{"first_name":"jessica", "last_name":"kurylova", "additional":"unneeded10"}']
 
-    context = StreamingContext()
+    context = SimpleStreamingContext()
     tuple_factory = SQLTupleFactory(tuple_fields=context.getVariable("sql_fields")) 
 
     ingest = SimulatedIngest(serializer=EmptyStringSerializer, stream_list=list_of_inserts)

@@ -2,11 +2,11 @@ from edna.ingest.streaming import TwitterStreamingIngest
 from edna.process import BaseProcess
 from edna.emit import StdoutEmit
 from edna.serializers.EmptySerializer import EmptyStringSerializer
-from edna.core.execution.context import StreamingContext
+from edna.core.execution.context import SimpleStreamingContext
 
 def main():
     
-    context = StreamingContext()
+    context = SimpleStreamingContext()
     
     ingest_serializer = EmptyStringSerializer
     emit_serializer = EmptyStringSerializer

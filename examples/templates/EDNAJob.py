@@ -8,7 +8,7 @@ from edna.serializers import Serializable
 # You can sue this as a starting point -- replace all the base classes with your needed classes
 
 def main():
-    context = EdnaContext()     # Choose an appropriate context, such as StreamingContext
+    context = EdnaContext()     # Choose an appropriate context, such as SimpleStreamingContext
     
     ingest_serializer = Serializable()  # e.g. KafkaStringSerializer
     emit_serializer = Serializable()    # e.g. StringSerializer

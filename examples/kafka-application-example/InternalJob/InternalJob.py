@@ -1,4 +1,4 @@
-from edna.core.execution.context import StreamingContext
+from edna.core.execution.context import SimpleStreamingContext
 from edna.ingest.streaming import KafkaIngest
 from edna.process import BaseProcess
 from edna.emit import KafkaEmit
@@ -9,7 +9,7 @@ from edna.serializers import StringSerializer
 # You can sue this as a starting point -- replace all the base classes with your needed classes
 
 def main():
-    context = StreamingContext()     # Choose an appropriate context, such as StreamingContext
+    context = SimpleStreamingContext()     # Choose an appropriate context, such as SimpleStreamingContext
     
     ingest_serializer = StringSerializer()  # e.g. KafkaStringSerializer
     emit_serializer = StringSerializer()    # e.g. StringSerializer
