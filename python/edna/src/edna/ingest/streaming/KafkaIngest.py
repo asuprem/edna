@@ -10,7 +10,7 @@ import socket
 class KafkaIngest(BaseStreamingIngest):
     """KafkaIngest streams records from a provided kafka topic into the Job. Records are deserialized with the provided serializer.
     """
-    def __init__(self, serializer: Serializable, kafka_topic: str,  bootstrap_server: str = "localhost", bootstrap_port: int = 9092, default_group: str ="default-group"):
+    def __init__(self, serializer: Serializable, kafka_topic: str,  bootstrap_server: str = "localhost", bootstrap_port: int = 9092, default_group: str ="default-group", *args, **kwargs):
         """Connects to a kafka topic and sets up the ingest
 
         Args:
@@ -31,7 +31,7 @@ class KafkaIngest(BaseStreamingIngest):
         self.consumer = confluent_kafka.Consumer(conf)
         self.consumer.subscribe([self.kafka_topic])
         self.running = True
-        super().__init__(serializer=serializer)
+        super().__init__(serializer=serializer, *args, **kwargs)
 
     def next(self):
         """Sets up a Kafka Consumer poll to the topic and yields records one by one.

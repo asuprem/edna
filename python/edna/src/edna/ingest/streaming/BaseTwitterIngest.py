@@ -74,7 +74,7 @@ class BaseTwitterIngest(BaseStreamingIngest):
         self.running = False
         self.response = Generator
         self.setup(*args, **kwargs)
-        super().__init__(serializer=serializer)
+        super().__init__(serializer=serializer, *args, **kwargs)
 
     def next(self):
         """Sets up a connection to the Twitter API endpoint and retrieves records

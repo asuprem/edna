@@ -10,7 +10,7 @@ from typing import List
 class KafkaEmit(BaseEmit):
     """An Emitter that writes to a Kafka topic."""
     def __init__(self, serializer: Serializable, kafka_topic: str, bootstrap_server: str = "localhost", bootstrap_port: int = 9092, 
-        emit_buffer_batch_size: int = 10, emit_buffer_timeout_ms: int = 100,):   # For java, need to ensure it is a bytesSerializer
+        emit_buffer_batch_size: int = 10, emit_buffer_timeout_ms: int = 100, *args, **kwargs):   # For java, need to ensure it is a bytesSerializer
         """Connects to a specified kafka topic and sets up the emitter.
 
         Args:
@@ -29,7 +29,7 @@ class KafkaEmit(BaseEmit):
         self.create_topic(topic_name=kafka_topic, conf=conf)
         
         self.producer = confluent_kafka.Producer(conf)
-        super().__init__(serializer=serializer, emit_buffer_batch_size=emit_buffer_batch_size,emit_buffer_timeout_ms=emit_buffer_timeout_ms)
+        super().__init__(serializer=serializer, emit_buffer_batch_size=emit_buffer_batch_size,emit_buffer_timeout_ms=emit_buffer_timeout_ms, *args, **kwargs)
 
     def write(self):
         """Publishes the internal buffer message to the instance's saved kafka topic. Since

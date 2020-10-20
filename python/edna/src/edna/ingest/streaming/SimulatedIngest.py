@@ -46,7 +46,7 @@ class SimulatedIngest(BaseStreamingIngest):
     """The SimulatedIngest is used for testing EDNA Jobs. 
     Given a list of Serializable items, it will provide them when `__next__()` is called.
     """
-    def __init__(self, serializer: Serializable, stream_list: List = None, stream_callback: SimulatedIngestCallable = None):
+    def __init__(self, serializer: Serializable, stream_list: List = None, stream_callback: SimulatedIngestCallable = None, *args, **kwargs):
         """Initialized the SimulatedIngest by recording the `stream_list` and preparing to emit them.
 
         Args:
@@ -65,7 +65,7 @@ class SimulatedIngest(BaseStreamingIngest):
         if stream_list is None and stream_callback is not None:
             self.stream_callback = stream_callback
         self.index = -1 # Because we need to increment the index before returning the value
-        super().__init__(serializer=serializer)
+        super().__init__(serializer=serializer, *args, **kwargs)
 
     def next(self):
         """Yields records from `self.stream_list` based on the current index. 

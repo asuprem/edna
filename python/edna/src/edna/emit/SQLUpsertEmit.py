@@ -10,14 +10,14 @@ class SQLUpsertEmit(SQLEmit):
     def __init__(self, serializer: Serializable, host: str, database: str, 
         user: str, password: str, table: str,
         tuple_factory: SQLTupleFactory,
-        emit_buffer_batch_size: int = 10, emit_buffer_timeout_ms: int = 100):
+        emit_buffer_batch_size: int = 10, emit_buffer_timeout_ms: int = 100, *args, **kwargs):
         
         
         if tuple_factory.getUpsertCount() == 0:
             raise ValueError("Must pass upsert fields into SQLTupleFactory, got 0 upsert fields.")
         super().__init__(serializer=serializer, host=host, database=database,
             user=user, password=password, table=table, tuple_factory=tuple_factory, 
-            emit_buffer_batch_size=emit_buffer_batch_size, emit_buffer_timeout_ms=emit_buffer_timeout_ms)
+            emit_buffer_batch_size=emit_buffer_batch_size, emit_buffer_timeout_ms=emit_buffer_timeout_ms, *args, **kwargs)
         
         
 
