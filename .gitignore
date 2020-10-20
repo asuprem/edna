@@ -36,6 +36,10 @@ MANIFEST
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
+# Java target files
+java/edna/target
+controller/controller/target
+
 # Package Files #
 *.jar
 *.war
