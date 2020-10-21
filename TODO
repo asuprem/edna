@@ -3,7 +3,27 @@
     So we have the minimal installs for edna, plus additional installs...
         extras_require...
 
+> Changes
+ -- Changed StreamingContext to SimpleStreamingContext
 
-> Major changes
-- Added KafkaStringSerializer
-- Added generate_job_python
+
+
+
+---------------
+> next steps
+
+    - pass lists to emit - so process can emit multiple items per record, and needs to pass them out
+        - then chained processes will operate on each element of list, and emit their own
+        - if list of list with chained process, emit giant list
+        - Emitter will accept lists
+        - process needs to emit singleton list
+
+> async io 
+    - need a job graph
+    - when execute is called, internally, build the job graph
+    - then (for now), each process exists independently
+    - launch each process (with byte buffers) and have them communicate using asyncio
+
+    - Future steps -- optimizer to combine 1-to-1 processes.
+    
+
