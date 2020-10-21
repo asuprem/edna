@@ -1,4 +1,4 @@
-package org.graitdm.controller.utils;
+package edu.graitdm.ednajobcontroller.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
