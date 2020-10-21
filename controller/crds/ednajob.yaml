@@ -35,6 +35,8 @@ spec:
                   type: string
                 jobimagetag:
                   type: string
+                jobimage:
+                  type: string
                 registryhost:
                   type: string
                 registryport:
