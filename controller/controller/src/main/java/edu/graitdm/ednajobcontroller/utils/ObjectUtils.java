@@ -7,11 +7,11 @@ import java.util.Optional;
 
 
 public class ObjectUtils {
-    public static <T> Optional<T> deepCopy(T original, Class<T> clazz) {
+    public static <T> Optional<T> deepCopy(T original, Class<T> className) {
         T result;
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            result = objectMapper.readValue(objectMapper.writeValueAsString(original), clazz);
+            result = objectMapper.readValue(objectMapper.writeValueAsString(original), className);
         } catch (IOException e) {
             result = null;
         }
