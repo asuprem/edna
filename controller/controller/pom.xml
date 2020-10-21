@@ -13,6 +13,13 @@
     <version>1.0-SNAPSHOT</version>
 
 
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -29,11 +36,7 @@
             <artifactId>jackson-core</artifactId>
             <version>2.11.0</version>
         </dependency>
-        <dependency>
-            <groupId>io.fabric8</groupId>
-            <artifactId>kubernetes-api</artifactId>
-            <version>3.0.12</version>
-        </dependency>
+
         <dependency>
             <groupId>io.fabric8</groupId>
             <artifactId>kubernetes-client</artifactId>
@@ -50,16 +53,12 @@
             <version>0.3.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.microbean</groupId>
-            <artifactId>microbean-kubernetes-controller</artifactId>
-            <version>0.2.2</version>
-        </dependency>
+
 
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.8</version>
+            <version>1.18.12</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -86,6 +85,66 @@
             <artifactId>kubernetes-model-core</artifactId>
             <version>4.10.3</version>
         </dependency>
+
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>2.9.8</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jaxb-annotations</artifactId>
+            <version>2.9.8</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>logging-interceptor</artifactId>
+            <version>3.12.1</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>3.12.1</version>
+            <type>jar</type>
+        </dependency>
+
+
+        <dependency>
+            <groupId>net.jcip</groupId>
+            <artifactId>jcip-annotations</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.microbean</groupId>
+            <artifactId>microbean-development-annotations</artifactId>
+            <version>0.2.3</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.25</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.23</version>
+            <type>jar</type>
+        </dependency>
+
+
 
     </dependencies>
 
