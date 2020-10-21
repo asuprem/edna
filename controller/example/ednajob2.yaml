@@ -1,11 +1,11 @@
 apiVersion: edna.graitdm.edu/v1
 kind: EdnaJob
 metadata:
-  name: job1
+  name: job2
 spec:
   import_key: in_test
   export_key: out_test
-  jobname: job1
+  jobname: job2
   applicationname: app1
   filename: PythonJobFile
   jobcontext: ednaconf
