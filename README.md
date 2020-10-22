@@ -1,7 +1,7 @@
 # EDNA
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue)](https://opensource.org/licenses/Apache-2.0)
-![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/asuprem/edna)
+[![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/asuprem/edna)](https://github.com/asuprem/edna/releases)
 [![Docs](https://img.shields.io/badge/docs-pdoc-brightgreen)](https://asuprem.github.io/edna/)
 
 EDNA is an end-to-end streaming toolkit for ingesting, processing, and emitting streaming data. It is based on our prior work with [LITMUS](https://ieeexplore.ieee.org/abstract/document/6971222),
