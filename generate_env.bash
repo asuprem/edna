@@ -41,9 +41,11 @@ if [ $? -eq 0 ]; then
     cd python/edna
     pip3 install --no-cache-dir -e .[full]
     cd ../../
-    colored_print "Installing interface tools"
     # Interface utilities
+    colored_print "Installing interface tools"
     pip3 install --no-cache-dir click==7.1.0 j2cli==0.3.10
+    colored_print "Installing doc tools"
+    pip3 install --no-cache-dir pdoc3
 else
     error_print "FAILED TO ACTIVATE virtual environment $DIRECTORY."
     exit 1

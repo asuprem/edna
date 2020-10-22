@@ -1,5 +1,4 @@
 from __future__ import annotations
-from python.edna.src.edna import emit
 
 from edna.emit import BaseEmit
 from edna.defaults import EdnaDefault
