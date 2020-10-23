@@ -1,5 +1,7 @@
 package edu.graitdm.ednajobcontroller.controller;
 
+import com.beust.jcommander.JCommander;
+import edu.graitdm.ednajobcontroller.configuration.BaseConfiguration;
 import edu.graitdm.ednajobcontroller.controller.deployment.DeploymentController;
 import edu.graitdm.ednajobcontroller.controller.deployment.DeploymentFactory;
 import edu.graitdm.ednajobcontroller.controller.deployment.DeploymentStore;
@@ -20,7 +22,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.bridge.SLF4JBridgeHandler;
 
 public class Main {
     private static final Lock lock = new ReentrantLock();
@@ -67,27 +68,24 @@ public class Main {
             LOGGER = LoggerFactory.getLogger(Main.class);
             LOGGER.info("Entered Main");
 
+            BaseConfiguration configuration = new BaseConfiguration();
+            JCommander.newBuilder().addObject(configuration).build().parse(args);
+
             // Set up the namespace. This is the namespace for the EdnaJobs
             // VERY IMPORTANT -- the deployments for a job exist in a different namespace
             // All EdnaJobs exist in the default namespace
             // The generated deployments exist in a new namespace named after the application for the EdnaJob
             // We will have to create the namespace if it does not exist, by the way...
             // We will also have to delete the namespace if we delete all jobs for that application...
-            var ns = Optional.ofNullable(System.getenv("EDNAJOB_NAMESPACE")).orElse("default");
+            var ns = configuration.getEdnaNamespace();
+
 
             /*
              * Grab a new Kube client.
              */
             // TODO (Abhijit) fix this hacky workaround.
-            String url = "http://127.0.0.1:8080";
-            /*Config config = new ConfigBuilder()
-                    .withCaCertData(caCert)
-                    .withOauthToken(token)
-                    .withMasterUrl(url)
-                    .build();
-            */
-
-            var client = new DefaultKubernetesClient(url);
+            LOGGER.info(configuration.getKubectlURL());
+            var client = new DefaultKubernetesClient(configuration.getKubectlURL());
             LOGGER.info("Created Kubernetes client");
 
 
