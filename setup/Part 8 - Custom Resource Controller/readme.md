@@ -62,10 +62,32 @@ This is for the example applications. In the final deliverables, you will progra
 kubectl proxy --port=8080
 ```
 
-## Testing the code
-Now run the code with the `exec:java` configuration.
+If using a VirtualMachine and are getting a connection error in the Java Code try:
+```
+sudo kubectl proxy --address='0.0.0.0' --port=8080
+```
 
-You can do this a couple ways, actually. You can do this through IntelliJ, or through your terminal. If you choose to use the terminal, you will need to set up the toolchain. This should be fairly straightforward, so I won't go into detail here. Baically install [openjdk11](https://www.ubuntu18.com/ubuntu-install-openjdk-11/), then install [maven](https://linuxize.com/post/how-to-install-apache-maven-on-ubuntu-18-04/#:~:text=Install%20the%20Latest%20Release%20of%20Apache%20Maven.%201,environment%20variables.%204%204.%20Verify%20the%20installation.%20) and make sure it points to the jdk installation through `JAVA_HOME`. To build in terminal you need to run `mvn clean install` from inside the `/repo/controller/controller` directory, then `mvn exec:java`.
+and pass the IPV4 Address of your java VM as an argument when executing the script (see next section)
+
+## Testing the code
+If you need to pass arguments, you need to modify the `exec:java` configuration. The following options are current available:
+
+- `--kubectl-port` : The port for the kubectl proxy. Default is "8080"
+- `--kubectl-host` : The host for the kubectl proxy. Default is "127.0.0.1". If you are using a VM, then use the IPV4 addressof your java VM as an argument.
+- `--kubectl-protocol` : The connection protocol for the kubectl proxy. Default is "http". Replace with "https" is using "https"
+
+To pass the `--kubectl-host` argument with exec:java, you need to replace `exec:java` in IntelliJ's **Debug Configuration**'s *Command Line* with:
+
+```
+ exec:java -Dexec.args="--kubectl-host 123.4.5.6"
+```
+
+Now run the code with the `exec:java` (or `exec:java` with arguments) configuration.
+
+
+You can do this a couple ways, actually. You can do this through IntelliJ with the green triangle **run** button next to the **Debug Configurations** dropdown (or the green **debug** button), or through your terminal. 
+
+If you choose to use the terminal, you will need to set up the toolchain. This should be fairly straightforward, so I won't go into detail here. Baically install [openjdk11](https://www.ubuntu18.com/ubuntu-install-openjdk-11/), then install [maven](https://linuxize.com/post/how-to-install-apache-maven-on-ubuntu-18-04/#:~:text=Install%20the%20Latest%20Release%20of%20Apache%20Maven.%201,environment%20variables.%204%204.%20Verify%20the%20installation.%20) and make sure it points to the jdk installation through `JAVA_HOME`. To build in terminal you need to run `mvn clean install` from inside the `/repo/controller/controller` directory, then `mvn exec:java` (or `mvn exec:java -Dexec.args="--kubectl-host 123.4.5.6"`). Note -- you *might* need to use `sudo`.
 
 Once you have executed it, in the IntelliJ console or in terminal, you will get several Log messages similar to below:
 
