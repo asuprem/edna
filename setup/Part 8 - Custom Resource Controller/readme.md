@@ -62,6 +62,12 @@ This is for the example applications. In the final deliverables, you will progra
 kubectl proxy --port=8080
 ```
 
+If using a VirtualMachine and are getting a connection error in the Java Code try:
+```
+sudo kubectl proxy --address='0.0.0.0' --port=8080
+```
+and change line 82 in Main.java to the IPV4 Address of your VM.
+
 ## Testing the code
 Now run the code with the `exec:java` configuration.
 
