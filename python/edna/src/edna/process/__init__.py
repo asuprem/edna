@@ -16,6 +16,9 @@ class BaseProcess(object):
 
     - modify the `__call__()` method
     """  
+    process_name : str = "BaseProcess"
+    process: BaseProcess
+    chained_process: BaseProcess
     serializer: BufferedSerializable
     in_serializer: BufferedSerializable
     out_serializer: BufferedSerializable
@@ -55,9 +58,13 @@ class BaseProcess(object):
         Returns:
             (obj): A processed message
         """
-        for item in message:
-            return self.process(self.chained_process(item))
-    
+        complete_results = []   # TODO Update this to a RecordCollecton
+        intermediate_result = self.chained_process(message)    # Returns a list
+        for item in intermediate_result:    # is a list
+            complete_results += self.process(item)
+        return complete_results
+
+
     def process(self, message):
         """Logic for message processing. Inheriting classes should implement this. We return a singleton to work with Emit
 
@@ -68,6 +75,9 @@ class BaseProcess(object):
             (obj): A processed message
         """
         return [message]
+
+    def replaceChainedProcess(self, process: BaseProcess):
+        self.chained_process = process
 
 from .map import Map
 
