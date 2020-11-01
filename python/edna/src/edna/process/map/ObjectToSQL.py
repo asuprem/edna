@@ -29,6 +29,7 @@ class ObjectToSQL(Map):
     Args:
         Map (BaseProcess): The interface this process implements
     """
+    process_name : str = "ObjectToSQL"
     def __init__(self, process: BaseProcess = None, 
         tuple_factory: SQLTupleFactory = None, 
         *args, **kwargs) -> BaseProcess:

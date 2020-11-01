@@ -60,6 +60,7 @@ class BaseProcess(object):
         """
         complete_results = []   # TODO Update this to a RecordCollecton
         intermediate_result = self.chained_process(message)    # Returns a list
+        #if self.process_name == "ObjectToJson":
         for item in intermediate_result:    # is a list
             complete_results += self.process(item)
         return complete_results

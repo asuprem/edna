@@ -18,6 +18,7 @@ class Filter(BaseProcess):
     Args:
         BaseProcess (BaseProcess): A process to chain
     """
+    process_name : str = "Filter"
     def __init__(self, process: BaseProcess = None, *args, **kwargs) -> BaseProcess:
         """Initializes the Process primitive. It can take a Process primitive as input to chain them.
 
@@ -41,7 +42,7 @@ class Filter(BaseProcess):
         Returns:
             (List[obj]): A processed message in a singleton list.
         """
-        return [self.filter(message)]
+        return self.filter(message)
 
     def filter(self, message: object):
         """Logic for mapping. Subclasses need to implement this.
@@ -50,7 +51,7 @@ class Filter(BaseProcess):
             message (obj): The message to process with this mapping logic
 
         Returns:
-            (obj): A processed message
+            (obj): A processed message as an array. Must be an array.
         """
         raise NotImplementedError()
 

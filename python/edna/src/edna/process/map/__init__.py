@@ -1,3 +1,4 @@
+import warnings
 from edna.process import BaseProcess
 
 
@@ -18,6 +19,7 @@ class Map(BaseProcess):
     Args:
         BaseProcess (BaseProcess): A process to chain
     """
+    process_name : str = "Map"
     def __init__(self, process: BaseProcess = None, *args, **kwargs) -> BaseProcess:
         """Initializes the Process primitive. It can take a Process primitive as input to chain them.
 
@@ -56,3 +58,10 @@ class Map(BaseProcess):
 
 from .JsonToObject import JsonToObject
 from .ObjectToSQL import ObjectToSQL
+from .ObjectToJson import ObjectToJson
+
+SklearnClassifier = None
+try:
+    from .SklearnClassifier import SklearnClassifier
+except (ImportError, AttributeError):
+    warnings.warn("scikit-learn module is not installed. edna.process.map.SklearnClassifier might not work properly.", category=ImportWarning)

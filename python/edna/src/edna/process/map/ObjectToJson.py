@@ -1,12 +1,12 @@
 from edna.process.map import Map
 import ujson
 
-class JsonToObject(Map):
-    """Maps a json formatted string to a Dictionary.
+class ObjectToJson(Map):
+    """Maps an object to a json string.
 
     Args:
         Map (BaseProcess): The interface this process implements
     """
-    process_name : str = "JsonToObject"
+    process_name : str = "ObjectToJson"
     def map(self, message: str):
-        return ujson.loads(message)
+        return ujson.dumps(message)
