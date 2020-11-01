@@ -4,8 +4,8 @@ from edna.process import BaseProcess
 from edna.emit import BaseEmit
 from edna.serializers import Serializable
 
-# This file will not work, because it ues only the Base Classes, which was empty.
-# You can sue this as a starting point -- replace all the base classes with your needed classes
+# This file will not work, because it uses only the Base Classes, which was empty.
+# You can use  this as a starting point -- replace all the base classes with your needed classes
 
 def main():
     context = EdnaContext()     # Choose an appropriate context, such as SimpleStreamingContext

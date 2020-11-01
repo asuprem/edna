@@ -1,5 +1,6 @@
 from os import PathLike
-from edna.process import Map, BaseProcess
+from edna.process import BaseProcess
+from edna.process.map import Map
 import warnings
 
 
@@ -14,6 +15,7 @@ except ImportError:
 
 
 class SklearnClassifier(Map):
+    process_name : str = "SklearnClassifier"
     classifier : sklearn.base.BaseEstimator
     def __init__(self, process: BaseProcess = None, 
         classifier_path: PathLike = None, 
