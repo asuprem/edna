@@ -5,8 +5,6 @@ from edna.emit import KafkaEmit
 from edna.serializers import KafkaStringSerializer
 from edna.serializers import StringSerializer
 
-# This file will not work, because it ues only the Base Classes, which was empty.
-# You can sue this as a starting point -- replace all the base classes with your needed classes
 
 def main():
     context = SimpleStreamingContext()     # Choose an appropriate context, such as SimpleStreamingContext
