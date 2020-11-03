@@ -14,7 +14,6 @@ import org.microbean.kubernetes.controller.Controller;
 
 import java.io.IOException;
 
-
 public class DeploymentController extends GenericEventQueueConsumer<Deployment> {
     // Get the class name for the logger
     private static final Logger LOGGER = LoggerFactory.getLogger(DeploymentController.class);
@@ -22,7 +21,7 @@ public class DeploymentController extends GenericEventQueueConsumer<Deployment> 
     // Initialize the controller
     private final Controller<Deployment> controller;
 
-    public DeploymentController(KubernetesClient client, DeploymentStore deploymentStore, String ns){
+    public DeploymentController(KubernetesClient client, DeploymentStore deploymentStore){
         // This calls the constructor in GenericEventQueueConsumer that takes in a ConcurrentHashMap
         // GenericEventQueueConsumer, in turn, calls the constructor on deploymentStore, and sets up
         // its event listeners (we don't need these for now) plus the class name.
