@@ -4,6 +4,7 @@ from edna.types.builtin import ConfigurationVariable
 import yaml
 from typing import Dict
 from abc import ABC
+import warnings
 
 
 class EdnaConfiguration(ABC):
@@ -58,7 +59,7 @@ class EdnaConfiguration(ABC):
         Args:
             configuration (Dict[str, str]): [The dictionary from the configuration yaml]
         """
-        pass
+        warnings.warn("No variables imported.")
 
     def set_options(self, configuration: Dict[str, str]):
         """Set the internal options for an EdnaContext using this Configuration class.
@@ -66,7 +67,7 @@ class EdnaConfiguration(ABC):
         Args:
             configuration (Dict[str, str]): [The dictionary from the configuration yaml]
         """
-        pass
+        warnings.warn("No options imported.")
 
 
 
