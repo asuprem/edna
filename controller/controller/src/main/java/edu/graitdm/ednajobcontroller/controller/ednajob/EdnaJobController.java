@@ -2,6 +2,8 @@ package edu.graitdm.ednajobcontroller.controller.ednajob;
 
 import edu.graitdm.ednajobcontroller.controller.deployment.DeploymentFactory;
 import edu.graitdm.ednajobcontroller.controller.deployment.DeploymentStore;
+import edu.graitdm.ednajobcontroller.controller.namespace.NamespaceFactory;
+import edu.graitdm.ednajobcontroller.controller.namespace.NamespaceStore;
 import edu.graitdm.ednajobcontroller.events.GenericEventQueueConsumer;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import org.microbean.kubernetes.controller.AbstractEvent;
@@ -17,17 +19,23 @@ public class EdnaJobController extends GenericEventQueueConsumer<EdnaJob> {
     private final EdnaJobFactory ednaJobFactory;
     private final DeploymentFactory deploymentFactory;
     private final DeploymentStore deploymentStore;
+    private final NamespaceFactory namespaceFactory;
+    private final NamespaceStore namespaceStore;
+
     // TODO maybe add the docker store and factory here?
 
     private final Controller<EdnaJob> controller;
 
     public EdnaJobController(KubernetesClient client, EdnaJobStore ednaJobStore, EdnaJobFactory ednaJobFactory,
                              DeploymentFactory deploymentFactory, DeploymentStore deploymentStore,
+                             NamespaceFactory namespaceFactory, NamespaceStore namespaceStore,
                              String ns){
         super(ednaJobStore);
         this.ednaJobFactory = ednaJobFactory;
         this.deploymentStore = deploymentStore;
         this.deploymentFactory = deploymentFactory;
+        this.namespaceFactory = namespaceFactory;
+        this.namespaceStore = namespaceStore;
         var customResourceImpl = client.customResources(ednaJobFactory.getCustomResourceDefinition(),
         EdnaJob.class,
                 EdnaJobList.class,
@@ -61,6 +69,12 @@ public class EdnaJobController extends GenericEventQueueConsumer<EdnaJob> {
                 LOGGER.info("MOD - DEPLOYMENT_CREATION -- {}", event.getResource().getMetadata().getName());
                 // TODO  So we need to update the add() method to create a deployment given the currentResource,
                 //  which is an applied EdnaJob
+                LOGGER.info("MOD - Checking namespace -- {}", event.getResource().getSpec().getApplicationname());
+                if(!namespaceStore.namespaceExists(currentResource)){
+                    LOGGER.info("MOD - Namespace {} does not exist", event.getResource().getSpec().getApplicationname());
+                    namespaceFactory.add(currentResource);
+                }
+                LOGGER.info("MOD - Adding deployment for {}", event.getResource().getMetadata().getName());
                 deploymentFactory.add(currentResource);
                 break;
             case DEPLOYMENT_DELETION:
@@ -83,10 +97,11 @@ public class EdnaJobController extends GenericEventQueueConsumer<EdnaJob> {
         LOGGER.info("DEL EdnaJob - {}", event.getResource().getMetadata().getName());
         ednaJobFactory.update(event.getResource(), EEdnaJobState.DEPLOYMENT_DELETION);
         // TODO (Abhijit) delete deployment here...and verify this works
-        var deployments = deploymentStore.getDeploymentsforEdnaJob(event.getResource());
+        var deployments = deploymentStore.getDeploymentsForEdnaJob(event.getResource());
         deployments.forEach(target -> {
             deploymentFactory.delete(target);
         });
+        namespaceFactory.deleteIfEmpty(event.getResource());
     }
 
     public void start() throws IOException {
