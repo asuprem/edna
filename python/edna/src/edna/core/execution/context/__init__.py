@@ -13,9 +13,6 @@ class EdnaContext(ABC):
 
     Attributes:
         configuration (EdnaConfiguration): Stores a EdnaConfiguration object to control the job configuration.
-        ingest (BaseIngest): Stores a reference to an ingest primitive.
-        process (BaseProcess): Stores a reference to a process primitive.
-        emit (BaseEmit): Stores a reference to an emit primitive
 
     Raises:
         PrimitiveNotSetException: Raises this exception if `execute()` is called without setting all of the primitives.
@@ -24,9 +21,6 @@ class EdnaContext(ABC):
         EdnaContext: Returns an EdnaContext.
     """    
     configuration: EdnaConfiguration
-    ingest: BaseIngest
-    process: BaseProcess
-    emit: BaseEmit
 
     def __init__(self, dir : str = ".", confpath : str = "ednaconf.yaml", confclass: EdnaConfiguration = EdnaConfiguration):
         """Initializes the EdnaContext with a directory, configuration file, and configuratioon object. 
@@ -82,3 +76,4 @@ class EdnaContext(ABC):
         self.run()
 
 from .SimpleStreamingContext import SimpleStreamingContext
+from .StreamingContext import StreamingContext
