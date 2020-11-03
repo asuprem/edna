@@ -16,9 +16,17 @@ class SimpleStreamingContext(EdnaContext):
     It provides methods to control the job execution and to configure job variables.
     See docs for edna.core.execution.context.EdnaContext to initialize
 
+    Attributes:
+        ingest (BaseIngest): Stores a reference to an ingest primitive.
+        process (BaseProcess): Stores a reference to a process primitive.
+        emit (BaseEmit): Stores a reference to an emit primitive
+
     Args:
-        EdnaContext ([Abstrract Base Class]): An abstract class for all Contexts that provides the interface for interacting with a Context.
+        EdnaContext ([Abstract Base Class]): An abstract class for all Contexts that provides the interface for interacting with a Context.
     """        
+    ingest: BaseIngest
+    process: BaseProcess
+    emit: BaseEmit
     def __init__(self, dir : str = ".", confpath : str = "ednaconf.yaml", confclass: StreamingConfiguration = StreamingConfiguration):
         """Initialize the SimpleStreamingContext to accept an EDNA job and configuration.
 

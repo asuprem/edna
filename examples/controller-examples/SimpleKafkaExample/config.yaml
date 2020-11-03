@@ -1,0 +1,15 @@
+template:
+    applicationname: kafkasimple
+    jobname: test-job
+    filename: SimpleKafkaExample
+    jobcontext: ednaconf
+    jobreplicas: 1
+    jobtype: internal
+    jobimage: 
+      registryaddress: localhost:5000
+      imagetag: latest
+    jobgraph:
+      import_key: "job1-stream"
+      export_key: "out-topic"
+    jobvariables:
+      bootstrap_server: "edna-cluster-kafka-bootstrap.kafka.svc.cluster.local"
