@@ -1,0 +1,19 @@
+apiVersion: edna.graitdm.edu/v1
+kind: EdnaJob
+metadata:
+  name: source-job
+spec:
+  import_key: job1-stream
+  export_key: out-topic
+  jobname: source-job
+  applicationname: kafkasimple
+  filename: SourceJob
+  jobcontext: ednaconf
+  jobtype: internal
+  jobimagetag: latest
+  registryhost: localhost
+  registryport: 5000
+  jobvariablenames:
+    - bootstrap_server
+  jobvariablevalues:
+    - "edna-cluster-kafka-bootstrap.kafka.svc.cluster.local"
