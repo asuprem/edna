@@ -2,14 +2,27 @@ package edu.graitdm.ednajobcontroller.controller;
 
 import com.beust.jcommander.JCommander;
 import edu.graitdm.ednajobcontroller.configuration.BaseConfiguration;
+
+import edu.graitdm.ednajobcontroller.controller.namespace.NamespaceController;
+import edu.graitdm.ednajobcontroller.controller.namespace.NamespaceFactory;
+import edu.graitdm.ednajobcontroller.controller.namespace.NamespaceStore;
+
 import edu.graitdm.ednajobcontroller.controller.deployment.DeploymentController;
 import edu.graitdm.ednajobcontroller.controller.deployment.DeploymentFactory;
 import edu.graitdm.ednajobcontroller.controller.deployment.DeploymentStore;
+
 import edu.graitdm.ednajobcontroller.controller.ednajob.EdnaJobController;
 import edu.graitdm.ednajobcontroller.controller.ednajob.EdnaJobFactory;
 import edu.graitdm.ednajobcontroller.controller.ednajob.EdnaJobStore;
-import io.fabric8.kubernetes.client.*;
+
+
+import io.fabric8.kubernetes.client.DefaultKubernetesClient;
+import io.fabric8.kubernetes.client.KubernetesClientException;
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import java.io.IOException;
@@ -17,11 +30,6 @@ import java.util.Optional;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Main {
     private static final Lock lock = new ReentrantLock();
@@ -106,13 +114,16 @@ public class Main {
             // This is what actually creates the deployments for a job.
             // TODO add dockerStore, dockerFactory, dockerController?
             var deploymentFactory = new DeploymentFactory(client, deploymentStore, ednaJobFactory);
-            var deploymentController = new DeploymentController(client, deploymentStore, ns);
+            var deploymentController = new DeploymentController(client, deploymentStore);
 
-
+            var namespaceStore = new NamespaceStore();
+            var namespaceFactory = new NamespaceFactory(client, namespaceStore,deploymentStore);
+            var namespaceController = new NamespaceController(client,namespaceStore);
 
             var ednaJobController = new EdnaJobController(client,
                                         ednaJobStore, ednaJobFactory,
                                         deploymentFactory, deploymentStore,
+                                        namespaceFactory, namespaceStore,
                                         ns);
 
 
@@ -123,12 +134,14 @@ public class Main {
             lock.lock();
             ednaJobController.start();
             deploymentController.start();
+            namespaceController.start();
             terminated.await(); // Here, the shutdown hook will trigger this signal
             lock.unlock();
 
             // Close the controllers
             ednaJobController.close();
             deploymentController.close();
+            namespaceController.close();
 
         } catch (KubernetesClientException | InterruptedException | IOException e) {
             e.printStackTrace();
