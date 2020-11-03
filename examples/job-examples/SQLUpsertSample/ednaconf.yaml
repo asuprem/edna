@@ -9,5 +9,5 @@ variables:
   database: sakila
   host: "172.28.144.1"
   user: asuprem
-  password": PASSWORD
+  password: PASSWORD
   table: actor
