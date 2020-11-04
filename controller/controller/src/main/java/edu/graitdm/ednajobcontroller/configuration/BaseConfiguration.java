@@ -13,7 +13,8 @@ import static edu.graitdm.ednajobcontroller.configuration.IConfigurationDefaults
 import static edu.graitdm.ednajobcontroller.configuration.IConfigurationDefaults.KUBECTL_HOST;
 import static edu.graitdm.ednajobcontroller.configuration.IConfigurationDefaults.KUBECTL_PORT;
 import static edu.graitdm.ednajobcontroller.configuration.IConfigurationDefaults.KUBECTL_PROTOCOL;
-import static edu.graitdm.ednajobcontroller.configuration.IConfigurationDefaults.DOCKER_HOST;
+import static edu.graitdm.ednajobcontroller.configuration.IConfigurationDefaults.DOCKER_HOST_UNIX;
+import static edu.graitdm.ednajobcontroller.configuration.IConfigurationDefaults.DOCKER_HOST_WINDOWS;
 import static edu.graitdm.ednajobcontroller.configuration.IConfigurationDefaults.EDNA_APP_DIR;
 import static edu.graitdm.ednajobcontroller.configuration.IConfigurationDefaults.EDNA_SOURCE_DIR;
 
@@ -53,7 +54,12 @@ public class BaseConfiguration {
         kubectlPort = KUBECTL_PORT;
         ednaJobPaths = EDNA_JOB_PATHS;
         ednaNamespace = EDNA_NAMESPACE;
-        dockerHost = DOCKER_HOST;
+        if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0){
+            dockerHost = DOCKER_HOST_WINDOWS;
+        }
+        else{
+            dockerHost = DOCKER_HOST_UNIX;
+        }
         ednaSourcedir = EDNA_SOURCE_DIR;
         ednaAppdir = EDNA_APP_DIR;
         buildURL();
