@@ -2,6 +2,7 @@ package edu.graitdm.ednajobcontroller.controller.ednajob;
 
 import edu.graitdm.ednajobcontroller.controller.deployment.DeploymentFactory;
 import edu.graitdm.ednajobcontroller.controller.deployment.DeploymentStore;
+import edu.graitdm.ednajobcontroller.controller.docker.DockerFactory;
 import edu.graitdm.ednajobcontroller.controller.namespace.NamespaceFactory;
 import edu.graitdm.ednajobcontroller.controller.namespace.NamespaceStore;
 import edu.graitdm.ednajobcontroller.events.GenericEventQueueConsumer;
@@ -21,6 +22,7 @@ public class EdnaJobController extends GenericEventQueueConsumer<EdnaJob> {
     private final DeploymentStore deploymentStore;
     private final NamespaceFactory namespaceFactory;
     private final NamespaceStore namespaceStore;
+    private final DockerFactory dockerFactory;
 
     // TODO maybe add the docker store and factory here?
 
@@ -29,6 +31,7 @@ public class EdnaJobController extends GenericEventQueueConsumer<EdnaJob> {
     public EdnaJobController(KubernetesClient client, EdnaJobStore ednaJobStore, EdnaJobFactory ednaJobFactory,
                              DeploymentFactory deploymentFactory, DeploymentStore deploymentStore,
                              NamespaceFactory namespaceFactory, NamespaceStore namespaceStore,
+                             DockerFactory dockerFactory,
                              String ns){
         super(ednaJobStore);
         this.ednaJobFactory = ednaJobFactory;
@@ -36,6 +39,7 @@ public class EdnaJobController extends GenericEventQueueConsumer<EdnaJob> {
         this.deploymentFactory = deploymentFactory;
         this.namespaceFactory = namespaceFactory;
         this.namespaceStore = namespaceStore;
+        this.dockerFactory = dockerFactory;
         var customResourceImpl = client.customResources(ednaJobFactory.getCustomResourceDefinition(),
         EdnaJob.class,
                 EdnaJobList.class,
@@ -59,6 +63,8 @@ public class EdnaJobController extends GenericEventQueueConsumer<EdnaJob> {
         var priorResource = event.getPriorResource();
         var currentResource = event.getResource();
 
+        // TODO (Abhijit) we need to check whether priorResource and curretnResource are the same and if so, we
+        // still need to continue updating stuff...
 
         // TODO This is where we do operations for each of our states in EEdnaJobState
         switch(currentResource.getSpec().getState()){
@@ -74,6 +80,8 @@ public class EdnaJobController extends GenericEventQueueConsumer<EdnaJob> {
                     LOGGER.info("MOD - Namespace {} does not exist", event.getResource().getSpec().getApplicationname());
                     namespaceFactory.add(currentResource);
                 }
+                LOGGER.info("MOD - Adding docker image for {}", event.getResource().getMetadata().getName());
+                dockerFactory.add(currentResource);
                 LOGGER.info("MOD - Adding deployment for {}", event.getResource().getMetadata().getName());
                 deploymentFactory.add(currentResource);
                 break;
