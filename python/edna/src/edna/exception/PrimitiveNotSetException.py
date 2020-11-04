@@ -13,3 +13,5 @@ class PrimitiveNotSetException(Exception):
         """
         self.message = "Primitive {primitive} is not set for the context {context}".format(primitive=primitive, context=context)
         super().__init__(self.message)
+
+

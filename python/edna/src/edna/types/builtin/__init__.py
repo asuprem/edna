@@ -1,1 +1,2 @@
 from .ConfigurationVariable import ConfigurationVariable
+from .GraphNode import GraphNode

@@ -1,8 +1,8 @@
-package edu.graitdm.ednajobcontroller.controller.deployment;
+package edu.graitdm.ednajobcontroller.controller.namespace;
 
 import edu.graitdm.ednajobcontroller.events.GenericEventQueueConsumer;
 
-import io.fabric8.kubernetes.api.model.apps.Deployment;
+import io.fabric8.kubernetes.api.model.Namespace;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import org.microbean.kubernetes.controller.AbstractEvent;
 import org.slf4j.Logger;
@@ -14,36 +14,38 @@ import org.microbean.kubernetes.controller.Controller;
 
 import java.io.IOException;
 
-public class DeploymentController extends GenericEventQueueConsumer<Deployment> {
+
+
+public class NamespaceController extends GenericEventQueueConsumer<Namespace> {
     // Get the class name for the logger
-    private static final Logger LOGGER = LoggerFactory.getLogger(DeploymentController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NamespaceController.class);
 
     // Initialize the controller
-    private final Controller<Deployment> controller;
+    private final Controller<Namespace> controller;
 
-    public DeploymentController(KubernetesClient client, DeploymentStore deploymentStore){
+    public NamespaceController(KubernetesClient client, NamespaceStore namespaceStore){
         // This calls the constructor in GenericEventQueueConsumer that takes in a ConcurrentHashMap
         // GenericEventQueueConsumer, in turn, calls the constructor on deploymentStore, and sets up
         // its event listeners (we don't need these for now) plus the class name.
-        super(deploymentStore);
+        super(namespaceStore);
         //  Instantiate the controller.
-        controller = new Controller<>(client.apps().deployments().inAnyNamespace(), this);
+        controller = new Controller<>(client.namespaces(), this);
     }
 
 
     @Override
-    public void onAddition(AbstractEvent<? extends Deployment> event) {
-        LOGGER.info("Added deployment for: {}", event.getResource().getMetadata().getName());
+    public void onAddition(AbstractEvent<? extends Namespace> event) {
+        LOGGER.info("Added namespace for: {}", event.getResource().getMetadata().getName());
     }
 
     @Override
-    public void onModification(AbstractEvent<? extends Deployment> event) {
-        LOGGER.info("Modified deployment for: {}", event.getResource().getMetadata().getName());
+    public void onModification(AbstractEvent<? extends Namespace> event) {
+        LOGGER.info("Modified namespace for: {}", event.getResource().getMetadata().getName());
     }
 
     @Override
-    public void onDeletion(AbstractEvent<? extends Deployment> event) {
-        LOGGER.info("Deleted deployment for: {}", event.getResource().getMetadata().getName());
+    public void onDeletion(AbstractEvent<? extends Namespace> event) {
+        LOGGER.info("Deleted namespace for: {}", event.getResource().getMetadata().getName());
     }
 
 

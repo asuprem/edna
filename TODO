@@ -1,10 +1,123 @@
+----------------------------------------------------------------
+
+mvn exec:java --host...<> --edna <path/to/edna/library>? OR <http host for pypi server> --homedir <path to directory with apps and jobs>
+
+when applied, we will use docker api to ????
+
+https://github.com/docker-java/docker-java/blob/master/docs/getting_started.md
+
+unix:///var/run/docker.sock
+
+
+https://www.baeldung.com/docker-java-api
+
+
+
+basically use dockerfactory to create a docker build....
+
+
+
+
+
+
+
+----------------------------------------------------------------
+
+
 > Update deployment examples readmes to incorporate ./generate_job_python.sh -- DONE
 > Set up install_requirements -- 
     So we have the minimal installs for edna, plus additional installs...
         extras_require...
 
-> Changes
- -- Changed StreamingContext to SimpleStreamingContext
+----------------------------------------------
+
+So we have a ednastream object. ednastream is a graph. It stores the graph inside, 
+and each function appends a node to the internal graph. An ednastream has 3 types of nodes:
+- ingest nodes. An ingest node can only be a root node.
+- process nodes. A process node can only be an internal node.
+- emit node. An emit node can only be a leaf node.
+
+Basically, we let the user build the graph. When we do context.execute():
+    the context will convert the StreamGraph graph to a physical plan PhysicalGraph
+    this involves adding buffers between at 1-N, N-1 nodes.
+    this also involves setting up splits and joins
+    then convert the physical plan to an ExecutionGraph
+        basically convert each node in the physical plan to a TaskPrimitive object, combined with the buffers
+
+
+3 Process node types:
+    - SingleOutputStream -- takes one input and outputs 1 output. .
+    - SplitStream -- takes one input and outputs multiple outputs
+    - JoinStream -- takes multiple inputs and outputs 1 output
+
+    The ingest() takes in the context environment, which allows it to track transformation IDs, which are incremented for each transformation
+        - every operation calls Datastream's addOperation, which will add a node to the current graph, and increment the transformation ID in the context
+        - the split operator takes in *varargs of boolean callbacks, and returns a copy of the current graph with different callbacks attached to each copy. Each callback is a node, with the same transformation ID
+        - the join operator takes in multiple datastreams and outputs a datastream graph that combines multiple streams into 1.
+            - basically the physical operator will take in multiple buffers, read through them round-robin and send them to the output buffer
+
+
+We will start with the SingleOutputstream, and expand to SplitStream later...
+    
+
+
+
+So streamgraph will take in nodes and edges between them
+    Each node is a StreamGraphNode
+
+I() --> returns a datastream, which encapsulates a StreamGraph.
+
+I().p() ---> calls p() in Datastream, which creates a StreamGraphNode encapsulating the process p, and adds p into StreamGraph
+
+StreamGraphNode types:
+    -> SingleOutputStreamTransform
+        -> Datastream creates a SingleOutputStreamGraphNode, which, when added to the StreamGraph, automatically creates a placeholder with None for the target
+        -> NOTE -- when an emit is added, to target placeholder is added
+        -> NOTE, when an ingest or process is added, then only is a placeholder is added
+        -> The SingleOutputStreamGraphNode is a simple transform (like flatmap, map, etc...)
+        -> map, flatten, filter, window
+        -> returns a Datastream, which stores a single head
+
+    -> StreamSplitTransform
+        -> Datastream creates a SplitStreamGraphNode
+        -> This node takes in several callables, and for each callable, it outputs a stream that fits the callable response
+        -> when we add a split(callable, callable, callable,...), Datastream does the following
+            Datastream will create a SplitStreamGraphNode. This node automatically creates N edges to a placeholder  
+            We returnn a SplitDataStream as a return.
+            SplitDataStream contains multiple heads -- one for each of the splits
+            SplitDataStream also contains the primaryHead, which is used to attach new nodes.
+            basically, SplitDataStream.get(1) sets the primaryHead to refer to heads[1]
+
+    -> StreamJoinTransform
+        -> This node takes in several streams, and joins them record by record.
+        -> JoinStreamGraphNode
+        -> join(Datastream, Datastream) basically gets two datastreams as input. 
+        -> We perform an integration
+            -> Add both Datastreams to the internal graph of a new Datastream.
+            -> Then add a JoinedNode to the graph
+            -> Then add an edge to the respective heads
+
+    We can add all streams to StreamingContext.addStream()
+    When we perform execute, StreamingContext will "flatten" the streams, combining all nodes into 1
+
+
+---------------------
+GRAPHS
+
+StreamGraph --> PhysicalGraph --> ExecutionGraph
+
+StreamGraph --> the base graph
+PhysicalGraph --> 
+    Convert the chained nodes that are 1-1 into a single node (we will deal with specifics later)
+    Add buffer nodes between single nodes -- basically replace each edge with a write buffer and a read buffer.
+    A write buffer and a read buffer next to each other have the same port
+
+ExecutionGraph
+    Create TaskPrimitives, and pass in the buffer information. Launch the TaskPrimitives.
+
+    
+
+
 
 
 

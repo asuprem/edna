@@ -1,0 +1,8 @@
+# Ignore .git and .cache
+.git
+.cache
+
+# Ignore config yaml files and generated docker.sh file
+config.yaml
+deployment.yaml
+docker.sh
