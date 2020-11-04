@@ -13,6 +13,9 @@ import static edu.graitdm.ednajobcontroller.configuration.IConfigurationDefaults
 import static edu.graitdm.ednajobcontroller.configuration.IConfigurationDefaults.KUBECTL_HOST;
 import static edu.graitdm.ednajobcontroller.configuration.IConfigurationDefaults.KUBECTL_PORT;
 import static edu.graitdm.ednajobcontroller.configuration.IConfigurationDefaults.KUBECTL_PROTOCOL;
+import static edu.graitdm.ednajobcontroller.configuration.IConfigurationDefaults.DOCKER_HOST;
+import static edu.graitdm.ednajobcontroller.configuration.IConfigurationDefaults.EDNA_APP_DIR;
+import static edu.graitdm.ednajobcontroller.configuration.IConfigurationDefaults.EDNA_SOURCE_DIR;
 
 public class BaseConfiguration {
     @Parameter
@@ -33,6 +36,15 @@ public class BaseConfiguration {
     @Parameter(names = "--edna-namespace", description = "Location for edna application and job executables.")
     @Getter @Setter private String ednaNamespace;
 
+    @Parameter(names = "--docker-host", description = "URL for the docker daemon host")
+    @Getter @Setter private String dockerHost;
+
+    @Parameter(names = "--edna-source-dir", description = "Path to edna source directory. Defaults to current directory")
+    @Getter @Setter private String ednaSourcedir;
+
+    @Parameter(names = "--edna-app-dir", description = "Path to edna app directory. Defaults to current directory")
+    @Getter @Setter private String ednaAppdir;
+
     private String kubectlURL;
 
     public BaseConfiguration(){
@@ -41,6 +53,9 @@ public class BaseConfiguration {
         kubectlPort = KUBECTL_PORT;
         ednaJobPaths = EDNA_JOB_PATHS;
         ednaNamespace = EDNA_NAMESPACE;
+        dockerHost = DOCKER_HOST;
+        ednaSourcedir = EDNA_SOURCE_DIR;
+        ednaAppdir = EDNA_APP_DIR;
         buildURL();
     }
 
