@@ -41,6 +41,10 @@ spec:
                   type: string
                 registryport:
                   type: integer
+                filedependencies:
+                  type: string
+                jobdependencies:
+                  type: string
                 jobvariablenames:
                   type: array
                   items:

@@ -27,6 +27,8 @@ public class EdnaJobSpec implements KubernetesResource {
     @Getter @Setter private String jobimage; // Setting the tag in docker
     @Getter @Setter private String registryhost;// Docker registry host
     @Getter @Setter private String registryport;//Docker registry port
+    @Getter @Setter private String jobdependencies;//Docker registry port
+    @Getter @Setter private String filedependencies;//Docker registry port
     @Getter @Setter private List<String> jobvariablenames;  // Job variables. We can use this to create the ednaconf. See todo below.
     @Getter @Setter private List<String> jobvariablevalues;
 
@@ -53,6 +55,8 @@ public class EdnaJobSpec implements KubernetesResource {
         this.jobimage = spec.jobimage;
         this.registryhost = spec.registryhost;
         this.registryport = spec.registryport;
+        this.filedependencies = spec.filedependencies;
+        this.jobdependencies = spec.jobdependencies;
 
         // TODO (Abhijit) need to make sure names and values have same length
         this.jobvariablenames = new ArrayList<>(spec.jobvariablenames);
