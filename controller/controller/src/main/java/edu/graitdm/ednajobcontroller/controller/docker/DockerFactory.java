@@ -50,14 +50,12 @@ public class DockerFactory {
          *          template.filename = ednajob.spec.filename
          *          template.jobcontext = ednajob.spec.jobcontext
          *          template.filedependencies = ednajob.spec.filedependencies
-         *              TODO(Abhijit) add this to the custom resource and to the Java CRD Spec
          *              filedependencies is a 'list' of additional dependencies for the edna library
          *              'list', not list because we will have uses just pass files as a string separated by space
          *              i.e.:
          *                   filedependencies: file1.py file2.txt file3.zip
          *              not yet tested :/ but shouldn't matter. leave null in jinja template for now
          *           template.jobdependencies = ednajob.spec.jobdependencies
-         *              TODO (Abhijit) add this to customr esource and to spec
          *              this is the installation dependency for the edna library
          *              primary for python; used currently if someone wants mysql or sklearn...(see part 7)
          *              if this is not specified, no need to add it to jinja template, because Dickerfile.jinja
