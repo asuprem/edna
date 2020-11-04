@@ -13,19 +13,19 @@ RUN apt-get install -y --no-install-recommends gcc cython3 python3-dev \
 # Set the working directory
 WORKDIR /root
 # Copy the job file and configuration
-COPY {{ template.filename }}.py .
-COPY {{ template.jobcontext }}.yaml .
+COPY {{ filename }}.py .
+COPY {{ jobcontext }}.yaml .
 # Copy the EDNA library and install it
 COPY setup.py .
 COPY setup.cfg .
 COPY ./src ./src/
 # Copy any extra file dependencies. Separate dependencies with space
-{% if template.filedependencies is defined and template.filedependencies != None -%}
-COPY {{ template.filedependencies }} ./
-{% endif %}
+{% unless filedependencies is none -%}
+COPY {{ filedependencies }} ./
+{% endunless %}
 # Check for dependencies and install package
-{% if template.jobdependencies is defined and template.jobdependencies != None -%}
-RUN pip install --user .[{{ template.jobdependencies }}]
+{% if jobdependencies is defined and jobdependencies != None -%}
+RUN pip install --user .[{{ jobdependencies }}]
 {% else %}
 RUN pip install --user .
 {% endif %}
@@ -33,9 +33,9 @@ RUN pip install --user .
 # ----
 
 # Transpile 'main.py' to 'main.c'
-RUN cython3 -3 --embed -o {{ template.filename }}.c {{ template.filename }}.py
+RUN cython3 -3 --embed -o {{ filename }}.c {{ filename }}.py
 # Compile 'main.c' to an 'main' ELF
-RUN gcc -Os -I /usr/include/python3.7m -o {{ template.filename }} {{ template.filename }}.c -lpython3.7m -lpthread -lm -lutil
+RUN gcc -Os -I /usr/include/python3.7m -o {{ filename }} {{ filename }}.c -lpython3.7m -lpthread -lm -lutil
 
 # Use different image for runtime
 FROM python:3.7-slim as runtime-image
@@ -45,7 +45,7 @@ COPY --from=compile-image /root/.local /root/.local
 # Set working directory
 WORKDIR /root
 # Copy the executable to a brand new Python3.7m image (it has to be linked against 'python3.7m')
-COPY --from=compile-image /root/{{ template.filename }} /root/{{ template.jobcontext }}.yaml /root/
+COPY --from=compile-image /root/{{ filename }} /root/{{ jobcontext }}.yaml /root/
 
 # Use it as entrypoint
-CMD [ "./{{ template.filename }}" ]
+CMD [ "./{{ filename }}" ]
