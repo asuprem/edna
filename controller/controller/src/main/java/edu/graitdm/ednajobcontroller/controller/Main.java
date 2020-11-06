@@ -118,23 +118,25 @@ public class Main {
             /**
              * Set up the controller's Store and Factory to store and generate new EdnaJob resources
              */
+            
             var ednaJobStore = new EdnaJobStore();
             var ednaJobFactory = new EdnaJobFactory(client);
-
+            LOGGER.debug("Set up EdnaJobController's Store and Factory.");
             /**
              * Set up the DeploymentController's Store and Factory, then pass them to the DeploymentController
              */
+            
             var deploymentStore = new DeploymentStore();
             var deploymentFactory = new DeploymentFactory(client, deploymentStore, ednaJobFactory);
             var deploymentController = new DeploymentController(client, deploymentStore);
-
+            LOGGER.debug("Set up DeploymentController, DeploymentStore and DeploymentFactory.");
             /**
              * Set up the NamespaceController's Store and Factory, then pass them to the NamespaceController
              */
             var namespaceStore = new NamespaceStore();
             var namespaceFactory = new NamespaceFactory(client, namespaceStore,deploymentStore);
             var namespaceController = new NamespaceController(client,namespaceStore);
-
+            LOGGER.debug("Set up NamespaceController, NamespaceStore and NamespaceFactory.");
             /**
              * Set up the Docker client
              */
@@ -146,7 +148,10 @@ public class Main {
                                     .sslConfig(dockerConfig.getSSLConfig())
                                     .build();
             DockerClient dockerClient = DockerClientImpl.getInstance(dockerConfig, httpClient);
+            LOGGER.debug("Set up docker client.");
+
             var dockerFactory = new DockerFactory(dockerClient, configuration);
+            LOGGER.debug("Set up DockerFactory.");
             /**
              * Set up the EdnaJobController
              */
@@ -156,11 +161,13 @@ public class Main {
                                         namespaceFactory, namespaceStore,
                                         dockerFactory,
                                         ns);
+            LOGGER.debug("Set up EdnaJobController.");
 
             /*
              * Start the EdnaJob FSM and the sub-controllers
              */
             lock.lock();
+            LOGGER.info("Starting the controllers.");
             ednaJobController.start();
             deploymentController.start();
             namespaceController.start();
@@ -168,6 +175,7 @@ public class Main {
             lock.unlock();
 
             // Close the controllers
+            LOGGER.info("Shutting down controllers.");
             ednaJobController.close();
             deploymentController.close();
             namespaceController.close();
