@@ -7,7 +7,7 @@ Since you should be more familiar with virtualenvs now (if you weren't before), 
 It will create a directory called `edna_env` (it will delete any existing `edna_env` directory, so watch out!) and install the virtual environment there. You can run it froom the root directory of this repo with:
 
 ```
-bash generate_env.bash
+./generate_env.sh
 ```
 
 ## Forward into the unknown (not really)
@@ -100,7 +100,7 @@ We are basically testing the following interactions:
 # Running the Application
 
 ## Generating the Jobs
-First we'll generate the jobs with `examples/generate_job_python.bash`. This script expects a virtual environment in the root directory as the second argument (in my case, this is `edna_env`). This virtual environment (if you did not use `generate_env.bash` should have at the very least the `j2cli` package from pypi).
+First we'll generate the jobs with `examples/generate_job_python.bash`. This script expects a virtual environment in the root directory as the second argument (in my case, this is `edna_env`). This virtual environment (if you did not use `generate_env.sh` should have at the very least the `j2cli` package from pypi).
 
 Take a look inside the Job generator to see what is going on.
 

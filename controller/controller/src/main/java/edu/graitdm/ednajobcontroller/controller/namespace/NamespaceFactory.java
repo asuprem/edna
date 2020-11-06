@@ -15,6 +15,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 
 
 public class NamespaceFactory {
@@ -61,11 +62,15 @@ public class NamespaceFactory {
 
     // Delete the ednajob's namespace
     public void deleteIfEmpty(EdnaJob ednaJob){
-        if (deploymentStore.getDeploymentsInNamespace(ednaJob).size() == 0){
+        List<Deployment> deploymentCollection = deploymentStore.getDeploymentsInNamespace(ednaJob);
+        if (deploymentCollection.size() == 0){
             if(namespaceStore.namespaceExists(ednaJob)){
                 LOGGER.info("Deleted namespace - {}", ednaJob.getSpec().getApplicationname());
                 delete(namespaceStore.getNamespace(ednaJob.getSpec().getApplicationname()));
             }
+        }
+        else{
+            LOGGER.debug("There are still {} deployments in the {} namespace.", String.valueOf(deploymentCollection.size()), ednaJob.getSpec().getApplicationname());
         }
     }
 
