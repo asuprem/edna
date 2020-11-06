@@ -10,7 +10,7 @@ from typing import List
 class KafkaEmit(BaseEmit):
     """An Emitter that writes to a Kafka topic."""
     def __init__(self, serializer: Serializable, kafka_topic: str, bootstrap_server: str = "localhost", bootstrap_port: int = 9092, 
-        emit_buffer_batch_size: int = 10, emit_buffer_timeout_ms: int = 100, *args, **kwargs):   # For java, need to ensure it is a bytesSerializer
+        emit_buffer_batch_size: int = 10, emit_buffer_timeout_ms: int = 100, topic_retention_ms : int = 86400000, *args, **kwargs):   # For java, need to ensure it is a bytesSerializer
         """Connects to a specified kafka topic and sets up the emitter.
 
         Args:
@@ -19,7 +19,7 @@ class KafkaEmit(BaseEmit):
             bootstrap_server (str, optional): Address of the Kafka bootstrap server. Defaults to "localhost".
             bootstrap_port (int, optional): Bootstrap server port on which the topic is listening for messages. Defaults to 9092.
         """
-
+        self.retention_ms = topic_retention_ms
         self.kafka_topic = kafka_topic
         conf = {
             "bootstrap.servers": bootstrap_server + ":" + str(bootstrap_port),
@@ -49,7 +49,7 @@ class KafkaEmit(BaseEmit):
             server address and client id
         """
         adminclient = confluent_kafka.admin.AdminClient(conf=conf)
-        topic = confluent_kafka.admin.NewTopic(topic=topic_name, num_partitions=1)
+        topic = confluent_kafka.admin.NewTopic(topic=topic_name, num_partitions=1, config={'retention.ms': self.retention_ms})
         response = adminclient.create_topics([topic])
         while not response[topic_name].done():
             sleep(0.001)    # TODO this is super hacky. There is bound to be a better way to do this.
