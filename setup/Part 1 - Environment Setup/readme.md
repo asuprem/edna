@@ -51,7 +51,17 @@ I highly recommend following these steps for Windows, instead of the links above
     sudo mkdir /sys/fs/cgroup/systemd
     sudo mount -t cgroup -o none,name=systemd cgroup /sys/fs/cgroup/systemd
     ```
+## Important Note for WSL
+Sometimes WSL will revert the changes made in step 5. This is denoted by an error message similar to:
 
+    Handler for POST /v1.40/containers/<container_id>/start returned error: cgroups: cannot find cgroup mount destination:   unknown
+    docker: Error response from daemon: cgroups: cannot find cgroup mount destination: unknown.
+
+If you get this error you will first need to remove the container from docker with the following command using the container id from the error message:
+
+    sudo docker rm -f <your_container_id_here>
+
+Failure to do so will result in the creation of a new container failing since a broken one for it already exists. This can be hard to troubleshoot as the failed container does not show up under any docker container list commands but will prevent the container from being recreated. After removing the old container, apply the two lines in step 5 again and retry creating your docker container.
 ## Installing tools
 Now we will install Docker, Kubernetes, and KinD (Kubernetes-in-Docker). 
 
