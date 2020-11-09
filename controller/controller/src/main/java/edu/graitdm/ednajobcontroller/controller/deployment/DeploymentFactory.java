@@ -18,28 +18,53 @@ import static edu.graitdm.ednajobcontroller.controller.ICustomResourceCommons.EJ
 import static edu.graitdm.ednajobcontroller.controller.ICustomResourceCommons.EJ_APP_LABEL_VALUE;
 import static edu.graitdm.ednajobcontroller.controller.ICustomResourceCommons.EJ_NAME_KEY;
 
+/**
+ * <code>DeploymentFactory</code> generates new deployments for a given {@link EdnaJob}. Deployments
+ * are generated using parameters extracted from the <code>EdnaJob</code>. Each generated deployment
+ * contains a label in its metadata and a matching match-label for its child containers to ensure
+ * they fit together.
+ */
 public class DeploymentFactory {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DeploymentFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeploymentFactory.class.getSimpleName());
 
     private final KubernetesClient client;
     private final DeploymentStore deploymentStore;
     private final EdnaJobFactory ednaJobFactory;
 
-    // Constructor
+    /**
+     * Constructor for <code>DeploymentFactory</code>
+     *
+     * @param client A {@link KubernetesClient} instance to communicate with the kube api-server.
+     * @param deploymentStore A {@link DeploymentStore} instance to store references to existing and new
+     *                        kubernetes deployments.
+     * @param ednaJobFactory An {@link EdnaJobFactory} instance to retrieve existing deployments attached to an application
+     *                       namespace or job.
+     */
     public DeploymentFactory(KubernetesClient client, DeploymentStore deploymentStore, EdnaJobFactory ednaJobFactory){
+
         this.client = client;
         this.deploymentStore = deploymentStore;
         this.ednaJobFactory = ednaJobFactory;
     }
 
-    //Basically make sure the deployment we are, well, deploying, has a unique name.
+    /**
+     * Checks if a given <code>name</code> is unique with respect to existing deployment names from {@link #deploymentStore}
+     *
+     * @param name A String to check for uniqueness.
+     * @return True if name is unique.
+     */
+    @Deprecated
     public boolean isUnique(String name){
         return deploymentStore.values().stream().noneMatch(deployment -> deployment.getMetadata().getName().equals(name));
     }
 
-    // Given a custom resource, get a unique name for the deployment by attaching a random suffix to the base name
-    // TODO we should not need this...
+    /**
+     * Creates a unique name for a deployment by adding a random String suffix.
+     *
+     * @param ednaJob An {@link EdnaJob} custom resource.
+     * @return A unique deployment name.
+     */
     private String getUniqueDeploymentName(EdnaJob ednaJob){
         String deploymentName;
         do{
@@ -49,6 +74,12 @@ public class DeploymentFactory {
         return deploymentName;
     }
 
+    /**
+     * Add a deployment corresponding to an EdnaJob from a provided {@link EdnaJob} custom resource.
+     * Deployment pulls an image from a private registry using parameters from the custom resource.
+     *
+     * @param ednaJob An {@link EdnaJob} custom resource.
+     */
     public void add(EdnaJob ednaJob){
         /*
          * Log the add
@@ -60,22 +91,14 @@ public class DeploymentFactory {
         String name = getUniqueDeploymentName(ednaJob);
         CustomResourceDefinition crd = ednaJobFactory.getCustomResourceDefinition();
 
-        // TODO set up the ednajob here (by replicating the generate_job script)
-
-        // Basically, currentResource contains all information you might need to build the docker image, push it,
-        // and then create the deployment...
-
-        // Note, we also need to make sure --> we have a label for this deployment...
-
-        // Add the deployment with the following line:
-        // client.apps().deployments().inNamespace(currentResource.getMetadata().getNamespace()).create(deployment)
-
-
+        // Construct the complate image name for the deployment.
         String fullImageName = ednaJob.getSpec().getRegistryhost() + ":" + 
                                         ednaJob.getSpec().getRegistryport() + "/" + 
                                         ednaJob.getSpec().getApplicationname() + "-" + 
                                         ednaJob.getSpec().getJobname() + ":" + 
                                         ednaJob.getSpec().getJobimagetag();
+
+        // Build the deployment
         Deployment deployment = new DeploymentBuilder()
             .withNewMetadata()
                 .withName(ednaJob.getMetadata().getName())
@@ -102,15 +125,17 @@ public class DeploymentFactory {
                 .endSelector()
             .endSpec()
         .build();
-        LOGGER.info("Set up deployment");
+        LOGGER.debug("Set up deployment");
         client.apps().deployments().inNamespace(ednaJob.getSpec().getApplicationname()).create(deployment);
         LOGGER.info("Applied deployment for - {}", ednaJob.getMetadata().getName());
 
     }
 
 
-
-    // Delete the deployment
+    /**
+     * Delete a deployment.
+     * @param deployment The deployment to delete.
+     */
     public void delete(Deployment deployment){
         this.client.apps().deployments().delete(deployment);
         LOGGER.info("Deleted deployment for - {}", deployment.getMetadata().getName());
