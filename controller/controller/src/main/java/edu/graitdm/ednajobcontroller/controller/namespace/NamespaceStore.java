@@ -15,9 +15,6 @@ import static edu.graitdm.ednajobcontroller.controller.ICustomResourceCommons.EJ
 public class NamespaceStore extends ConcurrentHashMap<Object, Namespace> {
 
     // Given an EdnaJob custom resource, we fetch the deployment associated with that EdnaJob
-    // TODO Make sure in DeploymentFactory.add(), we add a
-    //  label with key-value pair <EJ_NAME_KEY, ednaJob.getMetadata().getName()> to
-    //  the generated deployment, otherwise this will not work.
     // Returns true if namespace exists
     public boolean namespaceExists(EdnaJob ednaJob){
         return !namespaceIsUnique(ednaJob.getSpec().getApplicationname());
