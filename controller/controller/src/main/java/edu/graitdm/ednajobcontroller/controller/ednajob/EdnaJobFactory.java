@@ -11,7 +11,7 @@ import static edu.graitdm.ednajobcontroller.controller.ICustomResourceCommons.*;
 
 public class EdnaJobFactory {
     // The logger
-    private static final Logger LOGGER = LoggerFactory.getLogger(EdnaJobFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EdnaJobFactory.class.getSimpleName());
 
     // The client and CRD
     private final KubernetesClient client;
@@ -46,9 +46,9 @@ public class EdnaJobFactory {
             // custom resource that is already in memory
             target.getSpec().setState(state);
             //Patch the custom resource in memory with the updated one with new state
-            LOGGER.info("UPD - {} -- patching EdnaJob with updated state", ednaJob.getMetadata().getName());
+            LOGGER.debug("Patching EdnaJob {} with updated state", ednaJob.getMetadata().getName());
             client.customResources(crd, EdnaJob.class, EdnaJobList.class, EdnaJobDoneable.class)
-                        .inNamespace(ednaJob.getMetadata().getNamespace())  // TODO namespaces() -- we want different ones for each?? NO see below
+                        .inNamespace(ednaJob.getMetadata().getNamespace())
                         .withName(ednaJob.getMetadata().getName())
                         .patch(target);
         });
@@ -57,9 +57,3 @@ public class EdnaJobFactory {
 
 
 }
-// TODO Namespace note:
-//  The custom resources exist in the default namespace
-//  But the applied deployments exist on their application namespace
-//  So in DeploymentFactory.add(), make sure the generated deployment exists in a namespace matching the ednaJob's applicationname spec field
-//  We would also need to make sure the namespace exists (Abhijit) --> for now, manually create namespace before applying ednajob
-//  Also need to make sure the namespace is deleted at the end (Abhijit)

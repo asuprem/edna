@@ -16,18 +16,47 @@ https://www.baeldung.com/docker-java-api
 basically use dockerfactory to create a docker build....
 
 
+-------------------------------------------------------------------
+
+an edna-client to 
+    - validate jobs when applying them
+    - basically when we use edna-client to submit jobs, validator will
+        - check if image exists or something??
+        - important -- check if topic already exists or not and whether there are inconsistencies
+            - i.e. if topic we want to create already exists but its retention time is different...
+        - changes in namespace...
+    - connect to a running controller
+    - submit jobs
+    - generate ednajobs to submit jobs...?
+
+EdnaJob resource -->
+    - launch new EdnaJobImage?
+    - launch new KafkaTopics
+
+
+what are ideas hanging around
+    - a EdnaJobImageController that actually creates the docker images and pushes them to the registry
+        - 
+
+When people are debugging
+- launch locally and test with kafka ...
+- or use generate job image to create the stuff...
+- generate job image will use an ednajob resource for stuff, so that we can debug...
+    - maybe because debug occurs in a separate space...
+    - maybe a different cluster and/or a specific debug namespace...
+- when you are confident it works, apply the ednajob resource
+    - which will do its own thing or pushing to registry
 
 
 
+-----------------------------------------------------------------
+TUTORIALS
+
+Update existing TUTORIALS
+Add Part 9 -- ednajobcontroller
+    - how to compile from source, etc...
 
 
-----------------------------------------------------------------
-
-
-> Update deployment examples readmes to incorporate ./generate_job_python.sh -- DONE
-> Set up install_requirements -- 
-    So we have the minimal installs for edna, plus additional installs...
-        extras_require...
 
 ----------------------------------------------
 

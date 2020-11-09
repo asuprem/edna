@@ -7,16 +7,21 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import static edu.graitdm.ednajobcontroller.controller.ICustomResourceCommons.EJ_APP_LABEL_KEY;
 import static edu.graitdm.ednajobcontroller.controller.ICustomResourceCommons.EJ_NAME_KEY;
 
-// This keeps track of the deployments managed by the DeploymenetController.
+/**
+ * This keeps track of the deployments managed by the {@link DeploymentController}.
+ */
 public class DeploymentStore extends ConcurrentHashMap<Object, Deployment> {
 
-    // Given an EdnaJob custom resource, we fetch the deployment associated with that EdnaJob
-    // TODO Make sure in DeploymentFactory.add(), we add a
-    //  label with key-value pair <EJ_NAME_KEY, ednaJob.getMetadata().getName()> to
-    //  the generated deployment, otherwise this will not work.
+    /**
+     * Get deployments associated with a provided {@link EdnaJob} custom resource. Deployments
+     * stored in the <code>DeploymentStore</code> are filtered using the custom resource's name
+     * in the metadata and the associated namespace.
+     *
+     * @param ednaJob A provided custom resource
+     * @return A List of deployments associated with the provided {@link EdnaJob}.
+     */
     public List<Deployment> getDeploymentsForEdnaJob(EdnaJob ednaJob){
         return values().stream()
                 .filter(e->e.getMetadata()
@@ -31,6 +36,13 @@ public class DeploymentStore extends ConcurrentHashMap<Object, Deployment> {
                 .collect(Collectors.toList());
     }
 
+
+    /**
+     * Get deployments in the application namespace associated with an {@link EdnaJob} custom resource.
+     *
+     * @param ednaJob A provided custom resource
+     * @return A List of deployments in the application namespace of the provided {@link EdnaJob}.
+     */
     public List<Deployment> getDeploymentsInNamespace(EdnaJob ednaJob){
         return values().stream()
                 .filter(e->e.getMetadata()

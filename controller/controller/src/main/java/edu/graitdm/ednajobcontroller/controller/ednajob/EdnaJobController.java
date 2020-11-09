@@ -59,20 +59,20 @@ public class EdnaJobController extends GenericEventQueueConsumer<EdnaJob> {
     @Override
     public void onModification(AbstractEvent<? extends EdnaJob> event) {
         // A modification is triggered, so we get the prior and current resource...
-        LOGGER.info("MOD EdnaJob - {}", event.getResource().getMetadata().getName());
+        // TODO (Abhijit) add a check here so we don't unnecessarily create new docker images unnecessarily?
+        //  Basically -- what are reasons for updating an existing ednajob? --> changing applicationname?
+        //  figure this oout and add control flow accordingly...and maybe change FSM??
+
         var priorResource = event.getPriorResource();
         var currentResource = event.getResource();
 
-        // TODO (Abhijit) we need to check whether priorResource and curretnResource are the same and if so, we
-        // still need to continue updating stuff...
 
-        // TODO This is where we do operations for each of our states in EEdnaJobState
         switch(currentResource.getSpec().getState()){
             case UNDEFINED:
-                LOGGER.info("MOD - Invalid transition to Undefined -- {}", event.getResource().getMetadata().getName());
+                LOGGER.info("Invalid transition to Undefined state for EdnaJob {}", event.getResource().getMetadata().getName());
                 break;
             case DEPLOYMENT_CREATION:
-                LOGGER.info("MOD - DEPLOYMENT_CREATION -- {}", event.getResource().getMetadata().getName());
+                LOGGER.info("Creating Deployment for EdnaJob ", event.getResource().getMetadata().getName());
                 // TODO  So we need to update the add() method to create a deployment given the currentResource,
                 //  which is an applied EdnaJob
                 LOGGER.info("MOD - Checking namespace -- {}", event.getResource().getSpec().getApplicationname());
