@@ -18,7 +18,7 @@ import java.io.IOException;
 
 public class NamespaceController extends GenericEventQueueConsumer<Namespace> {
     // Get the class name for the logger
-    private static final Logger LOGGER = LoggerFactory.getLogger(NamespaceController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NamespaceController.class.getSimpleName());
 
     // Initialize the controller
     private final Controller<Namespace> controller;
@@ -40,7 +40,7 @@ public class NamespaceController extends GenericEventQueueConsumer<Namespace> {
 
     @Override
     public void onModification(AbstractEvent<? extends Namespace> event) {
-        LOGGER.info("Modified namespace for: {}", event.getResource().getMetadata().getName());
+        LOGGER.debug("Modified namespace for: {}", event.getResource().getMetadata().getName());
     }
 
     @Override

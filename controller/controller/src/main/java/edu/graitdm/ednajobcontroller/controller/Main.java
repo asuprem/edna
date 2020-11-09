@@ -83,25 +83,25 @@ public class Main {
         }
 
         /**
+         * Set up the command line configuration options
+         */
+        BaseConfiguration configuration = new BaseConfiguration();
+        JCommander.newBuilder().addObject(configuration).build().parse(args);
+
+        /**
          * Main try block for controller
          */
         try {
             // Set up Loggers
-            var logLevel = Optional.ofNullable(System.getenv("LOG_LEVEL")).orElse("DEBUG");
+            var logLevel = configuration.getLogLevel();
             var loggers = LogManager.getCurrentLoggers();
             while(loggers.hasMoreElements()) {
                 Logger logger = (Logger) loggers.nextElement();
                 logger.setLevel(Level.toLevel(logLevel));
             }
             org.slf4j.Logger LOGGER;
-            LOGGER = LoggerFactory.getLogger(Main.class);
+            LOGGER = LoggerFactory.getLogger(Main.class.getSimpleName());
             LOGGER.info("Starting the controller...");
-
-            /**
-             * Set up the command line configuration options
-             */
-            BaseConfiguration configuration = new BaseConfiguration();
-            JCommander.newBuilder().addObject(configuration).build().parse(args);
 
             // Namespace for the controller
             var ns = configuration.getEdnaNamespace();

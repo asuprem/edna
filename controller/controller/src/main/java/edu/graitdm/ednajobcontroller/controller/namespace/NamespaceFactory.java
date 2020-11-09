@@ -17,9 +17,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+import static edu.graitdm.ednajobcontroller.controller.ICustomResourceCommons.EJ_NAME_KEY;
+
 
 public class NamespaceFactory {
-    private static final Logger LOGGER = LoggerFactory.getLogger(NamespaceFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NamespaceFactory.class.getSimpleName());
 
     private final KubernetesClient client;
     private final NamespaceStore namespaceStore;
@@ -49,7 +51,7 @@ public class NamespaceFactory {
                                             withName(name)
                                         .endMetadata()
                                     .build();
-        LOGGER.info("Set up namespace");
+        LOGGER.debug("Set up namespace");
         client.namespaces().create(namespace);
     }
 
@@ -65,11 +67,19 @@ public class NamespaceFactory {
         List<Deployment> deploymentCollection = deploymentStore.getDeploymentsInNamespace(ednaJob);
         if (deploymentCollection.size() == 0){
             if(namespaceStore.namespaceExists(ednaJob)){
-                LOGGER.info("Deleted namespace - {}", ednaJob.getSpec().getApplicationname());
+                LOGGER.debug("Deleted namespace - {} since it is empty", ednaJob.getSpec().getApplicationname());
                 delete(namespaceStore.getNamespace(ednaJob.getSpec().getApplicationname()));
             }
         }
+        else if (deploymentCollection.size() == 1 &&
+                deploymentCollection.get(0).getMetadata().getLabels().get(EJ_NAME_KEY) == ednaJob.getMetadata().getName()){
+            LOGGER.debug("Deleting namespace - {} since one 1 job remains and it is to be deleted.", ednaJob.getSpec().getApplicationname());
+            delete(namespaceStore.getNamespace(ednaJob.getSpec().getApplicationname()));
+
+        }
         else{
+            //TODO (Abhijit) Fix bug where deployment is deleted but not yet registered in deploymentstore, making
+            // namespacestore think there are still existing deployments
             LOGGER.debug("There are still {} deployments in the {} namespace.", String.valueOf(deploymentCollection.size()), ednaJob.getSpec().getApplicationname());
         }
     }
