@@ -170,3 +170,10 @@ Then, modify `onDeletion()` function to check, upon a ednajob deletion, whether 
 Now you will need to replace the docker parts of the script. You will need to use a docker library for java. Then, given a custom resource, use the docker library to create the associated image and push it to a registry. Then continue as before.
 
 We will make the assumption that given a custom resource, the python program associated with that resource is located in `current_directory/ednajobs/<applicationname>/<jobname>/<filename>.py`. This will also involve creating an `ednaconf.yaml`, saving it to disk, creating a `.dockerignore`, and deleting these extraneous files once the image is created. The `ednaconf.yaml`'s fields will need to be populated by the `jobvariablenames` and `jobvariablevalues` fields of the custom resource.
+
+In order for the controller to access Docker you will need to run docker with different parameters:
+
+```
+sudo dockerd -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock &
+```
+The first part of the command allows the controller to interface with Docker via localhost bridging while the second part ensures that Docker is also accessible through the linux host machine like before.
