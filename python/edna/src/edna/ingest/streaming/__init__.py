@@ -1,6 +1,6 @@
+from __future__ import annotations
+from typing import Dict
 from edna.serializers import Serializable
-from edna.process import BaseProcess
-from edna.emit import BaseEmit
 from edna.ingest import BaseIngest
 from edna.serializers import Serializable
 from edna.types.enums import IngestPattern
@@ -24,17 +24,18 @@ class BaseStreamingIngest(BaseIngest, Iterator):
     - modify the `__iter__()` method
 
     Attributes:
-        execution_mode (IngestPattern): Sets this primitive as a `CLIENT_SIDE_STREAM`. 
-            The logic for execution is set up in `edna.core.execution.context.SimpleStreamingContext`.
+        execution_mode (IngestPattern): The type of ingest, either STANDARD_INGEST or BUFFERED_INGEST
     """    
-    execution_mode = IngestPattern.CLIENT_SIDE_STREAM
-    def __init__(self, serializer: Serializable, in_serializer: Serializable = None, out_serializer: Serializable = None, *args, **kwargs):
+    execution_mode = IngestPattern.STANDARD_INGEST
+    def __init__(self, serializer: Serializable, in_serializer: Serializable = None, out_serializer: Serializable = None, logger_name: str = None, *args, **kwargs):
         """Initialize the primitive with the serializer.
 
         Args:
             serializer (Serializable): Serializer for deserialize the streaming records.
         """
-        super().__init__(serializer, in_serializer, out_serializer, *args, **kwargs)
+        if logger_name is None:
+            logger_name = self.__class__.__name__
+        super().__init__(serializer, in_serializer, out_serializer, logger_name, *args, **kwargs)
     
     def __iter__(self):
         """Returns itself as the iterator.
@@ -45,7 +46,7 @@ class BaseStreamingIngest(BaseIngest, Iterator):
         return self
 
     def __next__(self):
-        """Fetches the next record from the source.
+        """Fetches the next record from the source and deserializes
 
         Returns:
             (List[obj]): Single fetched record in a singleton format.
@@ -53,12 +54,22 @@ class BaseStreamingIngest(BaseIngest, Iterator):
         return [self.in_serializer.read(self.next())]
 
     def next(self):
-        """Method that encapsulates record fetching logic.
+        """Method that encapsulates raw record fetching logic.
 
         Raises:
             NotImplementedError: Child classes should implement this method.
         """
         raise NotImplementedError
+
+    def build(self, build_configuration: Dict[str,str]):
+        """Lazy building for ingest.
+        """
+        pass
+
+    def close(self):
+        """Shuts down the ingest, closing any connections if they exist
+        """
+        pass
 
 from .TwitterStreamingIngest import TwitterStreamingIngest
 from .TwitterFilteredIngest import TwitterFilteredIngest

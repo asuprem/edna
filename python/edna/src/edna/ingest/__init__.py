@@ -1,6 +1,7 @@
 from __future__ import annotations
 from edna.serializers import Serializable, BufferedSerializable
 from edna.types.enums import IngestPattern
+import logging
 class BaseIngest(object):
     """BaseIngest is the base interface for ingesting messages from various sources, 
     either external or internal (i.e. Kafka).
@@ -15,20 +16,9 @@ class BaseIngest(object):
         `edna.core.execution.context.EdnaContext`.
     """
     execution_mode: IngestPattern
-    serializer: Serializable
-    in_serializer: Serializable
-    out_serializer: BufferedSerializable
-    def __init__(self, serializer: Serializable, in_serializer: Serializable = None, out_serializer: BufferedSerializable = None, *args, **kwargs):
-        self.serializer = serializer
-        if self.serializer is None:
-            if in_serializer is None:
-                raise ValueError("`in_serializer` cannot be None if serializer is `None` for Ingest Primitive")
-            if out_serializer is None:
-                raise ValueError("`in_serializer` cannot be None if serializer is `None` for Ingest Primitive")
-            self.in_serializer = in_serializer
-            self.out_serializer = out_serializer
-        else:   # TODO does not check if serializer is a BufferedSerializable or Serializable
-            self.in_serializer = self.serializer
-            self.out_serializer = self.serializer
+    def __init__(self, serializer: Serializable, in_serializer: Serializable = None, out_serializer: BufferedSerializable = None, logger_name: str = None, *args, **kwargs):
+        if logger_name is None:
+            logger_name = self.__class__.__name__
+        super().__init__(serializer=serializer, in_serializer=in_serializer, out_serializer=out_serializer, logger_name=logger_name)
 
 from .streaming import BaseStreamingIngest
