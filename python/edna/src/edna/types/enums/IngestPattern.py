@@ -1,11 +1,13 @@
 import enum
 
 class IngestPattern(enum.Enum):
-    """Enum to determine which type of ingest the SimpleStreamingContext has received. 
-    This is set inside the Ingest primitive base class and can be modified by subclasses that
-    themselves are primitives. 
+    """Determines the type of ingest.
 
-    New Patterns might be added here in the future.
+    A BUFFERED_INGEST yields records from a network buffer. This is usually sent
+    by a `edna.emit._BufferedEmit`.
+
+    A STANDARD_INGEST yields records from some streaming source, such as a file, 
+    an external source, or Kafka.
     """
-    SERVER_SIDE_STREAM = 1
-    CLIENT_SIDE_STREAM = 2
+    BUFFERED_INGEST = 1
+    STANDARD_INGEST = 2
