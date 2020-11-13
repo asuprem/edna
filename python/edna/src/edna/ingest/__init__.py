@@ -1,8 +1,8 @@
 from __future__ import annotations
+from edna.core.primitives import EdnaPrimitive
 from edna.serializers import Serializable, BufferedSerializable
 from edna.types.enums import IngestPattern
-import logging
-class BaseIngest(object):
+class BaseIngest(EdnaPrimitive):
     """BaseIngest is the base interface for ingesting messages from various sources, 
     either external or internal (i.e. Kafka).
 

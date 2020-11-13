@@ -20,6 +20,7 @@ class KafkaIngest(BaseStreamingIngest):
             bootstrap_port (int, optional): Bootstrap server port on which the topic is listening for messages. Defaults to 9092.
             default_group (str, optional): Group name for this consumer group. Defaults to "default-group".
         """
+        super().__init__(serializer=serializer, *args, **kwargs)
         self.kafka_topic = kafka_topic
         conf = {
             "bootstrap.servers": bootstrap_server + ":" + str(bootstrap_port),
@@ -31,7 +32,7 @@ class KafkaIngest(BaseStreamingIngest):
         self.consumer = confluent_kafka.Consumer(conf)
         self.consumer.subscribe([self.kafka_topic])
         self.running = True
-        super().__init__(serializer=serializer, *args, **kwargs)
+        
 
     def next(self):
         """Sets up a Kafka Consumer poll to the topic and yields records one by one.
