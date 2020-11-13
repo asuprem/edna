@@ -3,7 +3,6 @@ from edna.core.plans.streamgraph import SingleOutputStreamGraphNode
 from edna.exception import StreamGraphNodeDoesNotExistException
 from typing import Dict, List
 
-
 class StreamGraph:
     """StreamGraph represents the logical plan for an Edna Job. It records SingleOutputStreamGraphNodes 
     and edges between these nodes. Each node is either a source node that ingests a stream 
