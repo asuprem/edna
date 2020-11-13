@@ -1,8 +1,11 @@
 from __future__ import annotations
+from typing import Dict
+from edna.types.enums import EmitPattern
 from edna.serializers import Serializable, BufferedSerializable
 import time
+from edna.core.primitives import EdnaPrimitive
 
-class BaseEmit(object):
+class BaseEmit(EdnaPrimitive):
     """BaseEmit is the base class for writing records from a process primitive to a sink, 
     such as a filestream, sql database, or Kafka topic.
 
@@ -17,15 +20,16 @@ class BaseEmit(object):
 
     - modify the `__call__()` method
 
+    Attributes:
+        emit_pattern (EmitPattern): The type of emit, either STANDARD_EMIT or BUFFERED_EMIT
     """
-    serializer: Serializable
-    in_serializer: BufferedSerializable
-    out_serializer: Serializable  
+    emit_pattern: EmitPattern = EmitPattern.STANDARD_EMIT
     def __init__(self, serializer: Serializable, 
             in_serializer: Serializable = None, 
             out_serializer: Serializable = None, 
             emit_buffer_batch_size: int = 10, 
             emit_buffer_timeout_ms: int = 100, 
+            logger_name: str = None,
             *args, **kwargs):
         """Initializes the BaseEmit. This must be called by any inheriting classes using `super().__init__()`
 
@@ -37,17 +41,9 @@ class BaseEmit(object):
             emit_timeout_ms (int): How many ms to wait before emitting. This is to prevent 
                 blocking on unfilled `emit_batch` if incoming stream is slow.
         """
-        self.serializer = serializer
-        if self.serializer is None:
-            if in_serializer is None:
-                raise ValueError("`in_serializer` cannot be None if serializer is `None` for Emit Primitive")
-            if out_serializer is None:
-                raise ValueError("`in_serializer` cannot be None if serializer is `None` for Emit Primitive")
-            self.in_serializer = in_serializer
-            self.out_serializer = out_serializer
-        else:
-            self.in_serializer = self.serializer
-            self.out_serializer = self.serializer
+        if logger_name is None:
+            logger_name = self.__class__.__name__
+        super().__init__(serializer=serializer, in_serializer=in_serializer, out_serializer=out_serializer, logger_name=logger_name)
 
 
         if emit_buffer_batch_size <= 0:
@@ -58,17 +54,23 @@ class BaseEmit(object):
         self.emit_buffer_index = -1
         self.timer = time.time()
         
+        
 
     def __call__(self, message):
         """Wrapper for emitting a record using the emitter's logic. This is the entry point for emitting and should not be modified.
 
         Args:
-            message (List[object]): A list of messagse that should be Serializable to bytes with `serializer`
+            message (List[object]): A list of message that should be Serializable to bytes with `serializer`
         """
         for item in message:
             self.call(item)
         
     def call(self, message):
+        """Writes records to the internal buffer.
+
+        Args:
+            message (obj): A record.
+        """
         self.emit_buffer_index += 1
         self.emit_buffer[self.emit_buffer_index] = self.out_serializer.write(message)
         # Write buffer and clear if throughput barriers are met
@@ -100,6 +102,24 @@ class BaseEmit(object):
             NotImplementedError: `write()` needs to be implemented in inheriting subclasses.
         """
         raise NotImplementedError()
+
+    def flush(self):
+        """Flushes the buffers and emits current contents
+        """
+        self.write_buffer()
+
+    def build(self, build_configuration: Dict[str, str]):
+        """Lazy building
+
+        Args:
+            build_configuration (Dict[str, str]): The build configuration.
+        """
+        pass
+
+    def close(self):
+        """Shutdown emit, including closing any connections if they have been made
+        """
+        pass
 
 from .KafkaEmit import KafkaEmit
 from .StdoutEmit import StdoutEmit
