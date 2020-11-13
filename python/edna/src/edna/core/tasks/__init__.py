@@ -1,2 +1,2 @@
 from .TaskPrimitive import TaskPrimitive
-from .BufferedTaskPrimitive import BufferedTaskPrimitive
+from .SingleSourceSingleTargetTask import SingleSourceSingleTargetTask

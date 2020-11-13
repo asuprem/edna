@@ -6,7 +6,7 @@ class Serializable:
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def read(self, in_stream: bytes): 
+    def read(cls, in_stream: bytes): 
         """Convert from bytes to Serializable
 
         Args:
@@ -14,7 +14,7 @@ class Serializable:
         """
         raise NotImplementedError
     @abstractmethod
-    def write(self, out_stream): 
+    def write(cls, out_stream): 
         """Convert from Serializable to bytes
 
         Args:
@@ -25,3 +25,4 @@ class Serializable:
 from .StringSerializer import StringSerializer
 from .KafkaStringSerializer import KafkaStringSerializer
 from .BufferedSerializable import BufferedSerializable
+from .MsgPackBufferedSerializable import MsgPackBufferedSerializer

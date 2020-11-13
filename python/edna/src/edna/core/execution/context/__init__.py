@@ -6,7 +6,9 @@ from edna.ingest import BaseIngest
 from edna.process import BaseProcess
 from edna.emit import BaseEmit
 from abc import ABC
-import os
+import os, sys
+
+import logging
 
 class EdnaContext(ABC):
     """An EdnaContext is the generic context for any EdnaJob. It is an interface for the SimpleStreamingContext and other future contexts.
@@ -21,8 +23,9 @@ class EdnaContext(ABC):
         EdnaContext: Returns an EdnaContext.
     """    
     configuration: EdnaConfiguration
+    logger: logging.Logger
 
-    def __init__(self, dir : str = ".", confpath : str = "ednaconf.yaml", confclass: EdnaConfiguration = EdnaConfiguration):
+    def __init__(self, dir : str = ".", confpath : str = "ednaconf.yaml", confclass: EdnaConfiguration = EdnaConfiguration, logger: str = None):
         """Initializes the EdnaContext with a directory, configuration file, and configuratioon object. 
 
         Args:
@@ -35,6 +38,10 @@ class EdnaContext(ABC):
         self.dir = dir
         self.configuration_path = os.path.join(self.dir, confpath)
         self.configuration = self._getConfiguration(self.configuration_path, confclass)
+        if logger is None:
+            self.logger = logging.getLogger(self.__class__.__name__)
+        else:
+            self.logger = logging.getLogger(logger)
 
     
     def _getConfiguration(self, confpath: str, confclass: EdnaConfiguration):

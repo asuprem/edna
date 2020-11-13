@@ -1,4 +1,5 @@
 from .IngestPattern import IngestPattern
+from .EmitPattern import EmitPattern
 from .BufferMode import BufferMode
 from .SingleOutputStreamGraphNodeType import SingleOutputStreamGraphNodeType
 from .SingleOutputStreamGraphNodeProcessType import SingleOutputStreamGraphNodeProcessType
