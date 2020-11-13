@@ -1,14 +1,15 @@
 from __future__ import annotations
-from typing import List
 from edna.process import BaseProcess
 
+from typing import List
 
-class Filter(BaseProcess):
-    """A Filter Process filters the input. 
+
+class Flatten(BaseProcess):
+    """A Flatten Process takes a stream of collections and flattens them to a stream of records. 
 
     Any child class must:
     
-    - Implement the `filter()` method
+    - Implement the `flatten()` method
     
     - Call `super().__init__()` at the end of initialization
     
@@ -20,7 +21,7 @@ class Filter(BaseProcess):
     Args:
         BaseProcess (BaseProcess): A process to chain
     """
-    process_name : str = "Filter"
+    process_name : str = "Flatten"
     def __init__(self, process: BaseProcess = None, *args, **kwargs) -> BaseProcess:
         """Initializes the Process primitive. It can take a Process primitive as input to chain them.
 
@@ -32,9 +33,9 @@ class Filter(BaseProcess):
         """
         super().__init__(process=process,  *args, **kwargs)
     
-    def process(self, message: object) -> List[object]:
-        """This is the entrypoint to this primitive to filter a message. It is called by the BaseProcess parent
-        from the `__call__()` method. It subsequently calls the `filter()` method.
+    def process(self, message: List[object]) -> List[object]:
+        """This is the entrypoint to this primitive to flatten a message. It is called by the BaseProcess parent
+        from the `__call__()` method. It subsequently calls the `flatten()` method.
 
         This should NOT be modified.
 
@@ -44,17 +45,17 @@ class Filter(BaseProcess):
         Returns:
             (List[obj]): A processed message in a singleton list.
         """
-        return self.filter(message)
+        return self.flatten(message)
 
-    def filter(self, message: object) -> List[object]:
-        """Logic for filtering. Subclasses need to implement this.
+    def flatten(self, message: List[object]) -> List[object]:
+        """Logic for flattening. Subclasses need to implement this.
 
         Args:
-            message (obj): The message to process with this filtering logic
+            message (obj): The message to process with this flatenning logic
 
         Returns:
-            (obj): A processed message as an array. Must be an array.
+            (obj): A processed message as an array. Must be an array of records.
         """
         raise NotImplementedError()
 
-from .KeyedFilter import KeyedFilter
+from .StringFlatten import StringFlatten

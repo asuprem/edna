@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import List
 import warnings
 from edna.process import BaseProcess
 
@@ -31,7 +33,7 @@ class Map(BaseProcess):
         """
         super().__init__(process=process,  *args, **kwargs)
     
-    def process(self, message: object):
+    def process(self, message: object) -> List[object]:
         """This is the entrypoint to this primitive to map a message. It is called by the BaseProcess parent
         from the `__call__()` method. It subsequently calls the `map()` method.
 
@@ -45,7 +47,7 @@ class Map(BaseProcess):
         """
         return [self.map(message)]
 
-    def map(self, message: object):
+    def map(self, message: object) -> object:
         """Logic for mapping. Subclasses need to implement this.
 
         Args:
