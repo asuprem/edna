@@ -10,26 +10,20 @@ class StreamGraph:
     into the StreamGraph, a transformation that modifies the stream, or a sink that emits
     a stream.
 
-    Raises:
-        ValueError: [description]
-        StreamGraphNodeDoesNotExistException: [description]
-        StreamGraphNodeDoesNotExistException: [description]
-        ValueError: [description]
-        ValueError: [description]
-
     Attributes:
-        node_list (List[StreamGraphNode]): This is the list of nodes in the StreamGraph. Each element 
+        node_list (List[SingleOutputStreamGraphNode]): This is the list of nodes in the StreamGraph. Each element 
             is a SingleOutputStreamGraphNode encapsulating the transformation callable.
         node_map (Dict[int, List[int]]): This is the representation of the StreamGraph DAG. Each entry 
             in the map is the index of the source node in `node_list`. The values are the list
             of indices of target nodes the source node connects to.
-        leaf_list (Dict[int]): A list (technically a map for O(1) access) of nodes that are currently leaves 
+        leaf_list (Dict[int]): A list (technically a map for O(1) access) of node indices that point to nodes
+            that are currently leaves in the StreamGraph.
+        root_list (Dict[int]): A list of node indices that point to nodes that are currently roots 
             in the StreamGraph.
-        root_list (Dict[int]): A list (technically a map for O(1) access) of nodes that are currently roots 
-            in the StreamGraph.
-        empty_graph (bool): Set to `false` when initialized and updated.
-        node_head (int): Index of the last modified node in the graph. This can be changed 
-            with `getNodeIndexByNodeId` and `getNodeIndexByNodeName` methods.
+        empty_graph (bool): Set to `false` when initialized and updated to `true` when a node is added.
+        node_head (int): Index of the last modified node in the graph. 
+        node_id_to_node_idx_map (Dict[int,int]): A map to retrieve the index of a node in the `node_list`
+            given the node's `node_id`
     """
     # This will store the list of nodes
     node_list : List[SingleOutputStreamGraphNode]
@@ -42,18 +36,21 @@ class StreamGraph:
     empty_graph : bool = True
     # Index of node in node_list that is the current head of graph (things will be attached to this...)
     node_head : int = None
+    node_id_to_node_idx_map: Dict[int,int]
     
     def __init__(self):
         """Initialize the StreamGraph with empty `node_list`, `node_map`, and `leaf_list`.
         """
-        self.node_list = []
-        self.node_map = {}
-        self.leaf_list = {}
-        self.root_list = []
+        self.node_list = [] # Stores nodes
+        self.node_map = {}  # node list idx -> node list idx
+        self.leaf_list = {} # node idx in node_list that are leaf
+        self.root_list = [] # node idx in node_list that are roots
+        self.node_id_to_node_idx_map = {}   # node id to node idx in node_list
 
     def addNode(self, node: SingleOutputStreamGraphNode):
         """Add a new node to the StreamGraph and update the head to reference the new node. 
-        Also add the node to the list of leafs in the StreamGraph.
+        Also add the node to the list of leafs in the StreamGraph. Updates the 
+        `node_id_to_node_idx_map`, and also updates `root_list` if the node is an ingest.
 
         Args:
             node (SingleOutputStreamGraphNode): A SingleOutputStreamGraphNode instance.
@@ -76,6 +73,7 @@ class StreamGraph:
             self.root_list.append(self.node_head)
         
         self.leaf_list[self.node_head] = 1
+        self.node_id_to_node_idx_map[node.node_id] = self.node_head
 
     def addNodeToHead(self, node: StreamGraph):
         """Add a node to the StreamGraph and create an edge to the new node from the current head.
@@ -236,11 +234,13 @@ class StreamGraph:
         self.node_head = node_idx
 
     def setNodeHeadById(self, node_id: int):
-        node_idx = None
+        node_idx = self.node_id_to_node_idx_map.get(node_id,None)
+        """
         for idx, node in enumerate(self.node_list):
             if node.node_id == node_id:
                 node_idx = idx
                 break
+        """
         if node_idx is None:
             raise StreamGraphNodeDoesNotExistException(node_id==node_id)
         self.node_head = node_idx
@@ -267,14 +267,26 @@ class StreamGraph:
         """
         return len(self.node_list)-1 >= node_idx
 
-    def verifyNodeExistsById(self, node_id: int):
-        node_idx = None
-        for idx, node in enumerate(self.node_list):
-            if node.node_id == node_id:
-                return True
-        return False
+    def verifyNodeExistsById(self, node_id: int) -> bool:
+        """Verifies if a node with the provided `node_id` exists in the StreamGraph.
 
-    def verifyNodeExistsByName(self, node_name: str):
+        Args:
+            node_id (int): The node id to check.
+
+        Returns:
+            (bool): Whether the desired node exists
+        """
+        return node_id in self.node_id_to_node_idx_map
+
+    def verifyNodeExistsByName(self, node_name: str) -> bool:
+        """Verifies if a node with the provided `name` exists in the StreamGraph.
+
+        Args:
+            node_name (str): The node name to check
+
+        Returns:
+            bool: Whether the desired node exists
+        """
         node_idx = None
         for idx, node in enumerate(self.node_list):
             if node.name == node_name:
@@ -282,24 +294,22 @@ class StreamGraph:
         return False
 
     def addVertex(self, node_idx: int):
-        """Adds a `node_idx` to the `node_map` with an empty list.
+        """Adds a `node_idx` to the `node_map` with an empty edge list.
 
         Args:
             node_idx (int): The index of the node to add to the `node_map`
         """
         self.node_map[node_idx] = []
 
-    
-        
-    
-    def isLeaf(self, node_idx: int):
+
+    def isLeaf(self, node_idx: int) -> bool:
         """Checks if the given index is of a leaf node.
 
         Args:
             node_idx (int): The node index to check
 
         Returns:
-            bool: Returns if `node_idx` refers to a leaf node.
+            (bool): Returns if `node_idx` refers to a leaf node.
         """
         return node_idx in self.leaf_list
 
@@ -320,7 +330,7 @@ class StreamGraph:
         """
         self.leaf_list.pop(node_idx)
 
-    def verifyGraph(self):
+    def verifyGraph(self) -> bool:
         """Verify the graph, ensuring all leaf nodes are Emit Nodes.
 
         Returns:
@@ -336,39 +346,122 @@ class StreamGraph:
 
     # Node operations
     def setNodeNameById(self, node_id : int, node_name: str):
+        """Sets the name of a node, referenced by the node id.
+
+        Args:
+            node_id (int): The node id to target
+            node_name (str): The new name for this node
+        """
         self.setNodeNameByIndex(node_index=self.getNodeIndexByNodeId(node_id=node_id), node_name=node_name)
 
     def setNodeNameOfHead(self, node_name: str):
+        """Set the name of the head node.
+
+        Args:
+            node_name (str): The new name for the head node
+        """
         self.setNodeNameByIndex(self.getHeadNodeIndex(), node_name=node_name)
     
     def setNodeNameByIndex(self, node_index : int, node_name: str):
+        """Sets the name of a node, referenced by the node index.
+
+        Args:
+            node_index (int): The node index to target
+            node_name (str): The new name for this node
+        """
         self.node_list[node_index].setName(node_name)
 
-    def getNodeNameById(self, node_id: int):
+    def getNodeNameById(self, node_id: int) -> str:
+        """Get the name of a node referenced by the node id
+
+        Args:
+            node_id (int): The id of the target node.
+
+        Returns:
+            str: The name of the node
+        """
         return self.getNodeNameByIndex(self.getNodeIndexByNodeId(node_id=node_id))
 
-    def getNodeNameOfHead(self):
+    def getNodeNameOfHead(self) -> str:
+        """Get the name of the head node
+
+        Returns:
+            str: [description]
+        """
         return self.getNodeNameByIndex(self.getHeadNodeIndex())
 
-    def getNodeNameByIndex(self, node_index: int):
+    def getNodeNameByIndex(self, node_index: int) -> str:
+        """Get the name of a node referenced by the node indedx
+
+        Args:
+            node_index (int): The index of the target node.
+
+        Returns:
+            str: The name of the node
+        """
         return self.node_list[node_index].getName()
 
 
-    def getHeadNode(self):
+    def getHeadNode(self) -> SingleOutputStreamGraphNode:
         """Get the current head node.
 
         Returns:
-            SingleOutputStreamGraphNode: Returns the current head node.
+            SingleOutputStreamGraphNode: The desired node
         """
         return self.node_list[self.node_head]
     
-    def getNodeByIndex(self, node_index : int):
+    def getNodeByIndex(self, node_index : int) -> SingleOutputStreamGraphNode:
+        """Get a node referenced by the node index
+
+        Args:
+            node_index (int): The index of the node to retrieve
+
+        Returns:
+            SingleOutputStreamGraphNode: The desired node
+        """
         return self.node_list[node_index]
 
-    def getNodeById(self, node_id : int):
+    def getNodeById(self, node_id : int) -> SingleOutputStreamGraphNode:
+        """Get a node referenced by the node id
+
+        Args:
+            node_id (int): The id of the node to retrieve
+
+        Returns:
+            SingleOutputStreamGraphNode: The desired node
+        """
         return self.getNodeByIndex(self.getNodeIndexByNodeId(node_id=node_id))
 
-    def getNodeByName(self, node_name: str):
+    def getNodeByName(self, node_name: str) -> SingleOutputStreamGraphNode:
+        """Get a node referenced by the node name
+
+        Args:
+            node_name (str): The name of the node to retrieve
+
+        Returns:
+            SingleOutputStreamGraphNode: The desired node
+        """
         return self.getNodeByIndex(self.getNodeIndexByNodeName(node_name))
 
     
+    def getEdgesForNodeId(self, node_id: int) -> List[int]:
+        """Gets the edges for a node referencced by the node id
+
+        Args:
+            node_id (int): The id of the node to get the edges for.
+
+        Returns:
+            List[int]: The list of target nodes of this source node.
+        """
+        return self.getEdgesForNodeIdx(self.getNodeIndexByNodeId(node_id))
+
+    def getEdgesForNodeIdx(self, node_idx: int) -> List[int]:
+        """Gets the edges for a node referencced by the node index
+
+        Args:
+            node_idx (int): The index of the node to get the edges for.
+
+        Returns:
+            List[int]: The list of target nodes of this source node.
+        """
+        return self.node_map.get(node_idx,[])

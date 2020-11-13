@@ -7,28 +7,54 @@ from edna.api import DataStream
 from edna.types.enums import StreamGraphNodeType, SingleOutputStreamGraphNodeProcessType, SingleOutputStreamGraphNodeType
 
 class StreamGraphFlattener:
+    """A static class that flattens a collection of streams. Flattening involves
+    creating a single StreamGraph out of several Datastreams. During flattening,
+    a single unique copy of each node is kept in case of SplitStreams that might
+    copy streams lazily.
+    """
+
     @staticmethod
-    def flattenStream(stream_collection: Dict[int, DataStream] = None, stream_list: List[DataStream] = None):
+    def flattenStream(stream_collection: Dict[int, DataStream] = None, stream_list: List[DataStream] = None) -> StreamGraph:
+        """Flattens a set of Datastreams into a single StreamGraph. Either a dict or list
+        can be provided.
+
+        Args:
+            stream_collection (Dict[int, DataStream], optional): A collection of `DataStream`s in a 
+                dictionary. Defaults to None.
+            stream_list (List[DataStream], optional): A list of `DataStream`s. Defaults to None.
+
+        Returns:
+            StreamGraph: A flattened StreamGraph.
+        """
         if stream_collection is None:
             return StreamGraphFlattener._flatten(stream_list=stream_list)
         return StreamGraphFlattener._flatten(stream_collection.values())
 
     """
-        StreamFlattening:
+    StreamFlattening:
 
-        iterate through each stream
-        for each node in the stream, add it to the streamgraph
-            if this node already exists in the streamgraph, don't add it
-        for each edge, add that edge to the flattenedStreamGraph
-            when we have a splitnode, basically the original streamgraph has a SplitNode, with N connections from it
-            case: split as is with emits for each of the N connections. Easy -- just directly copy the nodes
-            case: split, with a join down the line that takes in two stream objects (and one of then could technically be split-head)
-                in this case, during flattening, we receive the stream after the join, which has a datastream with a join node
-                there might be multiple streams
+    iterate through each stream
+    for each node in the stream, add it to the streamgraph
+        if this node already exists in the streamgraph, don't add it
+    for each edge, add that edge to the flattenedStreamGraph
+        when we have a splitnode, basically the original streamgraph has a SplitNode, with N connections from it
+        case: split as is with emits for each of the N connections. Easy -- just directly copy the nodes
+        case: split, with a join down the line that takes in two stream objects (and one of then could technically be split-head)
+            in this case, during flattening, we receive the stream after the join, which has a datastream with a join node
+            there might be multiple streams
     """
 
+
     @staticmethod
-    def _flatten(stream_list: List[DataStream]):
+    def _flatten(stream_list: List[DataStream]) -> StreamGraph:
+        """Flattens a list of datastreams into a single StreamGraph. 
+
+        Args:
+            stream_list (List[DataStream]): A list of `DataStream`s
+
+        Returns:
+            StreamGraph: A flattened `StreamGraph`
+        """
         flattened_stream_graph = StreamGraph()
         # For each stream
         for data_stream in stream_list:
