@@ -43,20 +43,20 @@ class ByteBuffer:
 
         self.reset()
 
-    def setName(self, name: str):
+    def setName(self, name: str) -> str:
         """Attaches a suffix to the name if it is 'default'. Otherwise, returns the name itself.
 
         Args:
             name (str): Tentative name of this `ByteBuffer`.
 
         Returns:
-            (str): The name for this `ByteBuffer`.
+            str: The name for this `ByteBuffer`.
         """
         if name == EdnaDefault.BUFFER_NAME:
             return NameUtils.attachNameSuffix(name, suffix_length=5)
         return name
 
-    def computeOverflow(self, message_length: int):
+    def computeOverflow(self, message_length: int) -> int:
         """Compute the overflow of provided message length given the current 
         internal buffer size and the `MAX_BUFFER_SIZE`. The overflow is how
         much of the message will not fit into the current buffer because of
@@ -66,11 +66,11 @@ class ByteBuffer:
             message_length (int): The length of the current message (in bytes).
 
         Returns:
-            (int): Overflow of message in internal buffer. 
+            int: Overflow of message in internal buffer. 
         """
         return self.buffer.tell() + message_length - self.MAX_BUFFER_SIZE
 
-    def computeWriteIndex(self, message_length: int, overflow: int):
+    def computeWriteIndex(self, message_length: int, overflow: int) -> int:
         """Compute how much of the message to write given the message lenth and
         overflow, the latter obtained from `computeOverflow()`. In case of 0 overflow,
         the entire message can be written into the buffer.
@@ -80,7 +80,7 @@ class ByteBuffer:
             overflow (int): Message overflow, obtained from `computeOverflow`
 
         Returns:
-            (int): Index up to which current message can be written into buffer. Returns length of message
+            int: Index up to which current message can be written into buffer. Returns length of message
                 if overflow is 0.
         """
         write_index = message_length # This is how much of the message we will write
@@ -100,7 +100,7 @@ class ByteBuffer:
     def reset(self):
         """Reset the ByteBuffer. TODO Timing reset might be added in the future here, if ByteBuffer is managed on another thread.
         """
-        self.reset_buffer()
+        self.resetBuffer()
 
     def resetBuffer(self):
         """Reset the contents of the internal buffer
