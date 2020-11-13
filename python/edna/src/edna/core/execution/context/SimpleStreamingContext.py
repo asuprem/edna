@@ -68,7 +68,7 @@ class SimpleStreamingContext(EdnaContext):
         """This executes the a job for the SimpleStreamingContext. `run` is called through the `execute()` method in the interface.
 
         Raises:
-            NotImplementedError: SERVER_SIDE_STREAM patterns are not implemented (and likely won't be, since the pattern is irrelevant)
+            NotImplementedError: BUFFERED_INGEST patterns are not implemented in `SimpleStreamingContext`
         """        
         if self.ingest is None:
             raise PrimitiveNotSetException("StreamingContext", "Ingest")
@@ -77,14 +77,14 @@ class SimpleStreamingContext(EdnaContext):
         if self.emit is None:
             raise PrimitiveNotSetException("StreamingContext", "Emit")
 
-        if self.ingest.execution_mode == IngestPattern.CLIENT_SIDE_STREAM:
+        if self.ingest.execution_mode == IngestPattern.STANDARD_INGEST:
             while True:
                 record_future = self.ingest_executor.submit(next, self.ingest)
                 while not record_future.done():
                     pass    # Perform buffering?
                 streaming_record = record_future.result()
                 self.emit(self.process(streaming_record)) # Serialization verification TODO
-        if self.ingest.execution_mode == IngestPattern.SERVER_SIDE_STREAM:
+        if self.ingest.execution_mode == IngestPattern.BUFFERED_INGEST:
             raise NotImplementedError
 
     
