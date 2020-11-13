@@ -79,7 +79,9 @@ class DataStream:
         Args:
             node (SingleOutputStreamGraphNode): A StreamGraphNode wrapping an ingest primitive
         """
-        self.addSingleOutputStreamNode(node)
+        self.stream_graph.addNode(node)
+        self.graph_heads = [self.stream_graph.getHeadNodeIndex()]
+        self.primary_head_idx = 0
 
 
     def addSingleOutputStreamNode(self, node: SingleOutputStreamGraphNode):
