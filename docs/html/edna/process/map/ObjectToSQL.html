@@ -57,6 +57,7 @@ class ObjectToSQL(Map):
     Args:
         Map (BaseProcess): The interface this process implements
     &#34;&#34;&#34;
+    process_name : str = &#34;ObjectToSQL&#34;
     def __init__(self, process: BaseProcess = None, 
         tuple_factory: SQLTupleFactory = None, 
         *args, **kwargs) -&gt; BaseProcess:
@@ -167,6 +168,7 @@ and <code>getValues()</code> method.</p>
     Args:
         Map (BaseProcess): The interface this process implements
     &#34;&#34;&#34;
+    process_name : str = &#34;ObjectToSQL&#34;
     def __init__(self, process: BaseProcess = None, 
         tuple_factory: SQLTupleFactory = None, 
         *args, **kwargs) -&gt; BaseProcess:
@@ -201,18 +203,11 @@ and <code>getValues()</code> method.</p>
 <ul class="hlist">
 <li><a title="edna.process.map.Map" href="index.html#edna.process.map.Map">Map</a></li>
 <li><a title="edna.process.BaseProcess" href="../index.html#edna.process.BaseProcess">BaseProcess</a></li>
+<li><a title="edna.core.primitives.EdnaPrimitive" href="../../core/primitives/index.html#edna.core.primitives.EdnaPrimitive">EdnaPrimitive</a></li>
 </ul>
 <h3>Class variables</h3>
 <dl>
-<dt id="edna.process.map.ObjectToSQL.ObjectToSQL.in_serializer"><code class="name">var <span class="ident">in_serializer</span> : <a title="edna.serializers.BufferedSerializable.BufferedSerializable" href="../../serializers/BufferedSerializable.html#edna.serializers.BufferedSerializable.BufferedSerializable">BufferedSerializable</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="edna.process.map.ObjectToSQL.ObjectToSQL.out_serializer"><code class="name">var <span class="ident">out_serializer</span> : <a title="edna.serializers.BufferedSerializable.BufferedSerializable" href="../../serializers/BufferedSerializable.html#edna.serializers.BufferedSerializable.BufferedSerializable">BufferedSerializable</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="edna.process.map.ObjectToSQL.ObjectToSQL.serializer"><code class="name">var <span class="ident">serializer</span> : <a title="edna.serializers.BufferedSerializable.BufferedSerializable" href="../../serializers/BufferedSerializable.html#edna.serializers.BufferedSerializable.BufferedSerializable">BufferedSerializable</a></code></dt>
+<dt id="edna.process.map.ObjectToSQL.ObjectToSQL.process_name"><code class="name">var <span class="ident">process_name</span> : str</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -279,10 +274,8 @@ a database.</p></div>
 <li>
 <h4><code><a title="edna.process.map.ObjectToSQL.ObjectToSQL" href="#edna.process.map.ObjectToSQL.ObjectToSQL">ObjectToSQL</a></code></h4>
 <ul class="">
-<li><code><a title="edna.process.map.ObjectToSQL.ObjectToSQL.in_serializer" href="#edna.process.map.ObjectToSQL.ObjectToSQL.in_serializer">in_serializer</a></code></li>
 <li><code><a title="edna.process.map.ObjectToSQL.ObjectToSQL.map" href="#edna.process.map.ObjectToSQL.ObjectToSQL.map">map</a></code></li>
-<li><code><a title="edna.process.map.ObjectToSQL.ObjectToSQL.out_serializer" href="#edna.process.map.ObjectToSQL.ObjectToSQL.out_serializer">out_serializer</a></code></li>
-<li><code><a title="edna.process.map.ObjectToSQL.ObjectToSQL.serializer" href="#edna.process.map.ObjectToSQL.ObjectToSQL.serializer">serializer</a></code></li>
+<li><code><a title="edna.process.map.ObjectToSQL.ObjectToSQL.process_name" href="#edna.process.map.ObjectToSQL.ObjectToSQL.process_name">process_name</a></code></li>
 </ul>
 </li>
 </ul>

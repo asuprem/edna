@@ -71,20 +71,20 @@ class ByteBuffer:
 
         self.reset()
 
-    def setName(self, name: str):
+    def setName(self, name: str) -&gt; str:
         &#34;&#34;&#34;Attaches a suffix to the name if it is &#39;default&#39;. Otherwise, returns the name itself.
 
         Args:
             name (str): Tentative name of this `ByteBuffer`.
 
         Returns:
-            (str): The name for this `ByteBuffer`.
+            str: The name for this `ByteBuffer`.
         &#34;&#34;&#34;
         if name == EdnaDefault.BUFFER_NAME:
             return NameUtils.attachNameSuffix(name, suffix_length=5)
         return name
 
-    def computeOverflow(self, message_length: int):
+    def computeOverflow(self, message_length: int) -&gt; int:
         &#34;&#34;&#34;Compute the overflow of provided message length given the current 
         internal buffer size and the `MAX_BUFFER_SIZE`. The overflow is how
         much of the message will not fit into the current buffer because of
@@ -94,11 +94,11 @@ class ByteBuffer:
             message_length (int): The length of the current message (in bytes).
 
         Returns:
-            (int): Overflow of message in internal buffer. 
+            int: Overflow of message in internal buffer. 
         &#34;&#34;&#34;
         return self.buffer.tell() + message_length - self.MAX_BUFFER_SIZE
 
-    def computeWriteIndex(self, message_length: int, overflow: int):
+    def computeWriteIndex(self, message_length: int, overflow: int) -&gt; int:
         &#34;&#34;&#34;Compute how much of the message to write given the message lenth and
         overflow, the latter obtained from `computeOverflow()`. In case of 0 overflow,
         the entire message can be written into the buffer.
@@ -108,7 +108,7 @@ class ByteBuffer:
             overflow (int): Message overflow, obtained from `computeOverflow`
 
         Returns:
-            (int): Index up to which current message can be written into buffer. Returns length of message
+            int: Index up to which current message can be written into buffer. Returns length of message
                 if overflow is 0.
         &#34;&#34;&#34;
         write_index = message_length # This is how much of the message we will write
@@ -128,7 +128,7 @@ class ByteBuffer:
     def reset(self):
         &#34;&#34;&#34;Reset the ByteBuffer. TODO Timing reset might be added in the future here, if ByteBuffer is managed on another thread.
         &#34;&#34;&#34;
-        self.reset_buffer()
+        self.resetBuffer()
 
     def resetBuffer(self):
         &#34;&#34;&#34;Reset the contents of the internal buffer
@@ -246,20 +246,20 @@ Defaults to BufferMode.READ.</dd>
 
         self.reset()
 
-    def setName(self, name: str):
+    def setName(self, name: str) -&gt; str:
         &#34;&#34;&#34;Attaches a suffix to the name if it is &#39;default&#39;. Otherwise, returns the name itself.
 
         Args:
             name (str): Tentative name of this `ByteBuffer`.
 
         Returns:
-            (str): The name for this `ByteBuffer`.
+            str: The name for this `ByteBuffer`.
         &#34;&#34;&#34;
         if name == EdnaDefault.BUFFER_NAME:
             return NameUtils.attachNameSuffix(name, suffix_length=5)
         return name
 
-    def computeOverflow(self, message_length: int):
+    def computeOverflow(self, message_length: int) -&gt; int:
         &#34;&#34;&#34;Compute the overflow of provided message length given the current 
         internal buffer size and the `MAX_BUFFER_SIZE`. The overflow is how
         much of the message will not fit into the current buffer because of
@@ -269,11 +269,11 @@ Defaults to BufferMode.READ.</dd>
             message_length (int): The length of the current message (in bytes).
 
         Returns:
-            (int): Overflow of message in internal buffer. 
+            int: Overflow of message in internal buffer. 
         &#34;&#34;&#34;
         return self.buffer.tell() + message_length - self.MAX_BUFFER_SIZE
 
-    def computeWriteIndex(self, message_length: int, overflow: int):
+    def computeWriteIndex(self, message_length: int, overflow: int) -&gt; int:
         &#34;&#34;&#34;Compute how much of the message to write given the message lenth and
         overflow, the latter obtained from `computeOverflow()`. In case of 0 overflow,
         the entire message can be written into the buffer.
@@ -283,7 +283,7 @@ Defaults to BufferMode.READ.</dd>
             overflow (int): Message overflow, obtained from `computeOverflow`
 
         Returns:
-            (int): Index up to which current message can be written into buffer. Returns length of message
+            int: Index up to which current message can be written into buffer. Returns length of message
                 if overflow is 0.
         &#34;&#34;&#34;
         write_index = message_length # This is how much of the message we will write
@@ -303,7 +303,7 @@ Defaults to BufferMode.READ.</dd>
     def reset(self):
         &#34;&#34;&#34;Reset the ByteBuffer. TODO Timing reset might be added in the future here, if ByteBuffer is managed on another thread.
         &#34;&#34;&#34;
-        self.reset_buffer()
+        self.resetBuffer()
 
     def resetBuffer(self):
         &#34;&#34;&#34;Reset the contents of the internal buffer
@@ -397,7 +397,7 @@ case of overflow due to lalrge message.</p>
 </details>
 </dd>
 <dt id="edna.buffer.ByteBuffer.ByteBuffer.computeOverflow"><code class="name flex">
-<span>def <span class="ident">computeOverflow</span></span>(<span>self, message_length: int)</span>
+<span>def <span class="ident">computeOverflow</span></span>(<span>self, message_length: int) ‑> int</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Compute the overflow of provided message length given the current
@@ -410,12 +410,15 @@ much of the message will not fit into the current buffer because of
 <dd>The length of the current message (in bytes).</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p>(int): Overflow of message in internal buffer.</p></div>
+<dl>
+<dt><code>int</code></dt>
+<dd>Overflow of message in internal buffer.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def computeOverflow(self, message_length: int):
+<pre><code class="python">def computeOverflow(self, message_length: int) -&gt; int:
     &#34;&#34;&#34;Compute the overflow of provided message length given the current 
     internal buffer size and the `MAX_BUFFER_SIZE`. The overflow is how
     much of the message will not fit into the current buffer because of
@@ -425,13 +428,13 @@ much of the message will not fit into the current buffer because of
         message_length (int): The length of the current message (in bytes).
 
     Returns:
-        (int): Overflow of message in internal buffer. 
+        int: Overflow of message in internal buffer. 
     &#34;&#34;&#34;
     return self.buffer.tell() + message_length - self.MAX_BUFFER_SIZE</code></pre>
 </details>
 </dd>
 <dt id="edna.buffer.ByteBuffer.ByteBuffer.computeWriteIndex"><code class="name flex">
-<span>def <span class="ident">computeWriteIndex</span></span>(<span>self, message_length: int, overflow: int)</span>
+<span>def <span class="ident">computeWriteIndex</span></span>(<span>self, message_length: int, overflow: int) ‑> int</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Compute how much of the message to write given the message lenth and
@@ -445,13 +448,16 @@ the entire message can be written into the buffer.</p>
 <dd>Message overflow, obtained from <code>computeOverflow</code></dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p>(int): Index up to which current message can be written into buffer. Returns length of message
-if overflow is 0.</p></div>
+<dl>
+<dt><code>int</code></dt>
+<dd>Index up to which current message can be written into buffer. Returns length of message
+if overflow is 0.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def computeWriteIndex(self, message_length: int, overflow: int):
+<pre><code class="python">def computeWriteIndex(self, message_length: int, overflow: int) -&gt; int:
     &#34;&#34;&#34;Compute how much of the message to write given the message lenth and
     overflow, the latter obtained from `computeOverflow()`. In case of 0 overflow,
     the entire message can be written into the buffer.
@@ -461,7 +467,7 @@ if overflow is 0.</p></div>
         overflow (int): Message overflow, obtained from `computeOverflow`
 
     Returns:
-        (int): Index up to which current message can be written into buffer. Returns length of message
+        int: Index up to which current message can be written into buffer. Returns length of message
             if overflow is 0.
     &#34;&#34;&#34;
     write_index = message_length # This is how much of the message we will write
@@ -482,7 +488,7 @@ if overflow is 0.</p></div>
 <pre><code class="python">def reset(self):
     &#34;&#34;&#34;Reset the ByteBuffer. TODO Timing reset might be added in the future here, if ByteBuffer is managed on another thread.
     &#34;&#34;&#34;
-    self.reset_buffer()</code></pre>
+    self.resetBuffer()</code></pre>
 </details>
 </dd>
 <dt id="edna.buffer.ByteBuffer.ByteBuffer.resetBuffer"><code class="name flex">
@@ -520,7 +526,7 @@ if overflow is 0.</p></div>
 </details>
 </dd>
 <dt id="edna.buffer.ByteBuffer.ByteBuffer.setName"><code class="name flex">
-<span>def <span class="ident">setName</span></span>(<span>self, name: str)</span>
+<span>def <span class="ident">setName</span></span>(<span>self, name: str) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Attaches a suffix to the name if it is 'default'. Otherwise, returns the name itself.</p>
@@ -530,19 +536,22 @@ if overflow is 0.</p></div>
 <dd>Tentative name of this <code><a title="edna.buffer.ByteBuffer.ByteBuffer" href="#edna.buffer.ByteBuffer.ByteBuffer">ByteBuffer</a></code>.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p>(str): The name for this <code><a title="edna.buffer.ByteBuffer.ByteBuffer" href="#edna.buffer.ByteBuffer.ByteBuffer">ByteBuffer</a></code>.</p></div>
+<dl>
+<dt><code>str</code></dt>
+<dd>The name for this <code><a title="edna.buffer.ByteBuffer.ByteBuffer" href="#edna.buffer.ByteBuffer.ByteBuffer">ByteBuffer</a></code>.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def setName(self, name: str):
+<pre><code class="python">def setName(self, name: str) -&gt; str:
     &#34;&#34;&#34;Attaches a suffix to the name if it is &#39;default&#39;. Otherwise, returns the name itself.
 
     Args:
         name (str): Tentative name of this `ByteBuffer`.
 
     Returns:
-        (str): The name for this `ByteBuffer`.
+        str: The name for this `ByteBuffer`.
     &#34;&#34;&#34;
     if name == EdnaDefault.BUFFER_NAME:
         return NameUtils.attachNameSuffix(name, suffix_length=5)

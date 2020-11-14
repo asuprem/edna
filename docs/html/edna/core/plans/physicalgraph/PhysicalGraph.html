@@ -1,0 +1,1420 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.1" />
+<title>edna.core.plans.physicalgraph.PhysicalGraph API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>edna.core.plans.physicalgraph.PhysicalGraph</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from __future__ import annotations
+
+from typing import List, Dict
+from edna.core.plans.physicalgraph import PhysicalGraphNode
+from edna.exception import PhysicalGraphNodeDoesNotExistException
+
+from edna.core.plans.streamgraph import StreamGraphNode
+
+class PhysicalGraph:
+    &#34;&#34;&#34;A PhysicalGraph represents the physical plan for an edna job. Edna operates on
+    pipelined records, where no process in the job graph blocks the stream.
+
+    This can be accomplished by running each process as a separate thread, but this would
+    reduce the throughput by adding unnecessary thread-to-thread communication. Edna 
+    optimized pipelining in the PhysicalGraph by building PhysicalGraphNodes that group
+    multiple consecutive 1-to-1 processes. 
+
+    The StreamGraph is split into groups at edna processes that do not conform to the 
+    1-to-1 paradigm (such as splits or joins), as well as at processes that flatten or aggregate.
+    Each PhysicalGraphNode in the PhysicalGraph contains its own internal StreamGraph representing
+    these sub-job groups, and can be run on a separate thread. Edna completes the PhysicalGraph
+    with metadata for thread-to-thread communication using the TCP stack to pass
+    records through the job graph.
+
+    The `edna.core.plans.physicalgraph.PhysicalGraphBuilder`
+    can  be used to convert a flattened StreamGraph to a PhysicalGraph.
+
+    Attributes:
+        physical_node_list (List[PhysicalGraphNode]): List of all PhysicalGraphNodes in the
+            PhysicalGraph.
+        physical_nodes_edges (Dict[int,List[int]]): Source and target PhysicalGraphNode
+            for the edges in the PhysicalGraph
+        stream_nodes_edges (Dict[int, List[int]]): Source and target nodes of the StreamGraph this
+            PhysicalGraph is representing. Currently unused. As the StreamGraph is converted,
+            its edges are recorded here for consistency checks.
+        physical_node_head (int): The current head node. Modifications to the PhysicalGraph are made
+            to this node.
+        stream_nodes_to_physical_nodes_map (Dict[int, int]): Records which PhysicalGraphNode a
+            StreamGraphNode is stored in, referenced by their respective node ids
+        physical_node_ids_to_physical_node_idx_map (Dict[int,int]): Keyed by node id, records the 
+            index in the `physical_node_list` that contains the PhysicalGraphNode with the node id.
+        physical_node_root_list (Dict[int,int]): List of roots of the PhysicalGraph.
+    
+    &#34;&#34;&#34;
+    # This will store the list of nodes
+    physical_node_list : List[PhysicalGraphNode]
+    # Each time we add a connection, the node_map is updated for the current context
+    physical_nodes_edges : Dict[int,List[int]]
+    stream_nodes_edges: Dict[int, List[int]]    # UNEEDED?
+    # Index of node in node_list that is the current head of graph (things will be attached to this...)
+    physical_node_head : int
+    # this will store the mapping of streeamgraphnodes to physicalgraphnodes. Stream graph node ids are mapped to physical node id
+    stream_nodes_to_physical_nodes_map: Dict[int, int]
+    # Record a reference to the physical node in node_list given the physical node id
+    physical_node_ids_to_physical_node_idx_map: Dict[int,int]
+    # List of roots
+    physical_node_root_list: Dict[int,int]
+
+
+
+    def __init__(self):
+        &#34;&#34;&#34;Initializes an empty PhysicalGraph
+        &#34;&#34;&#34;
+        self.physical_node_list = []
+        self.physical_nodes_edges = {}
+        self.stream_nodes_edges = {}
+        self.physical_node_head = None
+        self.stream_nodes_to_physical_nodes_map = {}
+        self.physical_node_ids_to_physical_node_idx_map = {}
+        self.physical_node_root_list = {}
+
+
+    def addPhysicalGraphNode(self, physical_graph_node: PhysicalGraphNode):
+        &#34;&#34;&#34;Adds a new PhysicalGraphNode. If the node is not empty, its internal 
+        StreamGraphNodes are added the the PhysicalGraph as well.
+
+        Args:
+            physical_graph_node (PhysicalGraphNode): The PhysicalGraphNode to add.
+
+        Raises:
+            RuntimeError: If any StreamGraphNode inside the PhysicalGraphNode already
+                exists in the PhysicalGraph.
+        &#34;&#34;&#34;
+        for stream_graph_node in physical_graph_node.stream_graph_node_list:
+            if self.streamNodeExistsInPhysicalGraphNode(stream_graph_node.node_id):
+                raise RuntimeError(&#34;Stream graph node already exists in stream nodes map...&#34;)
+
+        self.physical_node_list.append(physical_graph_node)
+        self.physical_node_head = len(self.physical_node_list) - 1
+        for stream_graph_node in physical_graph_node.stream_graph_node_list:
+            self.stream_nodes_map[stream_graph_node.node_id] = physical_graph_node.node_id
+        self.physical_node_ids_to_physical_node_idx_map[physical_graph_node.node_id] = self.physical_node_head
+        self.physical_node_root_list[self.physical_node_head] = 1
+
+    def streamNodeExistsInPhysicalGraphNode(self, stream_graph_node_id: int) -&gt; bool:
+        &#34;&#34;&#34;This checks whether a StreamGraphNode already exists within the PhysicalGraph
+
+        Args:
+            stream_graph_node_id (int): The node id of the StreamGraphNode to check.
+
+        Returns:
+            bool: If the requested StreamGraphNode exists.
+        &#34;&#34;&#34;
+        return stream_graph_node_id in self.stream_nodes_to_physical_nodes_map
+
+    #------ GETTING NODES -----------------------------------------
+    def getPhysicalGraphNodeIndexByPhysicalNodeId(self, node_id: int) -&gt; int:
+        &#34;&#34;&#34;Returns the index of a PhysicalGraphNode referenced by node id
+
+        Args:
+            node_id (int): The id of the node to retrieve the index.
+
+        Raises:
+            PhysicalGraphNodeDoesNotExistException: Raised if the requested node
+                does not exist
+
+        Returns:
+            int: The index of the PhysicalGraphNode in the `physical_node_list`
+        &#34;&#34;&#34;
+        node_idx = self.physical_node_ids_to_physical_node_idx_map.get(node_id, None)
+        if node_idx is None:
+            raise PhysicalGraphNodeDoesNotExistException(node_id=node_id)
+        return node_idx
+
+    def getPhysicalGraphNodeByIndex(self, idx: int) -&gt; PhysicalGraphNode:
+        &#34;&#34;&#34;Returns a PhysicalGraphNode referenced by its index.
+
+        Args:
+            idx (int): The index of the node to retrieve.
+
+        Returns:
+            PhysicalGraphNode: The requested node
+        &#34;&#34;&#34;
+        return self.physical_node_list[idx]
+
+    def getPhysicalGraphNodeByStreamNodeId(self, node_id: int) -&gt; PhysicalGraphNode:
+        &#34;&#34;&#34;Returns a PhysicalGraphNode referenced by its index.
+
+        Args:
+            node_id (int): The id of the node to retrieve.
+
+        Returns:
+            PhysicalGraphNode: The requested node
+        &#34;&#34;&#34;
+        return self.physical_node_list[self.getPhysicalGraphNodeIndexByPhysicalNodeId(self.stream_nodes_to_physical_nodes_map[node_id])]
+
+    def getHeadByPhysicalNodeId(self, node_id: int) -&gt; PhysicalGraph:
+        &#34;&#34;&#34;Changes the head node of the PhysicalGraph to the requested 
+        node referenced by id.
+
+        Args:
+            node_id (int): The id of the node to set as head.
+
+        Returns:
+            PhysicalGraph: An instance of this PhysicalGraph, with a modified head.
+        &#34;&#34;&#34;
+        self.physical_node_head = self.getPhysicalGraphNodeIndexByPhysicalNodeId(node_id=node_id)
+        return self
+    
+    def getHeadByStreamNodeId(self, node_id: int) -&gt; PhysicalGraph:
+        &#34;&#34;&#34;Changes the head node of the PhysicalGraph to the requested 
+        node referenced by a StreamGraphNode id, where the requested head contains
+        the StreamGraphNode.
+
+        Args:
+            node_id (int): The node id of the StreamGraphNode
+
+        Returns:
+            PhysicalGraph: An instance of this PhysicalGraph, with a modified head.
+        &#34;&#34;&#34;
+        self.physical_node_head = self.getPhysicalGraphNodeIndexByPhysicalNodeId(self.stream_nodes_to_physical_nodes_map[node_id])
+        return self
+
+    def getPhysicalNodeIdOfHead(self) -&gt; int:
+        &#34;&#34;&#34;Returns the node id of the head PhysicalGraphNode
+
+        Returns:
+            int: The node id of the head node
+        &#34;&#34;&#34;
+        return self.physical_node_list[self.physical_node_head].node_id
+
+    def isChainable(self) -&gt; bool:
+        &#34;&#34;&#34;Checks if the head PhysicalGraphNode is chainable. A PhysicalGraphNode
+        is chainable if new StreamGraphNodes can be added to it. This means
+        the node does not yet have an emit node inside it.
+
+        Returns:
+            bool: [description]
+        &#34;&#34;&#34;
+        return self.physical_node_list[self.physical_node_head].isChainable()
+
+
+    #------ ADDING NODES -----------------------------------------
+    def insertIngestNodeInHead(self, ingest_node: StreamGraphNode):
+        &#34;&#34;&#34;Inserts an ingest StreamGraphNode inside the head PhysicalGraphNode.
+
+        Args:
+            ingest_node (StreamGraphNode): The StreamGraphNode to insert.
+
+        Raises:
+            RuntimeError: Raised if the StreamGraphNode already exists somewhere in the 
+                PhysicalGraph.
+        &#34;&#34;&#34;
+        if self.streamNodeExistsInPhysicalGraphNode(ingest_node.node_id):
+            raise RuntimeError(&#34;Ingest Stream Node already exists...?&#34;)    # TODO We need out completed node list...in Builder
+        self.physical_node_list[self.physical_node_head].addIngestNode(ingest_node)
+        # This maps a stream node id to the id of the phyisical node that contains it
+        self.stream_nodes_to_physical_nodes_map[ingest_node.node_id] = self.physical_node_list[self.physical_node_head].node_id
+
+    def insertEmitNodeInHead(self, emit_node: StreamGraphNode):
+        &#34;&#34;&#34;Inserts an emit StreamGraphNode inside the head PhysicalGraphNode.
+
+        Args:
+            emit_node (StreamGraphNode): The StreamGraphNode to insert.
+
+        Raises:
+            RuntimeError: Raised if the StreamGraphNode already exists somewhere in the 
+                PhysicalGraph.
+        &#34;&#34;&#34;
+        if self.streamNodeExistsInPhysicalGraphNode(emit_node.node_id):
+            raise RuntimeError(&#34;Emit Stream Node already exists...?&#34;)    # TODO We need out completed node list...in Builder
+        self.physical_node_list[self.physical_node_head].addEmitNode(emit_node)
+        # This maps a stream node id to the id of the phyisical node that contains it
+        self.stream_nodes_to_physical_nodes_map[emit_node.node_id] = self.physical_node_list[self.physical_node_head].node_id
+        # We need to add placeholders for the edge, unless this is a true Emit...so how do we check?
+
+
+    def insertProcessNodeInHead(self, process_node: StreamGraphNode):
+        &#34;&#34;&#34;Inserts a process StreamGraphNode inside the head PhysicalGraphNode.
+
+        Args:
+            process_node (StreamGraphNode): The StreamGraphNode to insert.
+
+        Raises:
+            RuntimeError: Raised if the StreamGraphNode already exists somewhere in the 
+                PhysicalGraph.
+        &#34;&#34;&#34;
+        if self.streamNodeExistsInPhysicalGraphNode(process_node.node_id):
+            raise RuntimeError(&#34;Emit Stream Node already exists...?&#34;)    # TODO We need out completed node list...in Builder
+        self.physical_node_list[self.physical_node_head].addProcessNode(process_node)
+        # This maps a stream node id to the id of the phyisical node that contains it
+        self.stream_nodes_to_physical_nodes_map[process_node.node_id] = self.physical_node_list[self.physical_node_head].node_id
+        # We need to add placeholders for the edge, unless this is a true Emit...so how do we check?
+
+
+
+    #---------- ADDING EDGES ----------------------------------------
+    # 1-1, join node
+    def addEdge(self, source_physical_node_id: int, target_physical_node_id: int):
+        &#34;&#34;&#34;Add an edge between a source PhysicalGraphNode and a target PhysicalGraphNode,
+        each referenced by their node ids
+
+        Args:
+            source_physical_node_id (int): The id of the source PhysicalGraphNode for the edge
+            target_physical_node_id (int): The id of the target PhysicalGraphNode for the edge
+        &#34;&#34;&#34;
+        # TODO we will add placeholder edge in addEmit, addSplit, etc...
+        self.physical_nodes_edges[source_physical_node_id] = [target_physical_node_id]
+        # remove the target from root list
+        if self.getPhysicalGraphNodeIndexByPhysicalNodeId(target_physical_node_id) in self.physical_node_root_list:
+            self.physical_node_root_list.pop(self.getPhysicalGraphNodeIndexByPhysicalNodeId(target_physical_node_id))
+
+    def addPlaceholderEdge(self, source_physical_node_id: int, num_edges: int = 1):
+        &#34;&#34;&#34;Adds placeholder edges to a PhysicalGraphNode
+
+        Args:
+            source_physical_node_id (int): The id of the source PhysicalGraphNode for the placeholder edges
+            num_edges (int, optional): The number of placeholder edges to add. Defaults to 1.
+        &#34;&#34;&#34;
+        # TODO for split...? Also, need to make sure we verify graph at end so there are no remaining placeholder edges.
+        self.physical_nodes_edges[source_physical_node_id] = [None]*num_edges
+
+    def replacePlaceholderEdge(self, source_physical_node_id: int, target_physical_node_id: int, placeholder_idx: int):
+        &#34;&#34;&#34;Replace a palceholder edge with an actual edge
+
+        Args:
+            source_physical_node_id (int): The id of the source PhysicalGraphNode for the placeholder edge
+            target_physical_node_id (int): The id of the target PhysicalGraphNode for the placeholder edge
+            placeholder_idx (int): The placeholder index to replace
+        &#34;&#34;&#34;
+        self.physical_nodes_edges[source_physical_node_id][placeholder_idx] = target_physical_node_id
+        if self.getPhysicalGraphNodeIndexByPhysicalNodeId(target_physical_node_id) in self.physical_node_root_list:
+            self.physical_node_root_list.pop(self.getPhysicalGraphNodeIndexByPhysicalNodeId(target_physical_node_id))
+
+    def getEdgesForPhysicalNodeId(self, physical_node_id: int) -&gt; List[int]:
+        &#34;&#34;&#34;Returns the edges for a PhysicalGraphNode, referenced by id.
+
+        Args:
+            physical_node_id (int): The node id of the PhysicalGraphNode
+
+        Returns:
+            List[int]: Returns a list of node ids that are targets for the provided source node.
+        &#34;&#34;&#34;
+        return self.physical_nodes_edges.get(physical_node_id,[])
+
+    def getEdgesForPhysicalNodeIdx(self, physical_node_idx: int) -&gt; List[int]:
+        &#34;&#34;&#34;Returns the edges for a PhysicalGraphNode, referenced by index.
+
+        Args:
+            physical_node_idx (int): The node index of the PhysicalGraphNode
+
+        Returns:
+            List[int]: Returns a list of node ids that are targets for the provided source node.
+        &#34;&#34;&#34;
+        return self.getEdgesForPhysicalNodeId(self.physical_node_list[physical_node_idx].node_id)
+        
+
+    
+
+    
+
+
+
+
+
+
+
+
+    &#34;&#34;&#34;Types of physicalgraphnodes:
+        - ingest-primitive - contains just a source
+            for item in ingest: 
+                o_buffer(message)
+        - process-primitive - contains just a process
+            for item in i_buffer:
+                o_buffer(process())
+        - emit-primitive - contains just an emit
+            for item in i_buffer:
+                emit()
+        - ingest-process-primitive - contains a source and process
+            for item in ingest:
+                o_buffer(process)
+        - process-process-primitive - maybe same as process-primitive.
+            for item in i_buffer:
+                o_buffer(process())
+        - process-emit-primitive - contains process and emit
+            for item in i_buffer:
+                emit(process())
+        - ingest-emit-primitive - contains ingest and emit
+            for item in ingest
+
+    the graph will also store a list of streamgraphnodes, and which 
+
+    &#34;&#34;&#34;</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph"><code class="flex name class">
+<span>class <span class="ident">PhysicalGraph</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>A PhysicalGraph represents the physical plan for an edna job. Edna operates on
+pipelined records, where no process in the job graph blocks the stream.</p>
+<p>This can be accomplished by running each process as a separate thread, but this would
+reduce the throughput by adding unnecessary thread-to-thread communication. Edna
+optimized pipelining in the PhysicalGraph by building PhysicalGraphNodes that group
+multiple consecutive 1-to-1 processes. </p>
+<p>The StreamGraph is split into groups at edna processes that do not conform to the
+1-to-1 paradigm (such as splits or joins), as well as at processes that flatten or aggregate.
+Each PhysicalGraphNode in the PhysicalGraph contains its own internal StreamGraph representing
+these sub-job groups, and can be run on a separate thread. Edna completes the PhysicalGraph
+with metadata for thread-to-thread communication using the TCP stack to pass
+records through the job graph.</p>
+<p>The <code><a title="edna.core.plans.physicalgraph.PhysicalGraphBuilder" href="PhysicalGraphBuilder.html">edna.core.plans.physicalgraph.PhysicalGraphBuilder</a></code>
+can
+be used to convert a flattened StreamGraph to a PhysicalGraph.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>physical_node_list</code></strong> :&ensp;<code>List[PhysicalGraphNode]</code></dt>
+<dd>List of all PhysicalGraphNodes in the
+PhysicalGraph.</dd>
+<dt><strong><code>physical_nodes_edges</code></strong> :&ensp;<code>Dict[int,List[int]]</code></dt>
+<dd>Source and target PhysicalGraphNode
+for the edges in the PhysicalGraph</dd>
+<dt><strong><code>stream_nodes_edges</code></strong> :&ensp;<code>Dict[int, List[int]]</code></dt>
+<dd>Source and target nodes of the StreamGraph this
+PhysicalGraph is representing. Currently unused. As the StreamGraph is converted,
+its edges are recorded here for consistency checks.</dd>
+<dt><strong><code>physical_node_head</code></strong> :&ensp;<code>int</code></dt>
+<dd>The current head node. Modifications to the PhysicalGraph are made
+to this node.</dd>
+<dt><strong><code>stream_nodes_to_physical_nodes_map</code></strong> :&ensp;<code>Dict[int, int]</code></dt>
+<dd>Records which PhysicalGraphNode a
+StreamGraphNode is stored in, referenced by their respective node ids</dd>
+<dt><strong><code>physical_node_ids_to_physical_node_idx_map</code></strong> :&ensp;<code>Dict[int,int]</code></dt>
+<dd>Keyed by node id, records the
+index in the <code>physical_node_list</code> that contains the PhysicalGraphNode with the node id.</dd>
+<dt><strong><code>physical_node_root_list</code></strong> :&ensp;<code>Dict[int,int]</code></dt>
+<dd>List of roots of the PhysicalGraph.</dd>
+</dl>
+<p>Initializes an empty PhysicalGraph</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class PhysicalGraph:
+    &#34;&#34;&#34;A PhysicalGraph represents the physical plan for an edna job. Edna operates on
+    pipelined records, where no process in the job graph blocks the stream.
+
+    This can be accomplished by running each process as a separate thread, but this would
+    reduce the throughput by adding unnecessary thread-to-thread communication. Edna 
+    optimized pipelining in the PhysicalGraph by building PhysicalGraphNodes that group
+    multiple consecutive 1-to-1 processes. 
+
+    The StreamGraph is split into groups at edna processes that do not conform to the 
+    1-to-1 paradigm (such as splits or joins), as well as at processes that flatten or aggregate.
+    Each PhysicalGraphNode in the PhysicalGraph contains its own internal StreamGraph representing
+    these sub-job groups, and can be run on a separate thread. Edna completes the PhysicalGraph
+    with metadata for thread-to-thread communication using the TCP stack to pass
+    records through the job graph.
+
+    The `edna.core.plans.physicalgraph.PhysicalGraphBuilder`
+    can  be used to convert a flattened StreamGraph to a PhysicalGraph.
+
+    Attributes:
+        physical_node_list (List[PhysicalGraphNode]): List of all PhysicalGraphNodes in the
+            PhysicalGraph.
+        physical_nodes_edges (Dict[int,List[int]]): Source and target PhysicalGraphNode
+            for the edges in the PhysicalGraph
+        stream_nodes_edges (Dict[int, List[int]]): Source and target nodes of the StreamGraph this
+            PhysicalGraph is representing. Currently unused. As the StreamGraph is converted,
+            its edges are recorded here for consistency checks.
+        physical_node_head (int): The current head node. Modifications to the PhysicalGraph are made
+            to this node.
+        stream_nodes_to_physical_nodes_map (Dict[int, int]): Records which PhysicalGraphNode a
+            StreamGraphNode is stored in, referenced by their respective node ids
+        physical_node_ids_to_physical_node_idx_map (Dict[int,int]): Keyed by node id, records the 
+            index in the `physical_node_list` that contains the PhysicalGraphNode with the node id.
+        physical_node_root_list (Dict[int,int]): List of roots of the PhysicalGraph.
+    
+    &#34;&#34;&#34;
+    # This will store the list of nodes
+    physical_node_list : List[PhysicalGraphNode]
+    # Each time we add a connection, the node_map is updated for the current context
+    physical_nodes_edges : Dict[int,List[int]]
+    stream_nodes_edges: Dict[int, List[int]]    # UNEEDED?
+    # Index of node in node_list that is the current head of graph (things will be attached to this...)
+    physical_node_head : int
+    # this will store the mapping of streeamgraphnodes to physicalgraphnodes. Stream graph node ids are mapped to physical node id
+    stream_nodes_to_physical_nodes_map: Dict[int, int]
+    # Record a reference to the physical node in node_list given the physical node id
+    physical_node_ids_to_physical_node_idx_map: Dict[int,int]
+    # List of roots
+    physical_node_root_list: Dict[int,int]
+
+
+
+    def __init__(self):
+        &#34;&#34;&#34;Initializes an empty PhysicalGraph
+        &#34;&#34;&#34;
+        self.physical_node_list = []
+        self.physical_nodes_edges = {}
+        self.stream_nodes_edges = {}
+        self.physical_node_head = None
+        self.stream_nodes_to_physical_nodes_map = {}
+        self.physical_node_ids_to_physical_node_idx_map = {}
+        self.physical_node_root_list = {}
+
+
+    def addPhysicalGraphNode(self, physical_graph_node: PhysicalGraphNode):
+        &#34;&#34;&#34;Adds a new PhysicalGraphNode. If the node is not empty, its internal 
+        StreamGraphNodes are added the the PhysicalGraph as well.
+
+        Args:
+            physical_graph_node (PhysicalGraphNode): The PhysicalGraphNode to add.
+
+        Raises:
+            RuntimeError: If any StreamGraphNode inside the PhysicalGraphNode already
+                exists in the PhysicalGraph.
+        &#34;&#34;&#34;
+        for stream_graph_node in physical_graph_node.stream_graph_node_list:
+            if self.streamNodeExistsInPhysicalGraphNode(stream_graph_node.node_id):
+                raise RuntimeError(&#34;Stream graph node already exists in stream nodes map...&#34;)
+
+        self.physical_node_list.append(physical_graph_node)
+        self.physical_node_head = len(self.physical_node_list) - 1
+        for stream_graph_node in physical_graph_node.stream_graph_node_list:
+            self.stream_nodes_map[stream_graph_node.node_id] = physical_graph_node.node_id
+        self.physical_node_ids_to_physical_node_idx_map[physical_graph_node.node_id] = self.physical_node_head
+        self.physical_node_root_list[self.physical_node_head] = 1
+
+    def streamNodeExistsInPhysicalGraphNode(self, stream_graph_node_id: int) -&gt; bool:
+        &#34;&#34;&#34;This checks whether a StreamGraphNode already exists within the PhysicalGraph
+
+        Args:
+            stream_graph_node_id (int): The node id of the StreamGraphNode to check.
+
+        Returns:
+            bool: If the requested StreamGraphNode exists.
+        &#34;&#34;&#34;
+        return stream_graph_node_id in self.stream_nodes_to_physical_nodes_map
+
+    #------ GETTING NODES -----------------------------------------
+    def getPhysicalGraphNodeIndexByPhysicalNodeId(self, node_id: int) -&gt; int:
+        &#34;&#34;&#34;Returns the index of a PhysicalGraphNode referenced by node id
+
+        Args:
+            node_id (int): The id of the node to retrieve the index.
+
+        Raises:
+            PhysicalGraphNodeDoesNotExistException: Raised if the requested node
+                does not exist
+
+        Returns:
+            int: The index of the PhysicalGraphNode in the `physical_node_list`
+        &#34;&#34;&#34;
+        node_idx = self.physical_node_ids_to_physical_node_idx_map.get(node_id, None)
+        if node_idx is None:
+            raise PhysicalGraphNodeDoesNotExistException(node_id=node_id)
+        return node_idx
+
+    def getPhysicalGraphNodeByIndex(self, idx: int) -&gt; PhysicalGraphNode:
+        &#34;&#34;&#34;Returns a PhysicalGraphNode referenced by its index.
+
+        Args:
+            idx (int): The index of the node to retrieve.
+
+        Returns:
+            PhysicalGraphNode: The requested node
+        &#34;&#34;&#34;
+        return self.physical_node_list[idx]
+
+    def getPhysicalGraphNodeByStreamNodeId(self, node_id: int) -&gt; PhysicalGraphNode:
+        &#34;&#34;&#34;Returns a PhysicalGraphNode referenced by its index.
+
+        Args:
+            node_id (int): The id of the node to retrieve.
+
+        Returns:
+            PhysicalGraphNode: The requested node
+        &#34;&#34;&#34;
+        return self.physical_node_list[self.getPhysicalGraphNodeIndexByPhysicalNodeId(self.stream_nodes_to_physical_nodes_map[node_id])]
+
+    def getHeadByPhysicalNodeId(self, node_id: int) -&gt; PhysicalGraph:
+        &#34;&#34;&#34;Changes the head node of the PhysicalGraph to the requested 
+        node referenced by id.
+
+        Args:
+            node_id (int): The id of the node to set as head.
+
+        Returns:
+            PhysicalGraph: An instance of this PhysicalGraph, with a modified head.
+        &#34;&#34;&#34;
+        self.physical_node_head = self.getPhysicalGraphNodeIndexByPhysicalNodeId(node_id=node_id)
+        return self
+    
+    def getHeadByStreamNodeId(self, node_id: int) -&gt; PhysicalGraph:
+        &#34;&#34;&#34;Changes the head node of the PhysicalGraph to the requested 
+        node referenced by a StreamGraphNode id, where the requested head contains
+        the StreamGraphNode.
+
+        Args:
+            node_id (int): The node id of the StreamGraphNode
+
+        Returns:
+            PhysicalGraph: An instance of this PhysicalGraph, with a modified head.
+        &#34;&#34;&#34;
+        self.physical_node_head = self.getPhysicalGraphNodeIndexByPhysicalNodeId(self.stream_nodes_to_physical_nodes_map[node_id])
+        return self
+
+    def getPhysicalNodeIdOfHead(self) -&gt; int:
+        &#34;&#34;&#34;Returns the node id of the head PhysicalGraphNode
+
+        Returns:
+            int: The node id of the head node
+        &#34;&#34;&#34;
+        return self.physical_node_list[self.physical_node_head].node_id
+
+    def isChainable(self) -&gt; bool:
+        &#34;&#34;&#34;Checks if the head PhysicalGraphNode is chainable. A PhysicalGraphNode
+        is chainable if new StreamGraphNodes can be added to it. This means
+        the node does not yet have an emit node inside it.
+
+        Returns:
+            bool: [description]
+        &#34;&#34;&#34;
+        return self.physical_node_list[self.physical_node_head].isChainable()
+
+
+    #------ ADDING NODES -----------------------------------------
+    def insertIngestNodeInHead(self, ingest_node: StreamGraphNode):
+        &#34;&#34;&#34;Inserts an ingest StreamGraphNode inside the head PhysicalGraphNode.
+
+        Args:
+            ingest_node (StreamGraphNode): The StreamGraphNode to insert.
+
+        Raises:
+            RuntimeError: Raised if the StreamGraphNode already exists somewhere in the 
+                PhysicalGraph.
+        &#34;&#34;&#34;
+        if self.streamNodeExistsInPhysicalGraphNode(ingest_node.node_id):
+            raise RuntimeError(&#34;Ingest Stream Node already exists...?&#34;)    # TODO We need out completed node list...in Builder
+        self.physical_node_list[self.physical_node_head].addIngestNode(ingest_node)
+        # This maps a stream node id to the id of the phyisical node that contains it
+        self.stream_nodes_to_physical_nodes_map[ingest_node.node_id] = self.physical_node_list[self.physical_node_head].node_id
+
+    def insertEmitNodeInHead(self, emit_node: StreamGraphNode):
+        &#34;&#34;&#34;Inserts an emit StreamGraphNode inside the head PhysicalGraphNode.
+
+        Args:
+            emit_node (StreamGraphNode): The StreamGraphNode to insert.
+
+        Raises:
+            RuntimeError: Raised if the StreamGraphNode already exists somewhere in the 
+                PhysicalGraph.
+        &#34;&#34;&#34;
+        if self.streamNodeExistsInPhysicalGraphNode(emit_node.node_id):
+            raise RuntimeError(&#34;Emit Stream Node already exists...?&#34;)    # TODO We need out completed node list...in Builder
+        self.physical_node_list[self.physical_node_head].addEmitNode(emit_node)
+        # This maps a stream node id to the id of the phyisical node that contains it
+        self.stream_nodes_to_physical_nodes_map[emit_node.node_id] = self.physical_node_list[self.physical_node_head].node_id
+        # We need to add placeholders for the edge, unless this is a true Emit...so how do we check?
+
+
+    def insertProcessNodeInHead(self, process_node: StreamGraphNode):
+        &#34;&#34;&#34;Inserts a process StreamGraphNode inside the head PhysicalGraphNode.
+
+        Args:
+            process_node (StreamGraphNode): The StreamGraphNode to insert.
+
+        Raises:
+            RuntimeError: Raised if the StreamGraphNode already exists somewhere in the 
+                PhysicalGraph.
+        &#34;&#34;&#34;
+        if self.streamNodeExistsInPhysicalGraphNode(process_node.node_id):
+            raise RuntimeError(&#34;Emit Stream Node already exists...?&#34;)    # TODO We need out completed node list...in Builder
+        self.physical_node_list[self.physical_node_head].addProcessNode(process_node)
+        # This maps a stream node id to the id of the phyisical node that contains it
+        self.stream_nodes_to_physical_nodes_map[process_node.node_id] = self.physical_node_list[self.physical_node_head].node_id
+        # We need to add placeholders for the edge, unless this is a true Emit...so how do we check?
+
+
+
+    #---------- ADDING EDGES ----------------------------------------
+    # 1-1, join node
+    def addEdge(self, source_physical_node_id: int, target_physical_node_id: int):
+        &#34;&#34;&#34;Add an edge between a source PhysicalGraphNode and a target PhysicalGraphNode,
+        each referenced by their node ids
+
+        Args:
+            source_physical_node_id (int): The id of the source PhysicalGraphNode for the edge
+            target_physical_node_id (int): The id of the target PhysicalGraphNode for the edge
+        &#34;&#34;&#34;
+        # TODO we will add placeholder edge in addEmit, addSplit, etc...
+        self.physical_nodes_edges[source_physical_node_id] = [target_physical_node_id]
+        # remove the target from root list
+        if self.getPhysicalGraphNodeIndexByPhysicalNodeId(target_physical_node_id) in self.physical_node_root_list:
+            self.physical_node_root_list.pop(self.getPhysicalGraphNodeIndexByPhysicalNodeId(target_physical_node_id))
+
+    def addPlaceholderEdge(self, source_physical_node_id: int, num_edges: int = 1):
+        &#34;&#34;&#34;Adds placeholder edges to a PhysicalGraphNode
+
+        Args:
+            source_physical_node_id (int): The id of the source PhysicalGraphNode for the placeholder edges
+            num_edges (int, optional): The number of placeholder edges to add. Defaults to 1.
+        &#34;&#34;&#34;
+        # TODO for split...? Also, need to make sure we verify graph at end so there are no remaining placeholder edges.
+        self.physical_nodes_edges[source_physical_node_id] = [None]*num_edges
+
+    def replacePlaceholderEdge(self, source_physical_node_id: int, target_physical_node_id: int, placeholder_idx: int):
+        &#34;&#34;&#34;Replace a palceholder edge with an actual edge
+
+        Args:
+            source_physical_node_id (int): The id of the source PhysicalGraphNode for the placeholder edge
+            target_physical_node_id (int): The id of the target PhysicalGraphNode for the placeholder edge
+            placeholder_idx (int): The placeholder index to replace
+        &#34;&#34;&#34;
+        self.physical_nodes_edges[source_physical_node_id][placeholder_idx] = target_physical_node_id
+        if self.getPhysicalGraphNodeIndexByPhysicalNodeId(target_physical_node_id) in self.physical_node_root_list:
+            self.physical_node_root_list.pop(self.getPhysicalGraphNodeIndexByPhysicalNodeId(target_physical_node_id))
+
+    def getEdgesForPhysicalNodeId(self, physical_node_id: int) -&gt; List[int]:
+        &#34;&#34;&#34;Returns the edges for a PhysicalGraphNode, referenced by id.
+
+        Args:
+            physical_node_id (int): The node id of the PhysicalGraphNode
+
+        Returns:
+            List[int]: Returns a list of node ids that are targets for the provided source node.
+        &#34;&#34;&#34;
+        return self.physical_nodes_edges.get(physical_node_id,[])
+
+    def getEdgesForPhysicalNodeIdx(self, physical_node_idx: int) -&gt; List[int]:
+        &#34;&#34;&#34;Returns the edges for a PhysicalGraphNode, referenced by index.
+
+        Args:
+            physical_node_idx (int): The node index of the PhysicalGraphNode
+
+        Returns:
+            List[int]: Returns a list of node ids that are targets for the provided source node.
+        &#34;&#34;&#34;
+        return self.getEdgesForPhysicalNodeId(self.physical_node_list[physical_node_idx].node_id)
+        
+
+    
+
+    
+
+
+
+
+
+
+
+
+    &#34;&#34;&#34;Types of physicalgraphnodes:
+        - ingest-primitive - contains just a source
+            for item in ingest: 
+                o_buffer(message)
+        - process-primitive - contains just a process
+            for item in i_buffer:
+                o_buffer(process())
+        - emit-primitive - contains just an emit
+            for item in i_buffer:
+                emit()
+        - ingest-process-primitive - contains a source and process
+            for item in ingest:
+                o_buffer(process)
+        - process-process-primitive - maybe same as process-primitive.
+            for item in i_buffer:
+                o_buffer(process())
+        - process-emit-primitive - contains process and emit
+            for item in i_buffer:
+                emit(process())
+        - ingest-emit-primitive - contains ingest and emit
+            for item in ingest
+
+    the graph will also store a list of streamgraphnodes, and which 
+
+    &#34;&#34;&#34;</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.physical_node_head"><code class="name">var <span class="ident">physical_node_head</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.physical_node_ids_to_physical_node_idx_map"><code class="name">var <span class="ident">physical_node_ids_to_physical_node_idx_map</span> : Dict[int, int]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.physical_node_list"><code class="name">var <span class="ident">physical_node_list</span> : List[<a title="edna.core.plans.physicalgraph.PhysicalGraphNode.PhysicalGraphNode" href="PhysicalGraphNode.html#edna.core.plans.physicalgraph.PhysicalGraphNode.PhysicalGraphNode">PhysicalGraphNode</a>]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.physical_node_root_list"><code class="name">var <span class="ident">physical_node_root_list</span> : Dict[int, int]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.physical_nodes_edges"><code class="name">var <span class="ident">physical_nodes_edges</span> : Dict[int, List[int]]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.stream_nodes_edges"><code class="name">var <span class="ident">stream_nodes_edges</span> : Dict[int, List[int]]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.stream_nodes_to_physical_nodes_map"><code class="name">var <span class="ident">stream_nodes_to_physical_nodes_map</span> : Dict[int, int]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.addEdge"><code class="name flex">
+<span>def <span class="ident">addEdge</span></span>(<span>self, source_physical_node_id: int, target_physical_node_id: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Add an edge between a source PhysicalGraphNode and a target PhysicalGraphNode,
+each referenced by their node ids</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>source_physical_node_id</code></strong> :&ensp;<code>int</code></dt>
+<dd>The id of the source PhysicalGraphNode for the edge</dd>
+<dt><strong><code>target_physical_node_id</code></strong> :&ensp;<code>int</code></dt>
+<dd>The id of the target PhysicalGraphNode for the edge</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def addEdge(self, source_physical_node_id: int, target_physical_node_id: int):
+    &#34;&#34;&#34;Add an edge between a source PhysicalGraphNode and a target PhysicalGraphNode,
+    each referenced by their node ids
+
+    Args:
+        source_physical_node_id (int): The id of the source PhysicalGraphNode for the edge
+        target_physical_node_id (int): The id of the target PhysicalGraphNode for the edge
+    &#34;&#34;&#34;
+    # TODO we will add placeholder edge in addEmit, addSplit, etc...
+    self.physical_nodes_edges[source_physical_node_id] = [target_physical_node_id]
+    # remove the target from root list
+    if self.getPhysicalGraphNodeIndexByPhysicalNodeId(target_physical_node_id) in self.physical_node_root_list:
+        self.physical_node_root_list.pop(self.getPhysicalGraphNodeIndexByPhysicalNodeId(target_physical_node_id))</code></pre>
+</details>
+</dd>
+<dt id="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.addPhysicalGraphNode"><code class="name flex">
+<span>def <span class="ident">addPhysicalGraphNode</span></span>(<span>self, physical_graph_node: PhysicalGraphNode)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds a new PhysicalGraphNode. If the node is not empty, its internal
+StreamGraphNodes are added the the PhysicalGraph as well.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>physical_graph_node</code></strong> :&ensp;<code>PhysicalGraphNode</code></dt>
+<dd>The PhysicalGraphNode to add.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>RuntimeError</code></dt>
+<dd>If any StreamGraphNode inside the PhysicalGraphNode already
+exists in the PhysicalGraph.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def addPhysicalGraphNode(self, physical_graph_node: PhysicalGraphNode):
+    &#34;&#34;&#34;Adds a new PhysicalGraphNode. If the node is not empty, its internal 
+    StreamGraphNodes are added the the PhysicalGraph as well.
+
+    Args:
+        physical_graph_node (PhysicalGraphNode): The PhysicalGraphNode to add.
+
+    Raises:
+        RuntimeError: If any StreamGraphNode inside the PhysicalGraphNode already
+            exists in the PhysicalGraph.
+    &#34;&#34;&#34;
+    for stream_graph_node in physical_graph_node.stream_graph_node_list:
+        if self.streamNodeExistsInPhysicalGraphNode(stream_graph_node.node_id):
+            raise RuntimeError(&#34;Stream graph node already exists in stream nodes map...&#34;)
+
+    self.physical_node_list.append(physical_graph_node)
+    self.physical_node_head = len(self.physical_node_list) - 1
+    for stream_graph_node in physical_graph_node.stream_graph_node_list:
+        self.stream_nodes_map[stream_graph_node.node_id] = physical_graph_node.node_id
+    self.physical_node_ids_to_physical_node_idx_map[physical_graph_node.node_id] = self.physical_node_head
+    self.physical_node_root_list[self.physical_node_head] = 1</code></pre>
+</details>
+</dd>
+<dt id="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.addPlaceholderEdge"><code class="name flex">
+<span>def <span class="ident">addPlaceholderEdge</span></span>(<span>self, source_physical_node_id: int, num_edges: int = 1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds placeholder edges to a PhysicalGraphNode</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>source_physical_node_id</code></strong> :&ensp;<code>int</code></dt>
+<dd>The id of the source PhysicalGraphNode for the placeholder edges</dd>
+<dt><strong><code>num_edges</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The number of placeholder edges to add. Defaults to 1.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def addPlaceholderEdge(self, source_physical_node_id: int, num_edges: int = 1):
+    &#34;&#34;&#34;Adds placeholder edges to a PhysicalGraphNode
+
+    Args:
+        source_physical_node_id (int): The id of the source PhysicalGraphNode for the placeholder edges
+        num_edges (int, optional): The number of placeholder edges to add. Defaults to 1.
+    &#34;&#34;&#34;
+    # TODO for split...? Also, need to make sure we verify graph at end so there are no remaining placeholder edges.
+    self.physical_nodes_edges[source_physical_node_id] = [None]*num_edges</code></pre>
+</details>
+</dd>
+<dt id="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.getEdgesForPhysicalNodeId"><code class="name flex">
+<span>def <span class="ident">getEdgesForPhysicalNodeId</span></span>(<span>self, physical_node_id: int) ‑> List[int]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the edges for a PhysicalGraphNode, referenced by id.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>physical_node_id</code></strong> :&ensp;<code>int</code></dt>
+<dd>The node id of the PhysicalGraphNode</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>List[int]</code></dt>
+<dd>Returns a list of node ids that are targets for the provided source node.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getEdgesForPhysicalNodeId(self, physical_node_id: int) -&gt; List[int]:
+    &#34;&#34;&#34;Returns the edges for a PhysicalGraphNode, referenced by id.
+
+    Args:
+        physical_node_id (int): The node id of the PhysicalGraphNode
+
+    Returns:
+        List[int]: Returns a list of node ids that are targets for the provided source node.
+    &#34;&#34;&#34;
+    return self.physical_nodes_edges.get(physical_node_id,[])</code></pre>
+</details>
+</dd>
+<dt id="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.getEdgesForPhysicalNodeIdx"><code class="name flex">
+<span>def <span class="ident">getEdgesForPhysicalNodeIdx</span></span>(<span>self, physical_node_idx: int) ‑> List[int]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the edges for a PhysicalGraphNode, referenced by index.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>physical_node_idx</code></strong> :&ensp;<code>int</code></dt>
+<dd>The node index of the PhysicalGraphNode</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>List[int]</code></dt>
+<dd>Returns a list of node ids that are targets for the provided source node.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getEdgesForPhysicalNodeIdx(self, physical_node_idx: int) -&gt; List[int]:
+    &#34;&#34;&#34;Returns the edges for a PhysicalGraphNode, referenced by index.
+
+    Args:
+        physical_node_idx (int): The node index of the PhysicalGraphNode
+
+    Returns:
+        List[int]: Returns a list of node ids that are targets for the provided source node.
+    &#34;&#34;&#34;
+    return self.getEdgesForPhysicalNodeId(self.physical_node_list[physical_node_idx].node_id)</code></pre>
+</details>
+</dd>
+<dt id="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.getHeadByPhysicalNodeId"><code class="name flex">
+<span>def <span class="ident">getHeadByPhysicalNodeId</span></span>(<span>self, node_id: int) ‑> <a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph">PhysicalGraph</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Changes the head node of the PhysicalGraph to the requested
+node referenced by id.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>node_id</code></strong> :&ensp;<code>int</code></dt>
+<dd>The id of the node to set as head.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code><a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph">PhysicalGraph</a></code></dt>
+<dd>An instance of this PhysicalGraph, with a modified head.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getHeadByPhysicalNodeId(self, node_id: int) -&gt; PhysicalGraph:
+    &#34;&#34;&#34;Changes the head node of the PhysicalGraph to the requested 
+    node referenced by id.
+
+    Args:
+        node_id (int): The id of the node to set as head.
+
+    Returns:
+        PhysicalGraph: An instance of this PhysicalGraph, with a modified head.
+    &#34;&#34;&#34;
+    self.physical_node_head = self.getPhysicalGraphNodeIndexByPhysicalNodeId(node_id=node_id)
+    return self</code></pre>
+</details>
+</dd>
+<dt id="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.getHeadByStreamNodeId"><code class="name flex">
+<span>def <span class="ident">getHeadByStreamNodeId</span></span>(<span>self, node_id: int) ‑> <a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph">PhysicalGraph</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Changes the head node of the PhysicalGraph to the requested
+node referenced by a StreamGraphNode id, where the requested head contains
+the StreamGraphNode.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>node_id</code></strong> :&ensp;<code>int</code></dt>
+<dd>The node id of the StreamGraphNode</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code><a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph">PhysicalGraph</a></code></dt>
+<dd>An instance of this PhysicalGraph, with a modified head.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getHeadByStreamNodeId(self, node_id: int) -&gt; PhysicalGraph:
+    &#34;&#34;&#34;Changes the head node of the PhysicalGraph to the requested 
+    node referenced by a StreamGraphNode id, where the requested head contains
+    the StreamGraphNode.
+
+    Args:
+        node_id (int): The node id of the StreamGraphNode
+
+    Returns:
+        PhysicalGraph: An instance of this PhysicalGraph, with a modified head.
+    &#34;&#34;&#34;
+    self.physical_node_head = self.getPhysicalGraphNodeIndexByPhysicalNodeId(self.stream_nodes_to_physical_nodes_map[node_id])
+    return self</code></pre>
+</details>
+</dd>
+<dt id="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.getPhysicalGraphNodeByIndex"><code class="name flex">
+<span>def <span class="ident">getPhysicalGraphNodeByIndex</span></span>(<span>self, idx: int) ‑> <a title="edna.core.plans.physicalgraph.PhysicalGraphNode.PhysicalGraphNode" href="PhysicalGraphNode.html#edna.core.plans.physicalgraph.PhysicalGraphNode.PhysicalGraphNode">PhysicalGraphNode</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a PhysicalGraphNode referenced by its index.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>idx</code></strong> :&ensp;<code>int</code></dt>
+<dd>The index of the node to retrieve.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>PhysicalGraphNode</code></dt>
+<dd>The requested node</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getPhysicalGraphNodeByIndex(self, idx: int) -&gt; PhysicalGraphNode:
+    &#34;&#34;&#34;Returns a PhysicalGraphNode referenced by its index.
+
+    Args:
+        idx (int): The index of the node to retrieve.
+
+    Returns:
+        PhysicalGraphNode: The requested node
+    &#34;&#34;&#34;
+    return self.physical_node_list[idx]</code></pre>
+</details>
+</dd>
+<dt id="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.getPhysicalGraphNodeByStreamNodeId"><code class="name flex">
+<span>def <span class="ident">getPhysicalGraphNodeByStreamNodeId</span></span>(<span>self, node_id: int) ‑> <a title="edna.core.plans.physicalgraph.PhysicalGraphNode.PhysicalGraphNode" href="PhysicalGraphNode.html#edna.core.plans.physicalgraph.PhysicalGraphNode.PhysicalGraphNode">PhysicalGraphNode</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a PhysicalGraphNode referenced by its index.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>node_id</code></strong> :&ensp;<code>int</code></dt>
+<dd>The id of the node to retrieve.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>PhysicalGraphNode</code></dt>
+<dd>The requested node</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getPhysicalGraphNodeByStreamNodeId(self, node_id: int) -&gt; PhysicalGraphNode:
+    &#34;&#34;&#34;Returns a PhysicalGraphNode referenced by its index.
+
+    Args:
+        node_id (int): The id of the node to retrieve.
+
+    Returns:
+        PhysicalGraphNode: The requested node
+    &#34;&#34;&#34;
+    return self.physical_node_list[self.getPhysicalGraphNodeIndexByPhysicalNodeId(self.stream_nodes_to_physical_nodes_map[node_id])]</code></pre>
+</details>
+</dd>
+<dt id="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.getPhysicalGraphNodeIndexByPhysicalNodeId"><code class="name flex">
+<span>def <span class="ident">getPhysicalGraphNodeIndexByPhysicalNodeId</span></span>(<span>self, node_id: int) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the index of a PhysicalGraphNode referenced by node id</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>node_id</code></strong> :&ensp;<code>int</code></dt>
+<dd>The id of the node to retrieve the index.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>PhysicalGraphNodeDoesNotExistException</code></dt>
+<dd>Raised if the requested node
+does not exist</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd>The index of the PhysicalGraphNode in the <code>physical_node_list</code></dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getPhysicalGraphNodeIndexByPhysicalNodeId(self, node_id: int) -&gt; int:
+    &#34;&#34;&#34;Returns the index of a PhysicalGraphNode referenced by node id
+
+    Args:
+        node_id (int): The id of the node to retrieve the index.
+
+    Raises:
+        PhysicalGraphNodeDoesNotExistException: Raised if the requested node
+            does not exist
+
+    Returns:
+        int: The index of the PhysicalGraphNode in the `physical_node_list`
+    &#34;&#34;&#34;
+    node_idx = self.physical_node_ids_to_physical_node_idx_map.get(node_id, None)
+    if node_idx is None:
+        raise PhysicalGraphNodeDoesNotExistException(node_id=node_id)
+    return node_idx</code></pre>
+</details>
+</dd>
+<dt id="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.getPhysicalNodeIdOfHead"><code class="name flex">
+<span>def <span class="ident">getPhysicalNodeIdOfHead</span></span>(<span>self) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the node id of the head PhysicalGraphNode</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd>The node id of the head node</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getPhysicalNodeIdOfHead(self) -&gt; int:
+    &#34;&#34;&#34;Returns the node id of the head PhysicalGraphNode
+
+    Returns:
+        int: The node id of the head node
+    &#34;&#34;&#34;
+    return self.physical_node_list[self.physical_node_head].node_id</code></pre>
+</details>
+</dd>
+<dt id="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.insertEmitNodeInHead"><code class="name flex">
+<span>def <span class="ident">insertEmitNodeInHead</span></span>(<span>self, emit_node: StreamGraphNode)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Inserts an emit StreamGraphNode inside the head PhysicalGraphNode.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>emit_node</code></strong> :&ensp;<code>StreamGraphNode</code></dt>
+<dd>The StreamGraphNode to insert.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>RuntimeError</code></dt>
+<dd>Raised if the StreamGraphNode already exists somewhere in the
+PhysicalGraph.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def insertEmitNodeInHead(self, emit_node: StreamGraphNode):
+    &#34;&#34;&#34;Inserts an emit StreamGraphNode inside the head PhysicalGraphNode.
+
+    Args:
+        emit_node (StreamGraphNode): The StreamGraphNode to insert.
+
+    Raises:
+        RuntimeError: Raised if the StreamGraphNode already exists somewhere in the 
+            PhysicalGraph.
+    &#34;&#34;&#34;
+    if self.streamNodeExistsInPhysicalGraphNode(emit_node.node_id):
+        raise RuntimeError(&#34;Emit Stream Node already exists...?&#34;)    # TODO We need out completed node list...in Builder
+    self.physical_node_list[self.physical_node_head].addEmitNode(emit_node)
+    # This maps a stream node id to the id of the phyisical node that contains it
+    self.stream_nodes_to_physical_nodes_map[emit_node.node_id] = self.physical_node_list[self.physical_node_head].node_id</code></pre>
+</details>
+</dd>
+<dt id="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.insertIngestNodeInHead"><code class="name flex">
+<span>def <span class="ident">insertIngestNodeInHead</span></span>(<span>self, ingest_node: StreamGraphNode)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Inserts an ingest StreamGraphNode inside the head PhysicalGraphNode.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>ingest_node</code></strong> :&ensp;<code>StreamGraphNode</code></dt>
+<dd>The StreamGraphNode to insert.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>RuntimeError</code></dt>
+<dd>Raised if the StreamGraphNode already exists somewhere in the
+PhysicalGraph.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def insertIngestNodeInHead(self, ingest_node: StreamGraphNode):
+    &#34;&#34;&#34;Inserts an ingest StreamGraphNode inside the head PhysicalGraphNode.
+
+    Args:
+        ingest_node (StreamGraphNode): The StreamGraphNode to insert.
+
+    Raises:
+        RuntimeError: Raised if the StreamGraphNode already exists somewhere in the 
+            PhysicalGraph.
+    &#34;&#34;&#34;
+    if self.streamNodeExistsInPhysicalGraphNode(ingest_node.node_id):
+        raise RuntimeError(&#34;Ingest Stream Node already exists...?&#34;)    # TODO We need out completed node list...in Builder
+    self.physical_node_list[self.physical_node_head].addIngestNode(ingest_node)
+    # This maps a stream node id to the id of the phyisical node that contains it
+    self.stream_nodes_to_physical_nodes_map[ingest_node.node_id] = self.physical_node_list[self.physical_node_head].node_id</code></pre>
+</details>
+</dd>
+<dt id="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.insertProcessNodeInHead"><code class="name flex">
+<span>def <span class="ident">insertProcessNodeInHead</span></span>(<span>self, process_node: StreamGraphNode)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Inserts a process StreamGraphNode inside the head PhysicalGraphNode.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>process_node</code></strong> :&ensp;<code>StreamGraphNode</code></dt>
+<dd>The StreamGraphNode to insert.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>RuntimeError</code></dt>
+<dd>Raised if the StreamGraphNode already exists somewhere in the
+PhysicalGraph.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def insertProcessNodeInHead(self, process_node: StreamGraphNode):
+    &#34;&#34;&#34;Inserts a process StreamGraphNode inside the head PhysicalGraphNode.
+
+    Args:
+        process_node (StreamGraphNode): The StreamGraphNode to insert.
+
+    Raises:
+        RuntimeError: Raised if the StreamGraphNode already exists somewhere in the 
+            PhysicalGraph.
+    &#34;&#34;&#34;
+    if self.streamNodeExistsInPhysicalGraphNode(process_node.node_id):
+        raise RuntimeError(&#34;Emit Stream Node already exists...?&#34;)    # TODO We need out completed node list...in Builder
+    self.physical_node_list[self.physical_node_head].addProcessNode(process_node)
+    # This maps a stream node id to the id of the phyisical node that contains it
+    self.stream_nodes_to_physical_nodes_map[process_node.node_id] = self.physical_node_list[self.physical_node_head].node_id</code></pre>
+</details>
+</dd>
+<dt id="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.isChainable"><code class="name flex">
+<span>def <span class="ident">isChainable</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Checks if the head PhysicalGraphNode is chainable. A PhysicalGraphNode
+is chainable if new StreamGraphNodes can be added to it. This means
+the node does not yet have an emit node inside it.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd>[description]</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def isChainable(self) -&gt; bool:
+    &#34;&#34;&#34;Checks if the head PhysicalGraphNode is chainable. A PhysicalGraphNode
+    is chainable if new StreamGraphNodes can be added to it. This means
+    the node does not yet have an emit node inside it.
+
+    Returns:
+        bool: [description]
+    &#34;&#34;&#34;
+    return self.physical_node_list[self.physical_node_head].isChainable()</code></pre>
+</details>
+</dd>
+<dt id="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.replacePlaceholderEdge"><code class="name flex">
+<span>def <span class="ident">replacePlaceholderEdge</span></span>(<span>self, source_physical_node_id: int, target_physical_node_id: int, placeholder_idx: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Replace a palceholder edge with an actual edge</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>source_physical_node_id</code></strong> :&ensp;<code>int</code></dt>
+<dd>The id of the source PhysicalGraphNode for the placeholder edge</dd>
+<dt><strong><code>target_physical_node_id</code></strong> :&ensp;<code>int</code></dt>
+<dd>The id of the target PhysicalGraphNode for the placeholder edge</dd>
+<dt><strong><code>placeholder_idx</code></strong> :&ensp;<code>int</code></dt>
+<dd>The placeholder index to replace</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def replacePlaceholderEdge(self, source_physical_node_id: int, target_physical_node_id: int, placeholder_idx: int):
+    &#34;&#34;&#34;Replace a palceholder edge with an actual edge
+
+    Args:
+        source_physical_node_id (int): The id of the source PhysicalGraphNode for the placeholder edge
+        target_physical_node_id (int): The id of the target PhysicalGraphNode for the placeholder edge
+        placeholder_idx (int): The placeholder index to replace
+    &#34;&#34;&#34;
+    self.physical_nodes_edges[source_physical_node_id][placeholder_idx] = target_physical_node_id
+    if self.getPhysicalGraphNodeIndexByPhysicalNodeId(target_physical_node_id) in self.physical_node_root_list:
+        self.physical_node_root_list.pop(self.getPhysicalGraphNodeIndexByPhysicalNodeId(target_physical_node_id))</code></pre>
+</details>
+</dd>
+<dt id="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.streamNodeExistsInPhysicalGraphNode"><code class="name flex">
+<span>def <span class="ident">streamNodeExistsInPhysicalGraphNode</span></span>(<span>self, stream_graph_node_id: int) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This checks whether a StreamGraphNode already exists within the PhysicalGraph</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>stream_graph_node_id</code></strong> :&ensp;<code>int</code></dt>
+<dd>The node id of the StreamGraphNode to check.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd>If the requested StreamGraphNode exists.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def streamNodeExistsInPhysicalGraphNode(self, stream_graph_node_id: int) -&gt; bool:
+    &#34;&#34;&#34;This checks whether a StreamGraphNode already exists within the PhysicalGraph
+
+    Args:
+        stream_graph_node_id (int): The node id of the StreamGraphNode to check.
+
+    Returns:
+        bool: If the requested StreamGraphNode exists.
+    &#34;&#34;&#34;
+    return stream_graph_node_id in self.stream_nodes_to_physical_nodes_map</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="edna.core.plans.physicalgraph" href="index.html">edna.core.plans.physicalgraph</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph">PhysicalGraph</a></code></h4>
+<ul class="">
+<li><code><a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.addEdge" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.addEdge">addEdge</a></code></li>
+<li><code><a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.addPhysicalGraphNode" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.addPhysicalGraphNode">addPhysicalGraphNode</a></code></li>
+<li><code><a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.addPlaceholderEdge" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.addPlaceholderEdge">addPlaceholderEdge</a></code></li>
+<li><code><a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.getEdgesForPhysicalNodeId" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.getEdgesForPhysicalNodeId">getEdgesForPhysicalNodeId</a></code></li>
+<li><code><a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.getEdgesForPhysicalNodeIdx" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.getEdgesForPhysicalNodeIdx">getEdgesForPhysicalNodeIdx</a></code></li>
+<li><code><a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.getHeadByPhysicalNodeId" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.getHeadByPhysicalNodeId">getHeadByPhysicalNodeId</a></code></li>
+<li><code><a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.getHeadByStreamNodeId" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.getHeadByStreamNodeId">getHeadByStreamNodeId</a></code></li>
+<li><code><a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.getPhysicalGraphNodeByIndex" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.getPhysicalGraphNodeByIndex">getPhysicalGraphNodeByIndex</a></code></li>
+<li><code><a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.getPhysicalGraphNodeByStreamNodeId" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.getPhysicalGraphNodeByStreamNodeId">getPhysicalGraphNodeByStreamNodeId</a></code></li>
+<li><code><a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.getPhysicalGraphNodeIndexByPhysicalNodeId" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.getPhysicalGraphNodeIndexByPhysicalNodeId">getPhysicalGraphNodeIndexByPhysicalNodeId</a></code></li>
+<li><code><a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.getPhysicalNodeIdOfHead" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.getPhysicalNodeIdOfHead">getPhysicalNodeIdOfHead</a></code></li>
+<li><code><a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.insertEmitNodeInHead" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.insertEmitNodeInHead">insertEmitNodeInHead</a></code></li>
+<li><code><a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.insertIngestNodeInHead" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.insertIngestNodeInHead">insertIngestNodeInHead</a></code></li>
+<li><code><a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.insertProcessNodeInHead" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.insertProcessNodeInHead">insertProcessNodeInHead</a></code></li>
+<li><code><a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.isChainable" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.isChainable">isChainable</a></code></li>
+<li><code><a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.physical_node_head" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.physical_node_head">physical_node_head</a></code></li>
+<li><code><a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.physical_node_ids_to_physical_node_idx_map" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.physical_node_ids_to_physical_node_idx_map">physical_node_ids_to_physical_node_idx_map</a></code></li>
+<li><code><a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.physical_node_list" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.physical_node_list">physical_node_list</a></code></li>
+<li><code><a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.physical_node_root_list" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.physical_node_root_list">physical_node_root_list</a></code></li>
+<li><code><a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.physical_nodes_edges" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.physical_nodes_edges">physical_nodes_edges</a></code></li>
+<li><code><a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.replacePlaceholderEdge" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.replacePlaceholderEdge">replacePlaceholderEdge</a></code></li>
+<li><code><a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.streamNodeExistsInPhysicalGraphNode" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.streamNodeExistsInPhysicalGraphNode">streamNodeExistsInPhysicalGraphNode</a></code></li>
+<li><code><a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.stream_nodes_edges" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.stream_nodes_edges">stream_nodes_edges</a></code></li>
+<li><code><a title="edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.stream_nodes_to_physical_nodes_map" href="#edna.core.plans.physicalgraph.PhysicalGraph.PhysicalGraph.stream_nodes_to_physical_nodes_map">stream_nodes_to_physical_nodes_map</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.1</a>.</p>
+</footer>
+</body>
+</html>

@@ -27,6 +27,8 @@ DOCS="docs"
 DOCSDIRECTORY="./${DOCS}"
 if [ -d "$DOCSDIRECTORY" ]; then
     colored_print "$DOCS directory exists."
+    colored_print "Deleting $DOCS"
+    rm -rf -- $DOCS
 else
     error_print "$DOCS does not exist. Creating..."
     mkdir -p $DOCS
@@ -34,5 +36,5 @@ fi
 
 rootpath=$PWD
 cd $DOCS
-$rootpath/$ENVNAME/bin/pdoc --html edna
+$rootpath/$ENVNAME/bin/pdoc --html edna --force
 

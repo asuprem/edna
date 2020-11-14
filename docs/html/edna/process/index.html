@@ -29,9 +29,11 @@
 <pre><code class="python">from __future__ import annotations
 
 from edna.serializers import BufferedSerializable
+from typing import List
+from edna.core.primitives import EdnaPrimitive
 
 
-class BaseProcess(object):
+class BaseProcess(EdnaPrimitive):
     &#34;&#34;&#34;BaseProcess is the base class for performing operations on streaming messages.
 
     Any child class must:
@@ -44,13 +46,15 @@ class BaseProcess(object):
 
     - modify the `__call__()` method
     &#34;&#34;&#34;  
-    serializer: BufferedSerializable
-    in_serializer: BufferedSerializable
-    out_serializer: BufferedSerializable
+    process_name : str = &#34;BaseProcess&#34;
+    process: BaseProcess
+    chained_process: BaseProcess
+    
     def __init__(self, process: BaseProcess = None, 
             serializer: BufferedSerializable = None, 
             in_serializer : BufferedSerializable = None, 
             out_serializer : BufferedSerializable = None, 
+            logger_name: str = None,
             *args, **kwargs) -&gt; BaseProcess:
         &#34;&#34;&#34;Initializes the Process primitive. It can take a Process primitive as input to chain them.
 
@@ -60,16 +64,12 @@ class BaseProcess(object):
         Returns:
             BaseProcess: A chained process primitive.
         &#34;&#34;&#34;
-        self.chained_process = process if process is not None else lambda x: x
-        self.serializer = serializer
-        if self.serializer is not None:
-            self.in_serializer = in_serializer
-            self.out_serializer = out_serializer
-        else:
-            self.in_serializer = self.serializer
-            self.out_serializer = self.serializer
+        if logger_name is None:
+            logger_name = self.__class__.__name__
+        super().__init__(serializer=serializer, in_serializer=in_serializer, out_serializer=out_serializer, logger_name=logger_name)
+        self.replaceChainedProcess(process)
 
-    def __call__(self, message):
+    def __call__(self, message: List[object]) -&gt; List[object]:
         &#34;&#34;&#34;This is the entrypoint to this primitive to process a message. For example, you can do the following
 
         ```
@@ -83,10 +83,15 @@ class BaseProcess(object):
         Returns:
             (obj): A processed message
         &#34;&#34;&#34;
-        for item in message:
-            return self.process(self.chained_process(item))
-    
-    def process(self, message):
+        complete_results = []   # TODO Update this to a RecordCollecton
+        intermediate_result = self.chained_process(message)    # Returns a list
+        #if self.process_name == &#34;ObjectToJson&#34;:
+        for item in intermediate_result:    # is a list
+            complete_results += self.process(item)
+        return complete_results
+
+
+    def process(self, message: object) -&gt; List[object]:
         &#34;&#34;&#34;Logic for message processing. Inheriting classes should implement this. We return a singleton to work with Emit
 
         Args:
@@ -97,6 +102,9 @@ class BaseProcess(object):
         &#34;&#34;&#34;
         return [message]
 
+    def replaceChainedProcess(self, process: BaseProcess = None):
+        self.chained_process = process if process is not None else lambda x: x
+
 from .map import Map
 
 __pdoc__ = {}
@@ -106,6 +114,18 @@ __pdoc__[&#34;BaseProcess.__call__&#34;] = True</code></pre>
 <section>
 <h2 class="section-title" id="header-submodules">Sub-modules</h2>
 <dl>
+<dt><code class="name"><a title="edna.process.ChainedProcess" href="ChainedProcess.html">edna.process.ChainedProcess</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="edna.process.filter" href="filter/index.html">edna.process.filter</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="edna.process.flatten" href="flatten/index.html">edna.process.flatten</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt><code class="name"><a title="edna.process.map" href="map/index.html">edna.process.map</a></code></dt>
 <dd>
 <div class="desc"></div>
@@ -121,7 +141,7 @@ __pdoc__[&#34;BaseProcess.__call__&#34;] = True</code></pre>
 <dl>
 <dt id="edna.process.BaseProcess"><code class="flex name class">
 <span>class <span class="ident">BaseProcess</span></span>
-<span>(</span><span>process: <a title="edna.process.BaseProcess" href="#edna.process.BaseProcess">BaseProcess</a> = None, serializer: BufferedSerializable = None, in_serializer: BufferedSerializable = None, out_serializer: BufferedSerializable = None, *args, **kwargs)</span>
+<span>(</span><span>process: <a title="edna.process.BaseProcess" href="#edna.process.BaseProcess">BaseProcess</a> = None, serializer: BufferedSerializable = None, in_serializer: BufferedSerializable = None, out_serializer: BufferedSerializable = None, logger_name: str = None, *args, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>BaseProcess is the base class for performing operations on streaming messages.</p>
@@ -153,7 +173,7 @@ __pdoc__[&#34;BaseProcess.__call__&#34;] = True</code></pre>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class BaseProcess(object):
+<pre><code class="python">class BaseProcess(EdnaPrimitive):
     &#34;&#34;&#34;BaseProcess is the base class for performing operations on streaming messages.
 
     Any child class must:
@@ -166,13 +186,15 @@ __pdoc__[&#34;BaseProcess.__call__&#34;] = True</code></pre>
 
     - modify the `__call__()` method
     &#34;&#34;&#34;  
-    serializer: BufferedSerializable
-    in_serializer: BufferedSerializable
-    out_serializer: BufferedSerializable
+    process_name : str = &#34;BaseProcess&#34;
+    process: BaseProcess
+    chained_process: BaseProcess
+    
     def __init__(self, process: BaseProcess = None, 
             serializer: BufferedSerializable = None, 
             in_serializer : BufferedSerializable = None, 
             out_serializer : BufferedSerializable = None, 
+            logger_name: str = None,
             *args, **kwargs) -&gt; BaseProcess:
         &#34;&#34;&#34;Initializes the Process primitive. It can take a Process primitive as input to chain them.
 
@@ -182,16 +204,12 @@ __pdoc__[&#34;BaseProcess.__call__&#34;] = True</code></pre>
         Returns:
             BaseProcess: A chained process primitive.
         &#34;&#34;&#34;
-        self.chained_process = process if process is not None else lambda x: x
-        self.serializer = serializer
-        if self.serializer is not None:
-            self.in_serializer = in_serializer
-            self.out_serializer = out_serializer
-        else:
-            self.in_serializer = self.serializer
-            self.out_serializer = self.serializer
+        if logger_name is None:
+            logger_name = self.__class__.__name__
+        super().__init__(serializer=serializer, in_serializer=in_serializer, out_serializer=out_serializer, logger_name=logger_name)
+        self.replaceChainedProcess(process)
 
-    def __call__(self, message):
+    def __call__(self, message: List[object]) -&gt; List[object]:
         &#34;&#34;&#34;This is the entrypoint to this primitive to process a message. For example, you can do the following
 
         ```
@@ -205,10 +223,15 @@ __pdoc__[&#34;BaseProcess.__call__&#34;] = True</code></pre>
         Returns:
             (obj): A processed message
         &#34;&#34;&#34;
-        for item in message:
-            return self.process(self.chained_process(item))
-    
-    def process(self, message):
+        complete_results = []   # TODO Update this to a RecordCollecton
+        intermediate_result = self.chained_process(message)    # Returns a list
+        #if self.process_name == &#34;ObjectToJson&#34;:
+        for item in intermediate_result:    # is a list
+            complete_results += self.process(item)
+        return complete_results
+
+
+    def process(self, message: object) -&gt; List[object]:
         &#34;&#34;&#34;Logic for message processing. Inheriting classes should implement this. We return a singleton to work with Emit
 
         Args:
@@ -217,23 +240,29 @@ __pdoc__[&#34;BaseProcess.__call__&#34;] = True</code></pre>
         Returns:
             (obj): A processed message
         &#34;&#34;&#34;
-        return [message]</code></pre>
+        return [message]
+
+    def replaceChainedProcess(self, process: BaseProcess = None):
+        self.chained_process = process if process is not None else lambda x: x</code></pre>
 </details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="edna.core.primitives.EdnaPrimitive" href="../core/primitives/index.html#edna.core.primitives.EdnaPrimitive">EdnaPrimitive</a></li>
+</ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
+<li><a title="edna.process.ChainedProcess.ChainedProcess" href="ChainedProcess.html#edna.process.ChainedProcess.ChainedProcess">ChainedProcess</a></li>
+<li><a title="edna.process.filter.Filter" href="filter/index.html#edna.process.filter.Filter">Filter</a></li>
+<li><a title="edna.process.flatten.Flatten" href="flatten/index.html#edna.process.flatten.Flatten">Flatten</a></li>
 <li><a title="edna.process.map.Map" href="map/index.html#edna.process.map.Map">Map</a></li>
 </ul>
 <h3>Class variables</h3>
 <dl>
-<dt id="edna.process.BaseProcess.in_serializer"><code class="name">var <span class="ident">in_serializer</span> : <a title="edna.serializers.BufferedSerializable.BufferedSerializable" href="../serializers/BufferedSerializable.html#edna.serializers.BufferedSerializable.BufferedSerializable">BufferedSerializable</a></code></dt>
+<dt id="edna.process.BaseProcess.chained_process"><code class="name">var <span class="ident">chained_process</span> : <a title="edna.process.BaseProcess" href="#edna.process.BaseProcess">BaseProcess</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="edna.process.BaseProcess.out_serializer"><code class="name">var <span class="ident">out_serializer</span> : <a title="edna.serializers.BufferedSerializable.BufferedSerializable" href="../serializers/BufferedSerializable.html#edna.serializers.BufferedSerializable.BufferedSerializable">BufferedSerializable</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="edna.process.BaseProcess.serializer"><code class="name">var <span class="ident">serializer</span> : <a title="edna.serializers.BufferedSerializable.BufferedSerializable" href="../serializers/BufferedSerializable.html#edna.serializers.BufferedSerializable.BufferedSerializable">BufferedSerializable</a></code></dt>
+<dt id="edna.process.BaseProcess.process_name"><code class="name">var <span class="ident">process_name</span> : str</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -241,7 +270,7 @@ __pdoc__[&#34;BaseProcess.__call__&#34;] = True</code></pre>
 <h3>Methods</h3>
 <dl>
 <dt id="edna.process.BaseProcess.__call__"><code class="name flex">
-<span>def <span class="ident">__call__</span></span>(<span>self, message)</span>
+<span>def <span class="ident">__call__</span></span>(<span>self, message: List[object]) ‑> List[object]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>This is the entrypoint to this primitive to process a message. For example, you can do the following</p>
@@ -259,7 +288,7 @@ processed_message = process(message)
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def __call__(self, message):
+<pre><code class="python">def __call__(self, message: List[object]) -&gt; List[object]:
     &#34;&#34;&#34;This is the entrypoint to this primitive to process a message. For example, you can do the following
 
     ```
@@ -273,12 +302,16 @@ processed_message = process(message)
     Returns:
         (obj): A processed message
     &#34;&#34;&#34;
-    for item in message:
-        return self.process(self.chained_process(item))</code></pre>
+    complete_results = []   # TODO Update this to a RecordCollecton
+    intermediate_result = self.chained_process(message)    # Returns a list
+    #if self.process_name == &#34;ObjectToJson&#34;:
+    for item in intermediate_result:    # is a list
+        complete_results += self.process(item)
+    return complete_results</code></pre>
 </details>
 </dd>
 <dt id="edna.process.BaseProcess.process"><code class="name flex">
-<span>def <span class="ident">process</span></span>(<span>self, message)</span>
+<span>def <span class="ident">process</span></span>(<span>self, message: object) ‑> List[object]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Logic for message processing. Inheriting classes should implement this. We return a singleton to work with Emit</p>
@@ -293,7 +326,7 @@ processed_message = process(message)
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def process(self, message):
+<pre><code class="python">def process(self, message: object) -&gt; List[object]:
     &#34;&#34;&#34;Logic for message processing. Inheriting classes should implement this. We return a singleton to work with Emit
 
     Args:
@@ -303,6 +336,19 @@ processed_message = process(message)
         (obj): A processed message
     &#34;&#34;&#34;
     return [message]</code></pre>
+</details>
+</dd>
+<dt id="edna.process.BaseProcess.replaceChainedProcess"><code class="name flex">
+<span>def <span class="ident">replaceChainedProcess</span></span>(<span>self, process: <a title="edna.process.BaseProcess" href="#edna.process.BaseProcess">BaseProcess</a> = None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def replaceChainedProcess(self, process: BaseProcess = None):
+    self.chained_process = process if process is not None else lambda x: x</code></pre>
 </details>
 </dd>
 </dl>
@@ -323,6 +369,9 @@ processed_message = process(message)
 </li>
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
+<li><code><a title="edna.process.ChainedProcess" href="ChainedProcess.html">edna.process.ChainedProcess</a></code></li>
+<li><code><a title="edna.process.filter" href="filter/index.html">edna.process.filter</a></code></li>
+<li><code><a title="edna.process.flatten" href="flatten/index.html">edna.process.flatten</a></code></li>
 <li><code><a title="edna.process.map" href="map/index.html">edna.process.map</a></code></li>
 </ul>
 </li>
@@ -332,10 +381,10 @@ processed_message = process(message)
 <h4><code><a title="edna.process.BaseProcess" href="#edna.process.BaseProcess">BaseProcess</a></code></h4>
 <ul class="">
 <li><code><a title="edna.process.BaseProcess.__call__" href="#edna.process.BaseProcess.__call__">__call__</a></code></li>
-<li><code><a title="edna.process.BaseProcess.in_serializer" href="#edna.process.BaseProcess.in_serializer">in_serializer</a></code></li>
-<li><code><a title="edna.process.BaseProcess.out_serializer" href="#edna.process.BaseProcess.out_serializer">out_serializer</a></code></li>
+<li><code><a title="edna.process.BaseProcess.chained_process" href="#edna.process.BaseProcess.chained_process">chained_process</a></code></li>
 <li><code><a title="edna.process.BaseProcess.process" href="#edna.process.BaseProcess.process">process</a></code></li>
-<li><code><a title="edna.process.BaseProcess.serializer" href="#edna.process.BaseProcess.serializer">serializer</a></code></li>
+<li><code><a title="edna.process.BaseProcess.process_name" href="#edna.process.BaseProcess.process_name">process_name</a></code></li>
+<li><code><a title="edna.process.BaseProcess.replaceChainedProcess" href="#edna.process.BaseProcess.replaceChainedProcess">replaceChainedProcess</a></code></li>
 </ul>
 </li>
 </ul>

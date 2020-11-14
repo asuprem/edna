@@ -34,12 +34,16 @@ class StreamingConfiguration(EdnaConfiguration):
     
     &#34;&#34;&#34;
     def set_variables(self, configuration: Dict[str, str]):
-        if configuration[&#34;variables&#34;] is not None:
-            for key in configuration[&#34;variables&#34;]:
-                self.setVariable(key, configuration[&#34;variables&#34;][key])
+        if &#34;variables&#34; in configuration:
+            if configuration[&#34;variables&#34;] is not None:
+                for key in configuration[&#34;variables&#34;]:
+                    self.setVariable(key, configuration[&#34;variables&#34;][key])
 
     def set_options(self, configuration: Dict[str, str]):
-        pass    # TODO add conf options for streaming configuration here</code></pre>
+        if &#34;options&#34; in configuration:
+            if configuration[&#34;options&#34;] is not None:
+                for key in configuration[&#34;options&#34;]:
+                    self.setVariable(key, configuration[&#34;options&#34;][key])</code></pre>
 </details>
 </section>
 <section>
@@ -66,12 +70,16 @@ class StreamingConfiguration(EdnaConfiguration):
     
     &#34;&#34;&#34;
     def set_variables(self, configuration: Dict[str, str]):
-        if configuration[&#34;variables&#34;] is not None:
-            for key in configuration[&#34;variables&#34;]:
-                self.setVariable(key, configuration[&#34;variables&#34;][key])
+        if &#34;variables&#34; in configuration:
+            if configuration[&#34;variables&#34;] is not None:
+                for key in configuration[&#34;variables&#34;]:
+                    self.setVariable(key, configuration[&#34;variables&#34;][key])
 
     def set_options(self, configuration: Dict[str, str]):
-        pass    # TODO add conf options for streaming configuration here</code></pre>
+        if &#34;options&#34; in configuration:
+            if configuration[&#34;options&#34;] is not None:
+                for key in configuration[&#34;options&#34;]:
+                    self.setVariable(key, configuration[&#34;options&#34;][key])</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">

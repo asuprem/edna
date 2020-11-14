@@ -32,6 +32,7 @@ from edna.types.builtin import ConfigurationVariable
 import yaml
 from typing import Dict
 from abc import ABC
+import warnings
 
 
 class EdnaConfiguration(ABC):
@@ -86,7 +87,7 @@ class EdnaConfiguration(ABC):
         Args:
             configuration (Dict[str, str]): [The dictionary from the configuration yaml]
         &#34;&#34;&#34;
-        pass
+        warnings.warn(&#34;No variables imported.&#34;)
 
     def set_options(self, configuration: Dict[str, str]):
         &#34;&#34;&#34;Set the internal options for an EdnaContext using this Configuration class.
@@ -94,7 +95,7 @@ class EdnaConfiguration(ABC):
         Args:
             configuration (Dict[str, str]): [The dictionary from the configuration yaml]
         &#34;&#34;&#34;
-        pass
+        warnings.warn(&#34;No options imported.&#34;)
 
 
 
@@ -194,7 +195,7 @@ from .StreamingConfiguration import StreamingConfiguration</code></pre>
         Args:
             configuration (Dict[str, str]): [The dictionary from the configuration yaml]
         &#34;&#34;&#34;
-        pass
+        warnings.warn(&#34;No variables imported.&#34;)
 
     def set_options(self, configuration: Dict[str, str]):
         &#34;&#34;&#34;Set the internal options for an EdnaContext using this Configuration class.
@@ -202,7 +203,7 @@ from .StreamingConfiguration import StreamingConfiguration</code></pre>
         Args:
             configuration (Dict[str, str]): [The dictionary from the configuration yaml]
         &#34;&#34;&#34;
-        pass</code></pre>
+        warnings.warn(&#34;No options imported.&#34;)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -327,7 +328,7 @@ from .StreamingConfiguration import StreamingConfiguration</code></pre>
     Args:
         configuration (Dict[str, str]): [The dictionary from the configuration yaml]
     &#34;&#34;&#34;
-    pass</code></pre>
+    warnings.warn(&#34;No options imported.&#34;)</code></pre>
 </details>
 </dd>
 <dt id="edna.core.configuration.EdnaConfiguration.set_variables"><code class="name flex">
@@ -350,7 +351,7 @@ from .StreamingConfiguration import StreamingConfiguration</code></pre>
     Args:
         configuration (Dict[str, str]): [The dictionary from the configuration yaml]
     &#34;&#34;&#34;
-    pass</code></pre>
+    warnings.warn(&#34;No variables imported.&#34;)</code></pre>
 </details>
 </dd>
 </dl>

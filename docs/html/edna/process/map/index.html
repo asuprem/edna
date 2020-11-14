@@ -26,7 +26,10 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from edna.process import BaseProcess
+<pre><code class="python">from __future__ import annotations
+from typing import List
+import warnings
+from edna.process import BaseProcess
 
 
 class Map(BaseProcess):
@@ -46,6 +49,7 @@ class Map(BaseProcess):
     Args:
         BaseProcess (BaseProcess): A process to chain
     &#34;&#34;&#34;
+    process_name : str = &#34;Map&#34;
     def __init__(self, process: BaseProcess = None, *args, **kwargs) -&gt; BaseProcess:
         &#34;&#34;&#34;Initializes the Process primitive. It can take a Process primitive as input to chain them.
 
@@ -57,7 +61,7 @@ class Map(BaseProcess):
         &#34;&#34;&#34;
         super().__init__(process=process,  *args, **kwargs)
     
-    def process(self, message: object):
+    def process(self, message: object) -&gt; List[object]:
         &#34;&#34;&#34;This is the entrypoint to this primitive to map a message. It is called by the BaseProcess parent
         from the `__call__()` method. It subsequently calls the `map()` method.
 
@@ -71,7 +75,7 @@ class Map(BaseProcess):
         &#34;&#34;&#34;
         return [self.map(message)]
 
-    def map(self, message: object):
+    def map(self, message: object) -&gt; object:
         &#34;&#34;&#34;Logic for mapping. Subclasses need to implement this.
 
         Args:
@@ -83,13 +87,24 @@ class Map(BaseProcess):
         raise NotImplementedError()
 
 from .JsonToObject import JsonToObject
-from .ObjectToSQL import ObjectToSQL</code></pre>
+from .ObjectToSQL import ObjectToSQL
+from .ObjectToJson import ObjectToJson
+
+SklearnClassifier = None
+try:
+    from .SklearnClassifier import SklearnClassifier
+except (ImportError, AttributeError):
+    warnings.warn(&#34;scikit-learn module is not installed. edna.process.map.SklearnClassifier might not work properly.&#34;, category=ImportWarning)</code></pre>
 </details>
 </section>
 <section>
 <h2 class="section-title" id="header-submodules">Sub-modules</h2>
 <dl>
 <dt><code class="name"><a title="edna.process.map.JsonToObject" href="JsonToObject.html">edna.process.map.JsonToObject</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="edna.process.map.ObjectToJson" href="ObjectToJson.html">edna.process.map.ObjectToJson</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -112,7 +127,7 @@ from .ObjectToSQL import ObjectToSQL</code></pre>
 <dl>
 <dt id="edna.process.map.Map"><code class="flex name class">
 <span>class <span class="ident">Map</span></span>
-<span>(</span><span>process: <a title="edna.process.BaseProcess" href="../index.html#edna.process.BaseProcess">BaseProcess</a> = None, *args, **kwargs)</span>
+<span>(</span><span>process: BaseProcess = None, *args, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>A Map Process converts from one type to another. </p>
@@ -166,6 +181,7 @@ from .ObjectToSQL import ObjectToSQL</code></pre>
     Args:
         BaseProcess (BaseProcess): A process to chain
     &#34;&#34;&#34;
+    process_name : str = &#34;Map&#34;
     def __init__(self, process: BaseProcess = None, *args, **kwargs) -&gt; BaseProcess:
         &#34;&#34;&#34;Initializes the Process primitive. It can take a Process primitive as input to chain them.
 
@@ -177,7 +193,7 @@ from .ObjectToSQL import ObjectToSQL</code></pre>
         &#34;&#34;&#34;
         super().__init__(process=process,  *args, **kwargs)
     
-    def process(self, message: object):
+    def process(self, message: object) -&gt; List[object]:
         &#34;&#34;&#34;This is the entrypoint to this primitive to map a message. It is called by the BaseProcess parent
         from the `__call__()` method. It subsequently calls the `map()` method.
 
@@ -191,7 +207,7 @@ from .ObjectToSQL import ObjectToSQL</code></pre>
         &#34;&#34;&#34;
         return [self.map(message)]
 
-    def map(self, message: object):
+    def map(self, message: object) -&gt; object:
         &#34;&#34;&#34;Logic for mapping. Subclasses need to implement this.
 
         Args:
@@ -205,24 +221,18 @@ from .ObjectToSQL import ObjectToSQL</code></pre>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="edna.process.BaseProcess" href="../index.html#edna.process.BaseProcess">BaseProcess</a></li>
+<li><a title="edna.core.primitives.EdnaPrimitive" href="../../core/primitives/index.html#edna.core.primitives.EdnaPrimitive">EdnaPrimitive</a></li>
 </ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="edna.process.map.JsonToObject.JsonToObject" href="JsonToObject.html#edna.process.map.JsonToObject.JsonToObject">JsonToObject</a></li>
+<li><a title="edna.process.map.ObjectToJson.ObjectToJson" href="ObjectToJson.html#edna.process.map.ObjectToJson.ObjectToJson">ObjectToJson</a></li>
 <li><a title="edna.process.map.ObjectToSQL.ObjectToSQL" href="ObjectToSQL.html#edna.process.map.ObjectToSQL.ObjectToSQL">ObjectToSQL</a></li>
 <li><a title="edna.process.map.SklearnClassifier.SklearnClassifier" href="SklearnClassifier.html#edna.process.map.SklearnClassifier.SklearnClassifier">SklearnClassifier</a></li>
 </ul>
 <h3>Class variables</h3>
 <dl>
-<dt id="edna.process.map.Map.in_serializer"><code class="name">var <span class="ident">in_serializer</span> : <a title="edna.serializers.BufferedSerializable.BufferedSerializable" href="../../serializers/BufferedSerializable.html#edna.serializers.BufferedSerializable.BufferedSerializable">BufferedSerializable</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="edna.process.map.Map.out_serializer"><code class="name">var <span class="ident">out_serializer</span> : <a title="edna.serializers.BufferedSerializable.BufferedSerializable" href="../../serializers/BufferedSerializable.html#edna.serializers.BufferedSerializable.BufferedSerializable">BufferedSerializable</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="edna.process.map.Map.serializer"><code class="name">var <span class="ident">serializer</span> : <a title="edna.serializers.BufferedSerializable.BufferedSerializable" href="../../serializers/BufferedSerializable.html#edna.serializers.BufferedSerializable.BufferedSerializable">BufferedSerializable</a></code></dt>
+<dt id="edna.process.map.Map.process_name"><code class="name">var <span class="ident">process_name</span> : str</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -230,7 +240,7 @@ from .ObjectToSQL import ObjectToSQL</code></pre>
 <h3>Methods</h3>
 <dl>
 <dt id="edna.process.map.Map.map"><code class="name flex">
-<span>def <span class="ident">map</span></span>(<span>self, message: object)</span>
+<span>def <span class="ident">map</span></span>(<span>self, message: object) ‑> object</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Logic for mapping. Subclasses need to implement this.</p>
@@ -245,7 +255,7 @@ from .ObjectToSQL import ObjectToSQL</code></pre>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def map(self, message: object):
+<pre><code class="python">def map(self, message: object) -&gt; object:
     &#34;&#34;&#34;Logic for mapping. Subclasses need to implement this.
 
     Args:
@@ -258,7 +268,7 @@ from .ObjectToSQL import ObjectToSQL</code></pre>
 </details>
 </dd>
 <dt id="edna.process.map.Map.process"><code class="name flex">
-<span>def <span class="ident">process</span></span>(<span>self, message: object)</span>
+<span>def <span class="ident">process</span></span>(<span>self, message: object) ‑> List[object]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>This is the entrypoint to this primitive to map a message. It is called by the BaseProcess parent
@@ -275,7 +285,7 @@ from the <code>__call__()</code> method. It subsequently calls the <code>map()</
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def process(self, message: object):
+<pre><code class="python">def process(self, message: object) -&gt; List[object]:
     &#34;&#34;&#34;This is the entrypoint to this primitive to map a message. It is called by the BaseProcess parent
     from the `__call__()` method. It subsequently calls the `map()` method.
 
@@ -317,6 +327,7 @@ from the <code>__call__()</code> method. It subsequently calls the <code>map()</
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
 <li><code><a title="edna.process.map.JsonToObject" href="JsonToObject.html">edna.process.map.JsonToObject</a></code></li>
+<li><code><a title="edna.process.map.ObjectToJson" href="ObjectToJson.html">edna.process.map.ObjectToJson</a></code></li>
 <li><code><a title="edna.process.map.ObjectToSQL" href="ObjectToSQL.html">edna.process.map.ObjectToSQL</a></code></li>
 <li><code><a title="edna.process.map.SklearnClassifier" href="SklearnClassifier.html">edna.process.map.SklearnClassifier</a></code></li>
 </ul>
@@ -326,11 +337,9 @@ from the <code>__call__()</code> method. It subsequently calls the <code>map()</
 <li>
 <h4><code><a title="edna.process.map.Map" href="#edna.process.map.Map">Map</a></code></h4>
 <ul class="">
-<li><code><a title="edna.process.map.Map.in_serializer" href="#edna.process.map.Map.in_serializer">in_serializer</a></code></li>
 <li><code><a title="edna.process.map.Map.map" href="#edna.process.map.Map.map">map</a></code></li>
-<li><code><a title="edna.process.map.Map.out_serializer" href="#edna.process.map.Map.out_serializer">out_serializer</a></code></li>
 <li><code><a title="edna.process.map.Map.process" href="#edna.process.map.Map.process">process</a></code></li>
-<li><code><a title="edna.process.map.Map.serializer" href="#edna.process.map.Map.serializer">serializer</a></code></li>
+<li><code><a title="edna.process.map.Map.process_name" href="#edna.process.map.Map.process_name">process_name</a></code></li>
 </ul>
 </li>
 </ul>

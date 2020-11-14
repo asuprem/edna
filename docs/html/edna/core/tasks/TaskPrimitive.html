@@ -29,17 +29,23 @@
 <pre><code class="python">import threading
 import time
 from edna.defaults import EdnaDefault
-
+import logging
 
 class TaskPrimitive(threading.Thread):
+    logger: logging.Logger
     def __init__(self, max_buffer_size : int = EdnaDefault.BUFFER_MAX_SIZE, 
-            max_buffer_timeout : float = EdnaDefault.BUFFER_MAX_TIMEOUT_S):
+            max_buffer_timeout : float = EdnaDefault.BUFFER_MAX_TIMEOUT_S,
+            logger_name: str = None):
         super().__init__()
         self.thread_stop = threading.Event()
         self.MAX_BUFFER_SIZE = max_buffer_size
         self.MAX_BUFFER_TIMEOUT_S = max_buffer_timeout
         self.BUFFER_POLL_TIMEOUT_S = EdnaDefault.POLL_TIMEOUT_S
         self.timer = time.time()
+        if logger_name is None:
+            self.logger = logging.getLogger(self.__class__.__name__)
+        else:
+            self.logger = logging.getLogger(logger_name)
 
     # function using _stop function 
     def stop(self): 
@@ -66,7 +72,7 @@ class TaskPrimitive(threading.Thread):
 <dl>
 <dt id="edna.core.tasks.TaskPrimitive.TaskPrimitive"><code class="flex name class">
 <span>class <span class="ident">TaskPrimitive</span></span>
-<span>(</span><span>max_buffer_size: int = 32768, max_buffer_timeout: float = 0.1)</span>
+<span>(</span><span>max_buffer_size: int = 32768, max_buffer_timeout: float = 0.1, logger_name: str = None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>A class that represents a thread of control.</p>
@@ -91,14 +97,20 @@ else to the thread.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class TaskPrimitive(threading.Thread):
+    logger: logging.Logger
     def __init__(self, max_buffer_size : int = EdnaDefault.BUFFER_MAX_SIZE, 
-            max_buffer_timeout : float = EdnaDefault.BUFFER_MAX_TIMEOUT_S):
+            max_buffer_timeout : float = EdnaDefault.BUFFER_MAX_TIMEOUT_S,
+            logger_name: str = None):
         super().__init__()
         self.thread_stop = threading.Event()
         self.MAX_BUFFER_SIZE = max_buffer_size
         self.MAX_BUFFER_TIMEOUT_S = max_buffer_timeout
         self.BUFFER_POLL_TIMEOUT_S = EdnaDefault.POLL_TIMEOUT_S
         self.timer = time.time()
+        if logger_name is None:
+            self.logger = logging.getLogger(self.__class__.__name__)
+        else:
+            self.logger = logging.getLogger(logger_name)
 
     # function using _stop function 
     def stop(self): 
@@ -120,8 +132,15 @@ else to the thread.</p></div>
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="edna.core.tasks.BufferedTaskPrimitive.BufferedTaskPrimitive" href="BufferedTaskPrimitive.html#edna.core.tasks.BufferedTaskPrimitive.BufferedTaskPrimitive">BufferedTaskPrimitive</a></li>
-<li><a title="edna.core.tasks.SinkTask.SinkTaskPrimitive.SinkTaskPrimitive" href="SinkTask/SinkTaskPrimitive.html#edna.core.tasks.SinkTask.SinkTaskPrimitive.SinkTaskPrimitive">SinkTaskPrimitive</a></li>
+<li><a title="edna.core.tasks.SingleSourceSingleTargetTask.SingleSourceSingleTargetTask" href="SingleSourceSingleTargetTask.html#edna.core.tasks.SingleSourceSingleTargetTask.SingleSourceSingleTargetTask">SingleSourceSingleTargetTask</a></li>
 </ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="edna.core.tasks.TaskPrimitive.TaskPrimitive.logger"><code class="name">var <span class="ident">logger</span> : logging.Logger</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
 <h3>Methods</h3>
 <dl>
 <dt id="edna.core.tasks.TaskPrimitive.TaskPrimitive.running"><code class="name flex">
@@ -197,6 +216,7 @@ else to the thread.</p></div>
 <li>
 <h4><code><a title="edna.core.tasks.TaskPrimitive.TaskPrimitive" href="#edna.core.tasks.TaskPrimitive.TaskPrimitive">TaskPrimitive</a></code></h4>
 <ul class="">
+<li><code><a title="edna.core.tasks.TaskPrimitive.TaskPrimitive.logger" href="#edna.core.tasks.TaskPrimitive.TaskPrimitive.logger">logger</a></code></li>
 <li><code><a title="edna.core.tasks.TaskPrimitive.TaskPrimitive.running" href="#edna.core.tasks.TaskPrimitive.TaskPrimitive.running">running</a></code></li>
 <li><code><a title="edna.core.tasks.TaskPrimitive.TaskPrimitive.shutdown" href="#edna.core.tasks.TaskPrimitive.TaskPrimitive.shutdown">shutdown</a></code></li>
 <li><code><a title="edna.core.tasks.TaskPrimitive.TaskPrimitive.stop" href="#edna.core.tasks.TaskPrimitive.TaskPrimitive.stop">stop</a></code></li>

@@ -26,31 +26,80 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from abc import abstractmethod
+<pre><code class="python">from __future__ import annotations
+from abc import abstractmethod
+from typing import Any
 from edna.serializers import Serializable
 
 
 class BufferedSerializable(Serializable):
-    &#34;&#34;&#34;Interface for a BufferedSerializable. A BufferedSerializable 
+    &#34;&#34;&#34;Interface for a BufferedSerializable. A BufferedSerializable writes and reads
+    records from network buffers. It is an internal serializer used between task primitives
+    for an edna job.
 
-    Args:
-        Serializable ([type]): [description]
-
-    Raises:
-        NotImplementedError: Raised if `feed()` or `__next__` are not implemented.
-        NotImplementedError: [description]
+    Subclasses should:
+    
+        - Implement `__init__()` method
+        - Implement the `feed()` method. `feed()` receives a `buffered_message`, which is 
+            byte array from the network buffer. They array contains a list of records, 
+            with possibly incomplete records since the network buffer has limited capacity.
+            The deserializer should keep track of incomplete records and use the byte array to 
+            complete existing incomplete message and store records in an internal buffer.
+        - Implement the `next()` method. `next()` should yield a single record from the internal
+            buffer. `next()` should follow the ingest order and yield records in FIFO fashion.
+        - Implement the `write()` method. `write()` should serialize a record and return a byte array.
     &#34;&#34;&#34;
     def __init__(self):
+        &#34;&#34;&#34;Initializes the serializer.
+        &#34;&#34;&#34;
         raise NotImplementedError
 
     def feed(self, buffered_message: bytes):
+        &#34;&#34;&#34;Updates internal record buffer with the `buffered_message`
+
+        Args:
+            buffered_message (bytes): A byte-array representation of records from a network stack.
+        &#34;&#34;&#34;
         raise NotImplementedError
 
-    def __next__(self):
+    def __next__(self) -&gt; object:
+        &#34;&#34;&#34;Iterates over the next record in the internal record buffer
+
+        Returns:
+            object: Yields a record
+        &#34;&#34;&#34;
         return self.next()
 
-    def next(self):
+    def next(self) -&gt; object:
+        &#34;&#34;&#34;Logic for deserializing a complete record and yielding it.
+
+        Returns:
+            object: Yields a record
+        &#34;&#34;&#34;
         raise NotImplementedError
+
+    @abstractmethod
+    def read(cls, in_stream: Any):
+        &#34;&#34;&#34;Returns the message because the subclasses are tightly coupled with the ingest and perform the deserialization with `next()`.
+
+        Args:
+            in_stream (Any): A deserialized record
+
+        Returns:
+            (Any): The deserialized record
+        &#34;&#34;&#34;
+        return in_stream
+
+    @abstractmethod
+    def write(cls, out_stream: object): 
+        &#34;&#34;&#34;Convert an object to bytes
+
+        Args:
+            in_stream (object): Input to serialize
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+
 
     
 
@@ -70,43 +119,90 @@ class BufferedSerializable(Serializable):
 <span>class <span class="ident">BufferedSerializable</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Interface for a BufferedSerializable. A BufferedSerializable </p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>Serializable</code></strong> :&ensp;<code>[type]</code></dt>
-<dd>[description]</dd>
-</dl>
-<h2 id="raises">Raises</h2>
-<dl>
-<dt><code>NotImplementedError</code></dt>
-<dd>Raised if <code>feed()</code> or <code>__next__</code> are not implemented.</dd>
-<dt><code>NotImplementedError</code></dt>
-<dd>[description]</dd>
-</dl></div>
+<div class="desc"><p>Interface for a BufferedSerializable. A BufferedSerializable writes and reads
+records from network buffers. It is an internal serializer used between task primitives
+for an edna job.</p>
+<p>Subclasses should:</p>
+<pre><code>- Implement &lt;code&gt;\_\_init\_\_()&lt;/code&gt; method
+- Implement the &lt;code&gt;feed()&lt;/code&gt; method. &lt;code&gt;feed()&lt;/code&gt; receives a &lt;code&gt;buffered\_message&lt;/code&gt;, which is 
+    byte array from the network buffer. They array contains a list of records, 
+    with possibly incomplete records since the network buffer has limited capacity.
+    The deserializer should keep track of incomplete records and use the byte array to 
+    complete existing incomplete message and store records in an internal buffer.
+- Implement the &lt;code&gt;next()&lt;/code&gt; method. &lt;code&gt;next()&lt;/code&gt; should yield a single record from the internal
+    buffer. &lt;code&gt;next()&lt;/code&gt; should follow the ingest order and yield records in FIFO fashion.
+- Implement the &lt;code&gt;write()&lt;/code&gt; method. &lt;code&gt;write()&lt;/code&gt; should serialize a record and return a byte array.
+</code></pre>
+<p>Initializes the serializer.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class BufferedSerializable(Serializable):
-    &#34;&#34;&#34;Interface for a BufferedSerializable. A BufferedSerializable 
+    &#34;&#34;&#34;Interface for a BufferedSerializable. A BufferedSerializable writes and reads
+    records from network buffers. It is an internal serializer used between task primitives
+    for an edna job.
 
-    Args:
-        Serializable ([type]): [description]
-
-    Raises:
-        NotImplementedError: Raised if `feed()` or `__next__` are not implemented.
-        NotImplementedError: [description]
+    Subclasses should:
+    
+        - Implement `__init__()` method
+        - Implement the `feed()` method. `feed()` receives a `buffered_message`, which is 
+            byte array from the network buffer. They array contains a list of records, 
+            with possibly incomplete records since the network buffer has limited capacity.
+            The deserializer should keep track of incomplete records and use the byte array to 
+            complete existing incomplete message and store records in an internal buffer.
+        - Implement the `next()` method. `next()` should yield a single record from the internal
+            buffer. `next()` should follow the ingest order and yield records in FIFO fashion.
+        - Implement the `write()` method. `write()` should serialize a record and return a byte array.
     &#34;&#34;&#34;
     def __init__(self):
+        &#34;&#34;&#34;Initializes the serializer.
+        &#34;&#34;&#34;
         raise NotImplementedError
 
     def feed(self, buffered_message: bytes):
+        &#34;&#34;&#34;Updates internal record buffer with the `buffered_message`
+
+        Args:
+            buffered_message (bytes): A byte-array representation of records from a network stack.
+        &#34;&#34;&#34;
         raise NotImplementedError
 
-    def __next__(self):
+    def __next__(self) -&gt; object:
+        &#34;&#34;&#34;Iterates over the next record in the internal record buffer
+
+        Returns:
+            object: Yields a record
+        &#34;&#34;&#34;
         return self.next()
 
-    def next(self):
+    def next(self) -&gt; object:
+        &#34;&#34;&#34;Logic for deserializing a complete record and yielding it.
+
+        Returns:
+            object: Yields a record
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    @abstractmethod
+    def read(cls, in_stream: Any):
+        &#34;&#34;&#34;Returns the message because the subclasses are tightly coupled with the ingest and perform the deserialization with `next()`.
+
+        Args:
+            in_stream (Any): A deserialized record
+
+        Returns:
+            (Any): The deserialized record
+        &#34;&#34;&#34;
+        return in_stream
+
+    @abstractmethod
+    def write(cls, out_stream: object): 
+        &#34;&#34;&#34;Convert an object to bytes
+
+        Args:
+            in_stream (object): Input to serialize
+        &#34;&#34;&#34;
         raise NotImplementedError</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -123,38 +219,102 @@ class BufferedSerializable(Serializable):
 <span>def <span class="ident">feed</span></span>(<span>self, buffered_message: bytes)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Updates internal record buffer with the <code>buffered_message</code></p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>buffered_message</code></strong> :&ensp;<code>bytes</code></dt>
+<dd>A byte-array representation of records from a network stack.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def feed(self, buffered_message: bytes):
+    &#34;&#34;&#34;Updates internal record buffer with the `buffered_message`
+
+    Args:
+        buffered_message (bytes): A byte-array representation of records from a network stack.
+    &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
 </dd>
 <dt id="edna.serializers.BufferedSerializable.BufferedSerializable.next"><code class="name flex">
-<span>def <span class="ident">next</span></span>(<span>self)</span>
+<span>def <span class="ident">next</span></span>(<span>self) ‑> object</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Logic for deserializing a complete record and yielding it.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>object</code></dt>
+<dd>Yields a record</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def next(self):
+<pre><code class="python">def next(self) -&gt; object:
+    &#34;&#34;&#34;Logic for deserializing a complete record and yielding it.
+
+    Returns:
+        object: Yields a record
+    &#34;&#34;&#34;
+    raise NotImplementedError</code></pre>
+</details>
+</dd>
+<dt id="edna.serializers.BufferedSerializable.BufferedSerializable.read"><code class="name flex">
+<span>def <span class="ident">read</span></span>(<span>cls, in_stream: Any)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the message because the subclasses are tightly coupled with the ingest and perform the deserialization with <code>next()</code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>in_stream</code></strong> :&ensp;<code>Any</code></dt>
+<dd>A deserialized record</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>(Any): The deserialized record</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def read(cls, in_stream: Any):
+    &#34;&#34;&#34;Returns the message because the subclasses are tightly coupled with the ingest and perform the deserialization with `next()`.
+
+    Args:
+        in_stream (Any): A deserialized record
+
+    Returns:
+        (Any): The deserialized record
+    &#34;&#34;&#34;
+    return in_stream</code></pre>
+</details>
+</dd>
+<dt id="edna.serializers.BufferedSerializable.BufferedSerializable.write"><code class="name flex">
+<span>def <span class="ident">write</span></span>(<span>cls, out_stream: object)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Convert an object to bytes</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>in_stream</code></strong> :&ensp;<code>object</code></dt>
+<dd>Input to serialize</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def write(cls, out_stream: object): 
+    &#34;&#34;&#34;Convert an object to bytes
+
+    Args:
+        in_stream (object): Input to serialize
+    &#34;&#34;&#34;
     raise NotImplementedError</code></pre>
 </details>
 </dd>
 </dl>
-<h3>Inherited members</h3>
-<ul class="hlist">
-<li><code><b><a title="edna.serializers.Serializable" href="index.html#edna.serializers.Serializable">Serializable</a></b></code>:
-<ul class="hlist">
-<li><code><a title="edna.serializers.Serializable.read" href="index.html#edna.serializers.Serializable.read">read</a></code></li>
-<li><code><a title="edna.serializers.Serializable.write" href="index.html#edna.serializers.Serializable.write">write</a></code></li>
-</ul>
-</li>
-</ul>
 </dd>
 </dl>
 </section>
@@ -177,6 +337,8 @@ class BufferedSerializable(Serializable):
 <ul class="">
 <li><code><a title="edna.serializers.BufferedSerializable.BufferedSerializable.feed" href="#edna.serializers.BufferedSerializable.BufferedSerializable.feed">feed</a></code></li>
 <li><code><a title="edna.serializers.BufferedSerializable.BufferedSerializable.next" href="#edna.serializers.BufferedSerializable.BufferedSerializable.next">next</a></code></li>
+<li><code><a title="edna.serializers.BufferedSerializable.BufferedSerializable.read" href="#edna.serializers.BufferedSerializable.BufferedSerializable.read">read</a></code></li>
+<li><code><a title="edna.serializers.BufferedSerializable.BufferedSerializable.write" href="#edna.serializers.BufferedSerializable.BufferedSerializable.write">write</a></code></li>
 </ul>
 </li>
 </ul>

@@ -34,16 +34,15 @@ from edna.ingest import BaseIngest
 from edna.process import BaseProcess
 from edna.emit import BaseEmit
 from abc import ABC
-import os
+import os, sys
+
+import logging
 
 class EdnaContext(ABC):
     &#34;&#34;&#34;An EdnaContext is the generic context for any EdnaJob. It is an interface for the SimpleStreamingContext and other future contexts.
 
     Attributes:
         configuration (EdnaConfiguration): Stores a EdnaConfiguration object to control the job configuration.
-        ingest (BaseIngest): Stores a reference to an ingest primitive.
-        process (BaseProcess): Stores a reference to a process primitive.
-        emit (BaseEmit): Stores a reference to an emit primitive
 
     Raises:
         PrimitiveNotSetException: Raises this exception if `execute()` is called without setting all of the primitives.
@@ -52,11 +51,9 @@ class EdnaContext(ABC):
         EdnaContext: Returns an EdnaContext.
     &#34;&#34;&#34;    
     configuration: EdnaConfiguration
-    ingest: BaseIngest
-    process: BaseProcess
-    emit: BaseEmit
+    logger: logging.Logger
 
-    def __init__(self, dir : str = &#34;.&#34;, confpath : str = &#34;ednaconf.yaml&#34;, confclass: EdnaConfiguration = EdnaConfiguration):
+    def __init__(self, dir : str = &#34;.&#34;, confpath : str = &#34;ednaconf.yaml&#34;, confclass: EdnaConfiguration = EdnaConfiguration, logger: str = None):
         &#34;&#34;&#34;Initializes the EdnaContext with a directory, configuration file, and configuratioon object. 
 
         Args:
@@ -69,6 +66,10 @@ class EdnaContext(ABC):
         self.dir = dir
         self.configuration_path = os.path.join(self.dir, confpath)
         self.configuration = self._getConfiguration(self.configuration_path, confclass)
+        if logger is None:
+            self.logger = logging.getLogger(self.__class__.__name__)
+        else:
+            self.logger = logging.getLogger(logger)
 
     
     def _getConfiguration(self, confpath: str, confclass: EdnaConfiguration):
@@ -109,13 +110,18 @@ class EdnaContext(ABC):
         # TODO process optimizations go here in future
         self.run()
 
-from .SimpleStreamingContext import SimpleStreamingContext</code></pre>
+from .SimpleStreamingContext import SimpleStreamingContext
+from .StreamingContext import StreamingContext</code></pre>
 </details>
 </section>
 <section>
 <h2 class="section-title" id="header-submodules">Sub-modules</h2>
 <dl>
 <dt><code class="name"><a title="edna.core.execution.context.SimpleStreamingContext" href="SimpleStreamingContext.html">edna.core.execution.context.SimpleStreamingContext</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="edna.core.execution.context.StreamingContext" href="StreamingContext.html">edna.core.execution.context.StreamingContext</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -130,7 +136,7 @@ from .SimpleStreamingContext import SimpleStreamingContext</code></pre>
 <dl>
 <dt id="edna.core.execution.context.EdnaContext"><code class="flex name class">
 <span>class <span class="ident">EdnaContext</span></span>
-<span>(</span><span>dir: str = '.', confpath: str = 'ednaconf.yaml', confclass: EdnaConfiguration = edna.core.configuration.EdnaConfiguration)</span>
+<span>(</span><span>dir: str = '.', confpath: str = 'ednaconf.yaml', confclass: EdnaConfiguration = edna.core.configuration.EdnaConfiguration, logger: str = None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>An EdnaContext is the generic context for any EdnaJob. It is an interface for the SimpleStreamingContext and other future contexts.</p>
@@ -138,12 +144,6 @@ from .SimpleStreamingContext import SimpleStreamingContext</code></pre>
 <dl>
 <dt><strong><code>configuration</code></strong> :&ensp;<code>EdnaConfiguration</code></dt>
 <dd>Stores a EdnaConfiguration object to control the job configuration.</dd>
-<dt><strong><code>ingest</code></strong> :&ensp;<code>BaseIngest</code></dt>
-<dd>Stores a reference to an ingest primitive.</dd>
-<dt><strong><code>process</code></strong> :&ensp;<code>BaseProcess</code></dt>
-<dd>Stores a reference to a process primitive.</dd>
-<dt><strong><code>emit</code></strong> :&ensp;<code>BaseEmit</code></dt>
-<dd>Stores a reference to an emit primitive</dd>
 </dl>
 <h2 id="raises">Raises</h2>
 <dl>
@@ -176,9 +176,6 @@ Defaults to edna.core.configuration.StreamingConfiguration.</dd>
 
     Attributes:
         configuration (EdnaConfiguration): Stores a EdnaConfiguration object to control the job configuration.
-        ingest (BaseIngest): Stores a reference to an ingest primitive.
-        process (BaseProcess): Stores a reference to a process primitive.
-        emit (BaseEmit): Stores a reference to an emit primitive
 
     Raises:
         PrimitiveNotSetException: Raises this exception if `execute()` is called without setting all of the primitives.
@@ -187,11 +184,9 @@ Defaults to edna.core.configuration.StreamingConfiguration.</dd>
         EdnaContext: Returns an EdnaContext.
     &#34;&#34;&#34;    
     configuration: EdnaConfiguration
-    ingest: BaseIngest
-    process: BaseProcess
-    emit: BaseEmit
+    logger: logging.Logger
 
-    def __init__(self, dir : str = &#34;.&#34;, confpath : str = &#34;ednaconf.yaml&#34;, confclass: EdnaConfiguration = EdnaConfiguration):
+    def __init__(self, dir : str = &#34;.&#34;, confpath : str = &#34;ednaconf.yaml&#34;, confclass: EdnaConfiguration = EdnaConfiguration, logger: str = None):
         &#34;&#34;&#34;Initializes the EdnaContext with a directory, configuration file, and configuratioon object. 
 
         Args:
@@ -204,6 +199,10 @@ Defaults to edna.core.configuration.StreamingConfiguration.</dd>
         self.dir = dir
         self.configuration_path = os.path.join(self.dir, confpath)
         self.configuration = self._getConfiguration(self.configuration_path, confclass)
+        if logger is None:
+            self.logger = logging.getLogger(self.__class__.__name__)
+        else:
+            self.logger = logging.getLogger(logger)
 
     
     def _getConfiguration(self, confpath: str, confclass: EdnaConfiguration):
@@ -251,6 +250,7 @@ Defaults to edna.core.configuration.StreamingConfiguration.</dd>
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="edna.core.execution.context.SimpleStreamingContext.SimpleStreamingContext" href="SimpleStreamingContext.html#edna.core.execution.context.SimpleStreamingContext.SimpleStreamingContext">SimpleStreamingContext</a></li>
+<li><a title="edna.core.execution.context.StreamingContext.StreamingContext" href="StreamingContext.html#edna.core.execution.context.StreamingContext.StreamingContext">StreamingContext</a></li>
 </ul>
 <h3>Class variables</h3>
 <dl>
@@ -258,15 +258,7 @@ Defaults to edna.core.configuration.StreamingConfiguration.</dd>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="edna.core.execution.context.EdnaContext.emit"><code class="name">var <span class="ident">emit</span> : <a title="edna.emit.BaseEmit" href="../../../emit/index.html#edna.emit.BaseEmit">BaseEmit</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="edna.core.execution.context.EdnaContext.ingest"><code class="name">var <span class="ident">ingest</span> : <a title="edna.ingest.BaseIngest" href="../../../ingest/index.html#edna.ingest.BaseIngest">BaseIngest</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="edna.core.execution.context.EdnaContext.process"><code class="name">var <span class="ident">process</span> : <a title="edna.process.BaseProcess" href="../../../process/index.html#edna.process.BaseProcess">BaseProcess</a></code></dt>
+<dt id="edna.core.execution.context.EdnaContext.logger"><code class="name">var <span class="ident">logger</span> : logging.Logger</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -347,19 +339,18 @@ Defaults to edna.core.configuration.StreamingConfiguration.</dd>
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
 <li><code><a title="edna.core.execution.context.SimpleStreamingContext" href="SimpleStreamingContext.html">edna.core.execution.context.SimpleStreamingContext</a></code></li>
+<li><code><a title="edna.core.execution.context.StreamingContext" href="StreamingContext.html">edna.core.execution.context.StreamingContext</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
 <h4><code><a title="edna.core.execution.context.EdnaContext" href="#edna.core.execution.context.EdnaContext">EdnaContext</a></code></h4>
-<ul class="two-column">
+<ul class="">
 <li><code><a title="edna.core.execution.context.EdnaContext.configuration" href="#edna.core.execution.context.EdnaContext.configuration">configuration</a></code></li>
-<li><code><a title="edna.core.execution.context.EdnaContext.emit" href="#edna.core.execution.context.EdnaContext.emit">emit</a></code></li>
 <li><code><a title="edna.core.execution.context.EdnaContext.execute" href="#edna.core.execution.context.EdnaContext.execute">execute</a></code></li>
 <li><code><a title="edna.core.execution.context.EdnaContext.getVariable" href="#edna.core.execution.context.EdnaContext.getVariable">getVariable</a></code></li>
-<li><code><a title="edna.core.execution.context.EdnaContext.ingest" href="#edna.core.execution.context.EdnaContext.ingest">ingest</a></code></li>
-<li><code><a title="edna.core.execution.context.EdnaContext.process" href="#edna.core.execution.context.EdnaContext.process">process</a></code></li>
+<li><code><a title="edna.core.execution.context.EdnaContext.logger" href="#edna.core.execution.context.EdnaContext.logger">logger</a></code></li>
 </ul>
 </li>
 </ul>

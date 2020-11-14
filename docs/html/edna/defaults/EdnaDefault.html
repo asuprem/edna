@@ -30,12 +30,23 @@
 from abc import ABC
 
 class EdnaDefault(ABC):
+    &#34;&#34;&#34;Contains default parameters for edna
+
+    Attributes:
+        BUFFER_MAX_SIZE (int): The maximum size of a network buffer, set to 32768kB
+        BUFFER_MAX_TIMEOUT_S (int): The maximum timeout of a network buffer, set to 100ms
+        BUFFER_NAME (str): Default name of a network buffer, set to &#39;default&#39;
+        TASK_PRIMITIVE_HOST (str): The default host ip for a task primitive, set to localhost
+        POLL_TIMEOUT_S (float): Default timeout for general polling, set to 100ms. Not used.
+        TASK_POLL_TIMEOUT_S (float): Time to wait before polling tasks about status, set to 100ms. Not used.
+    &#34;&#34;&#34;
     BUFFER_MAX_SIZE : int = 32768
     BUFFER_MAX_TIMEOUT_S : float = 0.1
     BUFFER_NAME : str = &#34;default&#34;
 
     TASK_PRIMITIVE_HOST : str = &#34;0.0.0.0&#34;
-    POLL_TIMEOUT : float = 0.1</code></pre>
+    POLL_TIMEOUT_S : float = 0.1
+    TASK_POLL_TIMEOUT_S: float = 0.1</code></pre>
 </details>
 </section>
 <section>
@@ -51,19 +62,44 @@ class EdnaDefault(ABC):
 <span>class <span class="ident">EdnaDefault</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Helper class that provides a standard way to create an ABC using
-inheritance.</p></div>
+<div class="desc"><p>Contains default parameters for edna</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>BUFFER_MAX_SIZE</code></strong> :&ensp;<code>int</code></dt>
+<dd>The maximum size of a network buffer, set to 32768kB</dd>
+<dt><strong><code>BUFFER_MAX_TIMEOUT_S</code></strong> :&ensp;<code>int</code></dt>
+<dd>The maximum timeout of a network buffer, set to 100ms</dd>
+<dt><strong><code>BUFFER_NAME</code></strong> :&ensp;<code>str</code></dt>
+<dd>Default name of a network buffer, set to 'default'</dd>
+<dt><strong><code>TASK_PRIMITIVE_HOST</code></strong> :&ensp;<code>str</code></dt>
+<dd>The default host ip for a task primitive, set to localhost</dd>
+<dt><strong><code>POLL_TIMEOUT_S</code></strong> :&ensp;<code>float</code></dt>
+<dd>Default timeout for general polling, set to 100ms. Not used.</dd>
+<dt><strong><code>TASK_POLL_TIMEOUT_S</code></strong> :&ensp;<code>float</code></dt>
+<dd>Time to wait before polling tasks about status, set to 100ms. Not used.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class EdnaDefault(ABC):
+    &#34;&#34;&#34;Contains default parameters for edna
+
+    Attributes:
+        BUFFER_MAX_SIZE (int): The maximum size of a network buffer, set to 32768kB
+        BUFFER_MAX_TIMEOUT_S (int): The maximum timeout of a network buffer, set to 100ms
+        BUFFER_NAME (str): Default name of a network buffer, set to &#39;default&#39;
+        TASK_PRIMITIVE_HOST (str): The default host ip for a task primitive, set to localhost
+        POLL_TIMEOUT_S (float): Default timeout for general polling, set to 100ms. Not used.
+        TASK_POLL_TIMEOUT_S (float): Time to wait before polling tasks about status, set to 100ms. Not used.
+    &#34;&#34;&#34;
     BUFFER_MAX_SIZE : int = 32768
     BUFFER_MAX_TIMEOUT_S : float = 0.1
     BUFFER_NAME : str = &#34;default&#34;
 
     TASK_PRIMITIVE_HOST : str = &#34;0.0.0.0&#34;
-    POLL_TIMEOUT : float = 0.1</code></pre>
+    POLL_TIMEOUT_S : float = 0.1
+    TASK_POLL_TIMEOUT_S: float = 0.1</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -83,7 +119,11 @@ inheritance.</p></div>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="edna.defaults.EdnaDefault.EdnaDefault.POLL_TIMEOUT"><code class="name">var <span class="ident">POLL_TIMEOUT</span> : float</code></dt>
+<dt id="edna.defaults.EdnaDefault.EdnaDefault.POLL_TIMEOUT_S"><code class="name">var <span class="ident">POLL_TIMEOUT_S</span> : float</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="edna.defaults.EdnaDefault.EdnaDefault.TASK_POLL_TIMEOUT_S"><code class="name">var <span class="ident">TASK_POLL_TIMEOUT_S</span> : float</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -115,7 +155,8 @@ inheritance.</p></div>
 <li><code><a title="edna.defaults.EdnaDefault.EdnaDefault.BUFFER_MAX_SIZE" href="#edna.defaults.EdnaDefault.EdnaDefault.BUFFER_MAX_SIZE">BUFFER_MAX_SIZE</a></code></li>
 <li><code><a title="edna.defaults.EdnaDefault.EdnaDefault.BUFFER_MAX_TIMEOUT_S" href="#edna.defaults.EdnaDefault.EdnaDefault.BUFFER_MAX_TIMEOUT_S">BUFFER_MAX_TIMEOUT_S</a></code></li>
 <li><code><a title="edna.defaults.EdnaDefault.EdnaDefault.BUFFER_NAME" href="#edna.defaults.EdnaDefault.EdnaDefault.BUFFER_NAME">BUFFER_NAME</a></code></li>
-<li><code><a title="edna.defaults.EdnaDefault.EdnaDefault.POLL_TIMEOUT" href="#edna.defaults.EdnaDefault.EdnaDefault.POLL_TIMEOUT">POLL_TIMEOUT</a></code></li>
+<li><code><a title="edna.defaults.EdnaDefault.EdnaDefault.POLL_TIMEOUT_S" href="#edna.defaults.EdnaDefault.EdnaDefault.POLL_TIMEOUT_S">POLL_TIMEOUT_S</a></code></li>
+<li><code><a title="edna.defaults.EdnaDefault.EdnaDefault.TASK_POLL_TIMEOUT_S" href="#edna.defaults.EdnaDefault.EdnaDefault.TASK_POLL_TIMEOUT_S">TASK_POLL_TIMEOUT_S</a></code></li>
 <li><code><a title="edna.defaults.EdnaDefault.EdnaDefault.TASK_PRIMITIVE_HOST" href="#edna.defaults.EdnaDefault.EdnaDefault.TASK_PRIMITIVE_HOST">TASK_PRIMITIVE_HOST</a></code></li>
 </ul>
 </li>

@@ -44,9 +44,17 @@ class SimpleStreamingContext(EdnaContext):
     It provides methods to control the job execution and to configure job variables.
     See docs for edna.core.execution.context.EdnaContext to initialize
 
+    Attributes:
+        ingest (BaseIngest): Stores a reference to an ingest primitive.
+        process (BaseProcess): Stores a reference to a process primitive.
+        emit (BaseEmit): Stores a reference to an emit primitive
+
     Args:
-        EdnaContext ([Abstrract Base Class]): An abstract class for all Contexts that provides the interface for interacting with a Context.
+        EdnaContext ([Abstract Base Class]): An abstract class for all Contexts that provides the interface for interacting with a Context.
     &#34;&#34;&#34;        
+    ingest: BaseIngest
+    process: BaseProcess
+    emit: BaseEmit
     def __init__(self, dir : str = &#34;.&#34;, confpath : str = &#34;ednaconf.yaml&#34;, confclass: StreamingConfiguration = StreamingConfiguration):
         &#34;&#34;&#34;Initialize the SimpleStreamingContext to accept an EDNA job and configuration.
 
@@ -88,7 +96,7 @@ class SimpleStreamingContext(EdnaContext):
         &#34;&#34;&#34;This executes the a job for the SimpleStreamingContext. `run` is called through the `execute()` method in the interface.
 
         Raises:
-            NotImplementedError: SERVER_SIDE_STREAM patterns are not implemented (and likely won&#39;t be, since the pattern is irrelevant)
+            NotImplementedError: BUFFERED_INGEST patterns are not implemented in `SimpleStreamingContext`
         &#34;&#34;&#34;        
         if self.ingest is None:
             raise PrimitiveNotSetException(&#34;StreamingContext&#34;, &#34;Ingest&#34;)
@@ -97,14 +105,14 @@ class SimpleStreamingContext(EdnaContext):
         if self.emit is None:
             raise PrimitiveNotSetException(&#34;StreamingContext&#34;, &#34;Emit&#34;)
 
-        if self.ingest.execution_mode == IngestPattern.CLIENT_SIDE_STREAM:
+        if self.ingest.execution_mode == IngestPattern.STANDARD_INGEST:
             while True:
                 record_future = self.ingest_executor.submit(next, self.ingest)
                 while not record_future.done():
                     pass    # Perform buffering?
                 streaming_record = record_future.result()
                 self.emit(self.process(streaming_record)) # Serialization verification TODO
-        if self.ingest.execution_mode == IngestPattern.SERVER_SIDE_STREAM:
+        if self.ingest.execution_mode == IngestPattern.BUFFERED_INGEST:
             raise NotImplementedError
 
     
@@ -132,9 +140,18 @@ class SimpleStreamingContext(EdnaContext):
 It uses 2 threads - 1 thread for the ingest, and 1 thread for the process and emit.
 It provides methods to control the job execution and to configure job variables.
 See docs for edna.core.execution.context.EdnaContext to initialize</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>ingest</code></strong> :&ensp;<code>BaseIngest</code></dt>
+<dd>Stores a reference to an ingest primitive.</dd>
+<dt><strong><code>process</code></strong> :&ensp;<code>BaseProcess</code></dt>
+<dd>Stores a reference to a process primitive.</dd>
+<dt><strong><code>emit</code></strong> :&ensp;<code>BaseEmit</code></dt>
+<dd>Stores a reference to an emit primitive</dd>
+</dl>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>EdnaContext</code></strong> :&ensp;<code>[Abstrract Base Class]</code></dt>
+<dt><strong><code>EdnaContext</code></strong> :&ensp;<code>[Abstract Base Class]</code></dt>
 <dd>An abstract class for all Contexts that provides the interface for interacting with a Context.</dd>
 </dl>
 <p>Initialize the SimpleStreamingContext to accept an EDNA job and configuration.</p>
@@ -159,9 +176,17 @@ Defaults to edna.core.configuration.StreamingConfiguration.</dd>
     It provides methods to control the job execution and to configure job variables.
     See docs for edna.core.execution.context.EdnaContext to initialize
 
+    Attributes:
+        ingest (BaseIngest): Stores a reference to an ingest primitive.
+        process (BaseProcess): Stores a reference to a process primitive.
+        emit (BaseEmit): Stores a reference to an emit primitive
+
     Args:
-        EdnaContext ([Abstrract Base Class]): An abstract class for all Contexts that provides the interface for interacting with a Context.
+        EdnaContext ([Abstract Base Class]): An abstract class for all Contexts that provides the interface for interacting with a Context.
     &#34;&#34;&#34;        
+    ingest: BaseIngest
+    process: BaseProcess
+    emit: BaseEmit
     def __init__(self, dir : str = &#34;.&#34;, confpath : str = &#34;ednaconf.yaml&#34;, confclass: StreamingConfiguration = StreamingConfiguration):
         &#34;&#34;&#34;Initialize the SimpleStreamingContext to accept an EDNA job and configuration.
 
@@ -203,7 +228,7 @@ Defaults to edna.core.configuration.StreamingConfiguration.</dd>
         &#34;&#34;&#34;This executes the a job for the SimpleStreamingContext. `run` is called through the `execute()` method in the interface.
 
         Raises:
-            NotImplementedError: SERVER_SIDE_STREAM patterns are not implemented (and likely won&#39;t be, since the pattern is irrelevant)
+            NotImplementedError: BUFFERED_INGEST patterns are not implemented in `SimpleStreamingContext`
         &#34;&#34;&#34;        
         if self.ingest is None:
             raise PrimitiveNotSetException(&#34;StreamingContext&#34;, &#34;Ingest&#34;)
@@ -212,14 +237,14 @@ Defaults to edna.core.configuration.StreamingConfiguration.</dd>
         if self.emit is None:
             raise PrimitiveNotSetException(&#34;StreamingContext&#34;, &#34;Emit&#34;)
 
-        if self.ingest.execution_mode == IngestPattern.CLIENT_SIDE_STREAM:
+        if self.ingest.execution_mode == IngestPattern.STANDARD_INGEST:
             while True:
                 record_future = self.ingest_executor.submit(next, self.ingest)
                 while not record_future.done():
                     pass    # Perform buffering?
                 streaming_record = record_future.result()
                 self.emit(self.process(streaming_record)) # Serialization verification TODO
-        if self.ingest.execution_mode == IngestPattern.SERVER_SIDE_STREAM:
+        if self.ingest.execution_mode == IngestPattern.BUFFERED_INGEST:
             raise NotImplementedError</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -229,10 +254,6 @@ Defaults to edna.core.configuration.StreamingConfiguration.</dd>
 </ul>
 <h3>Class variables</h3>
 <dl>
-<dt id="edna.core.execution.context.SimpleStreamingContext.SimpleStreamingContext.configuration"><code class="name">var <span class="ident">configuration</span> : <a title="edna.core.configuration.EdnaConfiguration" href="../../configuration/index.html#edna.core.configuration.EdnaConfiguration">EdnaConfiguration</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
 <dt id="edna.core.execution.context.SimpleStreamingContext.SimpleStreamingContext.emit"><code class="name">var <span class="ident">emit</span> : <a title="edna.emit.BaseEmit" href="../../../emit/index.html#edna.emit.BaseEmit">BaseEmit</a></code></dt>
 <dd>
 <div class="desc"></div>
@@ -325,7 +346,7 @@ Defaults to edna.core.configuration.StreamingConfiguration.</dd>
 <h2 id="raises">Raises</h2>
 <dl>
 <dt><code>NotImplementedError</code></dt>
-<dd>SERVER_SIDE_STREAM patterns are not implemented (and likely won't be, since the pattern is irrelevant)</dd>
+<dd>BUFFERED_INGEST patterns are not implemented in <code><a title="edna.core.execution.context.SimpleStreamingContext.SimpleStreamingContext" href="#edna.core.execution.context.SimpleStreamingContext.SimpleStreamingContext">SimpleStreamingContext</a></code></dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -335,7 +356,7 @@ Defaults to edna.core.configuration.StreamingConfiguration.</dd>
     &#34;&#34;&#34;This executes the a job for the SimpleStreamingContext. `run` is called through the `execute()` method in the interface.
 
     Raises:
-        NotImplementedError: SERVER_SIDE_STREAM patterns are not implemented (and likely won&#39;t be, since the pattern is irrelevant)
+        NotImplementedError: BUFFERED_INGEST patterns are not implemented in `SimpleStreamingContext`
     &#34;&#34;&#34;        
     if self.ingest is None:
         raise PrimitiveNotSetException(&#34;StreamingContext&#34;, &#34;Ingest&#34;)
@@ -344,14 +365,14 @@ Defaults to edna.core.configuration.StreamingConfiguration.</dd>
     if self.emit is None:
         raise PrimitiveNotSetException(&#34;StreamingContext&#34;, &#34;Emit&#34;)
 
-    if self.ingest.execution_mode == IngestPattern.CLIENT_SIDE_STREAM:
+    if self.ingest.execution_mode == IngestPattern.STANDARD_INGEST:
         while True:
             record_future = self.ingest_executor.submit(next, self.ingest)
             while not record_future.done():
                 pass    # Perform buffering?
             streaming_record = record_future.result()
             self.emit(self.process(streaming_record)) # Serialization verification TODO
-    if self.ingest.execution_mode == IngestPattern.SERVER_SIDE_STREAM:
+    if self.ingest.execution_mode == IngestPattern.BUFFERED_INGEST:
         raise NotImplementedError</code></pre>
 </details>
 </dd>
@@ -388,7 +409,6 @@ Defaults to edna.core.configuration.StreamingConfiguration.</dd>
 <li><code><a title="edna.core.execution.context.SimpleStreamingContext.SimpleStreamingContext.addEmit" href="#edna.core.execution.context.SimpleStreamingContext.SimpleStreamingContext.addEmit">addEmit</a></code></li>
 <li><code><a title="edna.core.execution.context.SimpleStreamingContext.SimpleStreamingContext.addIngest" href="#edna.core.execution.context.SimpleStreamingContext.SimpleStreamingContext.addIngest">addIngest</a></code></li>
 <li><code><a title="edna.core.execution.context.SimpleStreamingContext.SimpleStreamingContext.addProcess" href="#edna.core.execution.context.SimpleStreamingContext.SimpleStreamingContext.addProcess">addProcess</a></code></li>
-<li><code><a title="edna.core.execution.context.SimpleStreamingContext.SimpleStreamingContext.configuration" href="#edna.core.execution.context.SimpleStreamingContext.SimpleStreamingContext.configuration">configuration</a></code></li>
 <li><code><a title="edna.core.execution.context.SimpleStreamingContext.SimpleStreamingContext.emit" href="#edna.core.execution.context.SimpleStreamingContext.SimpleStreamingContext.emit">emit</a></code></li>
 <li><code><a title="edna.core.execution.context.SimpleStreamingContext.SimpleStreamingContext.ingest" href="#edna.core.execution.context.SimpleStreamingContext.SimpleStreamingContext.ingest">ingest</a></code></li>
 <li><code><a title="edna.core.execution.context.SimpleStreamingContext.SimpleStreamingContext.process" href="#edna.core.execution.context.SimpleStreamingContext.SimpleStreamingContext.process">process</a></code></li>

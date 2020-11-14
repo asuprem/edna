@@ -26,23 +26,28 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from edna.core.tasks import TaskPrimitive
+<pre><code class="python">from __future__ import annotations
+from edna.core.tasks import TaskPrimitive
 from edna.defaults import EdnaDefault
 from edna.buffer import ByteBuffer
 import time
-
+from edna.emit._BufferedEmit import _BufferedEmit
+from edna.buffer import ByteBuffer
+import socket
 
 class BufferedTaskPrimitive(TaskPrimitive):
     buffer: ByteBuffer
     def __init__(self, max_buffer_size : int = EdnaDefault.BUFFER_MAX_SIZE, 
             max_buffer_timeout : float = EdnaDefault.BUFFER_MAX_TIMEOUT_S):
         super().__init__(max_buffer_size=max_buffer_size, max_buffer_timeout=max_buffer_timeout)
-        self.buffer = ByteBuffer(self.sender, max_buffer_size=self.MAX_BUFFER_SIZE, max_buffer_timeout=self.MAX_BUFFER_TIMEOUT_S)
          
     def checkBufferTimeout(self):
         if (time.time() - self.timer) &gt; self.MAX_BUFFER_TIMEOUT_S:
             self.buffer.sendBufferAndReset()
-            self.timer = time.time()</code></pre>
+            self.timer = time.time()
+
+    def buildWriteBuffer(self, emit_primitive: _BufferedEmit, socket: socket.socket):
+        emit_primitive.buildBuffer(socket=socket,max_buffer_size=self.MAX_BUFFER_SIZE, max_buffer_timeout=self.MAX_BUFFER_TIMEOUT_S)</code></pre>
 </details>
 </section>
 <section>
@@ -85,22 +90,19 @@ else to the thread.</p></div>
     def __init__(self, max_buffer_size : int = EdnaDefault.BUFFER_MAX_SIZE, 
             max_buffer_timeout : float = EdnaDefault.BUFFER_MAX_TIMEOUT_S):
         super().__init__(max_buffer_size=max_buffer_size, max_buffer_timeout=max_buffer_timeout)
-        self.buffer = ByteBuffer(self.sender, max_buffer_size=self.MAX_BUFFER_SIZE, max_buffer_timeout=self.MAX_BUFFER_TIMEOUT_S)
          
     def checkBufferTimeout(self):
         if (time.time() - self.timer) &gt; self.MAX_BUFFER_TIMEOUT_S:
             self.buffer.sendBufferAndReset()
-            self.timer = time.time()</code></pre>
+            self.timer = time.time()
+
+    def buildWriteBuffer(self, emit_primitive: _BufferedEmit, socket: socket.socket):
+        emit_primitive.buildBuffer(socket=socket,max_buffer_size=self.MAX_BUFFER_SIZE, max_buffer_timeout=self.MAX_BUFFER_TIMEOUT_S)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="edna.core.tasks.TaskPrimitive.TaskPrimitive" href="TaskPrimitive.html#edna.core.tasks.TaskPrimitive.TaskPrimitive">TaskPrimitive</a></li>
 <li>threading.Thread</li>
-</ul>
-<h3>Subclasses</h3>
-<ul class="hlist">
-<li><a title="edna.core.tasks.ProcessTask.ProcessTaskPrimitive.ProcessTaskPrimitive" href="ProcessTask/ProcessTaskPrimitive.html#edna.core.tasks.ProcessTask.ProcessTaskPrimitive.ProcessTaskPrimitive">ProcessTaskPrimitive</a></li>
-<li><a title="edna.core.tasks.SourceTask.StreamingSourceTaskPrimitive.StreamingSourceTaskPrimitive" href="SourceTask/StreamingSourceTaskPrimitive.html#edna.core.tasks.SourceTask.StreamingSourceTaskPrimitive.StreamingSourceTaskPrimitive">StreamingSourceTaskPrimitive</a></li>
 </ul>
 <h3>Class variables</h3>
 <dl>
@@ -111,6 +113,19 @@ else to the thread.</p></div>
 </dl>
 <h3>Methods</h3>
 <dl>
+<dt id="edna.core.tasks.BufferedTaskPrimitive.BufferedTaskPrimitive.buildWriteBuffer"><code class="name flex">
+<span>def <span class="ident">buildWriteBuffer</span></span>(<span>self, emit_primitive: _BufferedEmit, socket: socket.socket)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def buildWriteBuffer(self, emit_primitive: _BufferedEmit, socket: socket.socket):
+    emit_primitive.buildBuffer(socket=socket,max_buffer_size=self.MAX_BUFFER_SIZE, max_buffer_timeout=self.MAX_BUFFER_TIMEOUT_S)</code></pre>
+</details>
+</dd>
 <dt id="edna.core.tasks.BufferedTaskPrimitive.BufferedTaskPrimitive.checkBufferTimeout"><code class="name flex">
 <span>def <span class="ident">checkBufferTimeout</span></span>(<span>self)</span>
 </code></dt>
@@ -148,6 +163,7 @@ else to the thread.</p></div>
 <h4><code><a title="edna.core.tasks.BufferedTaskPrimitive.BufferedTaskPrimitive" href="#edna.core.tasks.BufferedTaskPrimitive.BufferedTaskPrimitive">BufferedTaskPrimitive</a></code></h4>
 <ul class="">
 <li><code><a title="edna.core.tasks.BufferedTaskPrimitive.BufferedTaskPrimitive.buffer" href="#edna.core.tasks.BufferedTaskPrimitive.BufferedTaskPrimitive.buffer">buffer</a></code></li>
+<li><code><a title="edna.core.tasks.BufferedTaskPrimitive.BufferedTaskPrimitive.buildWriteBuffer" href="#edna.core.tasks.BufferedTaskPrimitive.BufferedTaskPrimitive.buildWriteBuffer">buildWriteBuffer</a></code></li>
 <li><code><a title="edna.core.tasks.BufferedTaskPrimitive.BufferedTaskPrimitive.checkBufferTimeout" href="#edna.core.tasks.BufferedTaskPrimitive.BufferedTaskPrimitive.checkBufferTimeout">checkBufferTimeout</a></code></li>
 </ul>
 </li>

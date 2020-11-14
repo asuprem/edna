@@ -27,10 +27,13 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">from __future__ import annotations
+from typing import Dict
+from edna.types.enums import EmitPattern
 from edna.serializers import Serializable, BufferedSerializable
 import time
+from edna.core.primitives import EdnaPrimitive
 
-class BaseEmit(object):
+class BaseEmit(EdnaPrimitive):
     &#34;&#34;&#34;BaseEmit is the base class for writing records from a process primitive to a sink, 
     such as a filestream, sql database, or Kafka topic.
 
@@ -45,15 +48,16 @@ class BaseEmit(object):
 
     - modify the `__call__()` method
 
+    Attributes:
+        emit_pattern (EmitPattern): The type of emit, either STANDARD_EMIT or BUFFERED_EMIT
     &#34;&#34;&#34;
-    serializer: Serializable
-    in_serializer: BufferedSerializable
-    out_serializer: Serializable  
+    emit_pattern: EmitPattern = EmitPattern.STANDARD_EMIT
     def __init__(self, serializer: Serializable, 
             in_serializer: Serializable = None, 
             out_serializer: Serializable = None, 
             emit_buffer_batch_size: int = 10, 
             emit_buffer_timeout_ms: int = 100, 
+            logger_name: str = None,
             *args, **kwargs):
         &#34;&#34;&#34;Initializes the BaseEmit. This must be called by any inheriting classes using `super().__init__()`
 
@@ -65,17 +69,9 @@ class BaseEmit(object):
             emit_timeout_ms (int): How many ms to wait before emitting. This is to prevent 
                 blocking on unfilled `emit_batch` if incoming stream is slow.
         &#34;&#34;&#34;
-        self.serializer = serializer
-        if self.serializer is None:
-            if in_serializer is None:
-                raise ValueError(&#34;`in_serializer` cannot be None if serializer is `None` for Emit Primitive&#34;)
-            if out_serializer is None:
-                raise ValueError(&#34;`in_serializer` cannot be None if serializer is `None` for Emit Primitive&#34;)
-            self.in_serializer = in_serializer
-            self.out_serializer = out_serializer
-        else:
-            self.in_serializer = self.serializer
-            self.out_serializer = self.serializer
+        if logger_name is None:
+            logger_name = self.__class__.__name__
+        super().__init__(serializer=serializer, in_serializer=in_serializer, out_serializer=out_serializer, logger_name=logger_name)
 
 
         if emit_buffer_batch_size &lt;= 0:
@@ -86,17 +82,23 @@ class BaseEmit(object):
         self.emit_buffer_index = -1
         self.timer = time.time()
         
+        
 
     def __call__(self, message):
         &#34;&#34;&#34;Wrapper for emitting a record using the emitter&#39;s logic. This is the entry point for emitting and should not be modified.
 
         Args:
-            message (List[object]): A list of messagse that should be Serializable to bytes with `serializer`
+            message (List[object]): A list of message that should be Serializable to bytes with `serializer`
         &#34;&#34;&#34;
         for item in message:
             self.call(item)
         
     def call(self, message):
+        &#34;&#34;&#34;Writes records to the internal buffer.
+
+        Args:
+            message (obj): A record.
+        &#34;&#34;&#34;
         self.emit_buffer_index += 1
         self.emit_buffer[self.emit_buffer_index] = self.out_serializer.write(message)
         # Write buffer and clear if throughput barriers are met
@@ -128,6 +130,24 @@ class BaseEmit(object):
             NotImplementedError: `write()` needs to be implemented in inheriting subclasses.
         &#34;&#34;&#34;
         raise NotImplementedError()
+
+    def flush(self):
+        &#34;&#34;&#34;Flushes the buffers and emits current contents
+        &#34;&#34;&#34;
+        self.write_buffer()
+
+    def build(self, build_configuration: Dict[str, str]):
+        &#34;&#34;&#34;Lazy building
+
+        Args:
+            build_configuration (Dict[str, str]): The build configuration.
+        &#34;&#34;&#34;
+        pass
+
+    def close(self):
+        &#34;&#34;&#34;Shutdown emit, including closing any connections if they have been made
+        &#34;&#34;&#34;
+        pass
 
 from .KafkaEmit import KafkaEmit
 from .StdoutEmit import StdoutEmit
@@ -177,7 +197,7 @@ __pdoc__[&#34;BaseEmit.__call__&#34;] = True</code></pre>
 <dl>
 <dt id="edna.emit.BaseEmit"><code class="flex name class">
 <span>class <span class="ident">BaseEmit</span></span>
-<span>(</span><span>serializer: Serializable, in_serializer: Serializable = None, out_serializer: Serializable = None, emit_buffer_batch_size: int = 10, emit_buffer_timeout_ms: int = 100, *args, **kwargs)</span>
+<span>(</span><span>serializer: Serializable, in_serializer: Serializable = None, out_serializer: Serializable = None, emit_buffer_batch_size: int = 10, emit_buffer_timeout_ms: int = 100, logger_name: str = None, *args, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>BaseEmit is the base class for writing records from a process primitive to a sink,
@@ -196,6 +216,11 @@ such as a filestream, sql database, or Kafka topic.</p>
 <ul>
 <li>modify the <code>__call__()</code> method</li>
 </ul>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>emit_pattern</code></strong> :&ensp;<code>EmitPattern</code></dt>
+<dd>The type of emit, either STANDARD_EMIT or BUFFERED_EMIT</dd>
+</dl>
 <p>Initializes the BaseEmit. This must be called by any inheriting classes using <code>super().__init__()</code></p>
 <h2 id="args">Args</h2>
 <dl>
@@ -213,7 +238,7 @@ blocking on unfilled <code>emit_batch</code> if incoming stream is slow.</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class BaseEmit(object):
+<pre><code class="python">class BaseEmit(EdnaPrimitive):
     &#34;&#34;&#34;BaseEmit is the base class for writing records from a process primitive to a sink, 
     such as a filestream, sql database, or Kafka topic.
 
@@ -228,15 +253,16 @@ blocking on unfilled <code>emit_batch</code> if incoming stream is slow.</dd>
 
     - modify the `__call__()` method
 
+    Attributes:
+        emit_pattern (EmitPattern): The type of emit, either STANDARD_EMIT or BUFFERED_EMIT
     &#34;&#34;&#34;
-    serializer: Serializable
-    in_serializer: BufferedSerializable
-    out_serializer: Serializable  
+    emit_pattern: EmitPattern = EmitPattern.STANDARD_EMIT
     def __init__(self, serializer: Serializable, 
             in_serializer: Serializable = None, 
             out_serializer: Serializable = None, 
             emit_buffer_batch_size: int = 10, 
             emit_buffer_timeout_ms: int = 100, 
+            logger_name: str = None,
             *args, **kwargs):
         &#34;&#34;&#34;Initializes the BaseEmit. This must be called by any inheriting classes using `super().__init__()`
 
@@ -248,17 +274,9 @@ blocking on unfilled <code>emit_batch</code> if incoming stream is slow.</dd>
             emit_timeout_ms (int): How many ms to wait before emitting. This is to prevent 
                 blocking on unfilled `emit_batch` if incoming stream is slow.
         &#34;&#34;&#34;
-        self.serializer = serializer
-        if self.serializer is None:
-            if in_serializer is None:
-                raise ValueError(&#34;`in_serializer` cannot be None if serializer is `None` for Emit Primitive&#34;)
-            if out_serializer is None:
-                raise ValueError(&#34;`in_serializer` cannot be None if serializer is `None` for Emit Primitive&#34;)
-            self.in_serializer = in_serializer
-            self.out_serializer = out_serializer
-        else:
-            self.in_serializer = self.serializer
-            self.out_serializer = self.serializer
+        if logger_name is None:
+            logger_name = self.__class__.__name__
+        super().__init__(serializer=serializer, in_serializer=in_serializer, out_serializer=out_serializer, logger_name=logger_name)
 
 
         if emit_buffer_batch_size &lt;= 0:
@@ -269,17 +287,23 @@ blocking on unfilled <code>emit_batch</code> if incoming stream is slow.</dd>
         self.emit_buffer_index = -1
         self.timer = time.time()
         
+        
 
     def __call__(self, message):
         &#34;&#34;&#34;Wrapper for emitting a record using the emitter&#39;s logic. This is the entry point for emitting and should not be modified.
 
         Args:
-            message (List[object]): A list of messagse that should be Serializable to bytes with `serializer`
+            message (List[object]): A list of message that should be Serializable to bytes with `serializer`
         &#34;&#34;&#34;
         for item in message:
             self.call(item)
         
     def call(self, message):
+        &#34;&#34;&#34;Writes records to the internal buffer.
+
+        Args:
+            message (obj): A record.
+        &#34;&#34;&#34;
         self.emit_buffer_index += 1
         self.emit_buffer[self.emit_buffer_index] = self.out_serializer.write(message)
         # Write buffer and clear if throughput barriers are met
@@ -310,26 +334,41 @@ blocking on unfilled <code>emit_batch</code> if incoming stream is slow.</dd>
         Raises:
             NotImplementedError: `write()` needs to be implemented in inheriting subclasses.
         &#34;&#34;&#34;
-        raise NotImplementedError()</code></pre>
+        raise NotImplementedError()
+
+    def flush(self):
+        &#34;&#34;&#34;Flushes the buffers and emits current contents
+        &#34;&#34;&#34;
+        self.write_buffer()
+
+    def build(self, build_configuration: Dict[str, str]):
+        &#34;&#34;&#34;Lazy building
+
+        Args:
+            build_configuration (Dict[str, str]): The build configuration.
+        &#34;&#34;&#34;
+        pass
+
+    def close(self):
+        &#34;&#34;&#34;Shutdown emit, including closing any connections if they have been made
+        &#34;&#34;&#34;
+        pass</code></pre>
 </details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="edna.core.primitives.EdnaPrimitive" href="../core/primitives/index.html#edna.core.primitives.EdnaPrimitive">EdnaPrimitive</a></li>
+</ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="edna.emit.KafkaEmit.KafkaEmit" href="KafkaEmit.html#edna.emit.KafkaEmit.KafkaEmit">KafkaEmit</a></li>
 <li><a title="edna.emit.RecordCounterEmit.RecordCounterEmit" href="RecordCounterEmit.html#edna.emit.RecordCounterEmit.RecordCounterEmit">RecordCounterEmit</a></li>
 <li><a title="edna.emit.SQLEmit.SQLEmit" href="SQLEmit.html#edna.emit.SQLEmit.SQLEmit">SQLEmit</a></li>
 <li><a title="edna.emit.StdoutEmit.StdoutEmit" href="StdoutEmit.html#edna.emit.StdoutEmit.StdoutEmit">StdoutEmit</a></li>
+<li>edna.emit._BufferedEmit._BufferedEmit</li>
 </ul>
 <h3>Class variables</h3>
 <dl>
-<dt id="edna.emit.BaseEmit.in_serializer"><code class="name">var <span class="ident">in_serializer</span> : <a title="edna.serializers.BufferedSerializable.BufferedSerializable" href="../serializers/BufferedSerializable.html#edna.serializers.BufferedSerializable.BufferedSerializable">BufferedSerializable</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="edna.emit.BaseEmit.out_serializer"><code class="name">var <span class="ident">out_serializer</span> : <a title="edna.serializers.Serializable" href="../serializers/index.html#edna.serializers.Serializable">Serializable</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="edna.emit.BaseEmit.serializer"><code class="name">var <span class="ident">serializer</span> : <a title="edna.serializers.Serializable" href="../serializers/index.html#edna.serializers.Serializable">Serializable</a></code></dt>
+<dt id="edna.emit.BaseEmit.emit_pattern"><code class="name">var <span class="ident">emit_pattern</span> : <a title="edna.types.enums.EmitPattern.EmitPattern" href="../types/enums/EmitPattern.html#edna.types.enums.EmitPattern.EmitPattern">EmitPattern</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -344,7 +383,7 @@ blocking on unfilled <code>emit_batch</code> if incoming stream is slow.</dd>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>message</code></strong> :&ensp;<code>List[object]</code></dt>
-<dd>A list of messagse that should be Serializable to bytes with <code>serializer</code></dd>
+<dd>A list of message that should be Serializable to bytes with <code>serializer</code></dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -354,22 +393,55 @@ blocking on unfilled <code>emit_batch</code> if incoming stream is slow.</dd>
     &#34;&#34;&#34;Wrapper for emitting a record using the emitter&#39;s logic. This is the entry point for emitting and should not be modified.
 
     Args:
-        message (List[object]): A list of messagse that should be Serializable to bytes with `serializer`
+        message (List[object]): A list of message that should be Serializable to bytes with `serializer`
     &#34;&#34;&#34;
     for item in message:
         self.call(item)</code></pre>
+</details>
+</dd>
+<dt id="edna.emit.BaseEmit.build"><code class="name flex">
+<span>def <span class="ident">build</span></span>(<span>self, build_configuration: Dict[str, str])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Lazy building</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>build_configuration</code></strong> :&ensp;<code>Dict[str, str]</code></dt>
+<dd>The build configuration.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def build(self, build_configuration: Dict[str, str]):
+    &#34;&#34;&#34;Lazy building
+
+    Args:
+        build_configuration (Dict[str, str]): The build configuration.
+    &#34;&#34;&#34;
+    pass</code></pre>
 </details>
 </dd>
 <dt id="edna.emit.BaseEmit.call"><code class="name flex">
 <span>def <span class="ident">call</span></span>(<span>self, message)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Writes records to the internal buffer.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>message</code></strong> :&ensp;<code>obj</code></dt>
+<dd>A record.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def call(self, message):
+    &#34;&#34;&#34;Writes records to the internal buffer.
+
+    Args:
+        message (obj): A record.
+    &#34;&#34;&#34;
     self.emit_buffer_index += 1
     self.emit_buffer[self.emit_buffer_index] = self.out_serializer.write(message)
     # Write buffer and clear if throughput barriers are met
@@ -377,6 +449,36 @@ blocking on unfilled <code>emit_batch</code> if incoming stream is slow.</dd>
         self.write_buffer()
     if self.emit_buffer_index+1 == self.emit_buffer_batch_size: # Buffer too large
         self.write_buffer()</code></pre>
+</details>
+</dd>
+<dt id="edna.emit.BaseEmit.close"><code class="name flex">
+<span>def <span class="ident">close</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Shutdown emit, including closing any connections if they have been made</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def close(self):
+    &#34;&#34;&#34;Shutdown emit, including closing any connections if they have been made
+    &#34;&#34;&#34;
+    pass</code></pre>
+</details>
+</dd>
+<dt id="edna.emit.BaseEmit.flush"><code class="name flex">
+<span>def <span class="ident">flush</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Flushes the buffers and emits current contents</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def flush(self):
+    &#34;&#34;&#34;Flushes the buffers and emits current contents
+    &#34;&#34;&#34;
+    self.write_buffer()</code></pre>
 </details>
 </dd>
 <dt id="edna.emit.BaseEmit.reset_buffer"><code class="name flex">
@@ -470,11 +572,12 @@ Subclasses will write messages in the <code>emit_buffer</code> of the class. </p
 <h4><code><a title="edna.emit.BaseEmit" href="#edna.emit.BaseEmit">BaseEmit</a></code></h4>
 <ul class="two-column">
 <li><code><a title="edna.emit.BaseEmit.__call__" href="#edna.emit.BaseEmit.__call__">__call__</a></code></li>
+<li><code><a title="edna.emit.BaseEmit.build" href="#edna.emit.BaseEmit.build">build</a></code></li>
 <li><code><a title="edna.emit.BaseEmit.call" href="#edna.emit.BaseEmit.call">call</a></code></li>
-<li><code><a title="edna.emit.BaseEmit.in_serializer" href="#edna.emit.BaseEmit.in_serializer">in_serializer</a></code></li>
-<li><code><a title="edna.emit.BaseEmit.out_serializer" href="#edna.emit.BaseEmit.out_serializer">out_serializer</a></code></li>
+<li><code><a title="edna.emit.BaseEmit.close" href="#edna.emit.BaseEmit.close">close</a></code></li>
+<li><code><a title="edna.emit.BaseEmit.emit_pattern" href="#edna.emit.BaseEmit.emit_pattern">emit_pattern</a></code></li>
+<li><code><a title="edna.emit.BaseEmit.flush" href="#edna.emit.BaseEmit.flush">flush</a></code></li>
 <li><code><a title="edna.emit.BaseEmit.reset_buffer" href="#edna.emit.BaseEmit.reset_buffer">reset_buffer</a></code></li>
-<li><code><a title="edna.emit.BaseEmit.serializer" href="#edna.emit.BaseEmit.serializer">serializer</a></code></li>
 <li><code><a title="edna.emit.BaseEmit.write" href="#edna.emit.BaseEmit.write">write</a></code></li>
 <li><code><a title="edna.emit.BaseEmit.write_buffer" href="#edna.emit.BaseEmit.write_buffer">write_buffer</a></code></li>
 </ul>

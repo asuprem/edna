@@ -27,9 +27,10 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">from __future__ import annotations
+from edna.core.primitives import EdnaPrimitive
 from edna.serializers import Serializable, BufferedSerializable
 from edna.types.enums import IngestPattern
-class BaseIngest(object):
+class BaseIngest(EdnaPrimitive):
     &#34;&#34;&#34;BaseIngest is the base interface for ingesting messages from various sources, 
     either external or internal (i.e. Kafka).
 
@@ -43,21 +44,10 @@ class BaseIngest(object):
         `edna.core.execution.context.EdnaContext`.
     &#34;&#34;&#34;
     execution_mode: IngestPattern
-    serializer: Serializable
-    in_serializer: Serializable
-    out_serializer: BufferedSerializable
-    def __init__(self, serializer: Serializable, in_serializer: Serializable = None, out_serializer: BufferedSerializable = None, *args, **kwargs):
-        self.serializer = serializer
-        if self.serializer is None:
-            if in_serializer is None:
-                raise ValueError(&#34;`in_serializer` cannot be None if serializer is `None` for Ingest Primitive&#34;)
-            if out_serializer is None:
-                raise ValueError(&#34;`in_serializer` cannot be None if serializer is `None` for Ingest Primitive&#34;)
-            self.in_serializer = in_serializer
-            self.out_serializer = out_serializer
-        else:   # TODO does not check if serializer is a BufferedSerializable or Serializable
-            self.in_serializer = self.serializer
-            self.out_serializer = self.serializer
+    def __init__(self, serializer: Serializable, in_serializer: Serializable = None, out_serializer: BufferedSerializable = None, logger_name: str = None, *args, **kwargs):
+        if logger_name is None:
+            logger_name = self.__class__.__name__
+        super().__init__(serializer=serializer, in_serializer=in_serializer, out_serializer=out_serializer, logger_name=logger_name)
 
 from .streaming import BaseStreamingIngest</code></pre>
 </details>
@@ -80,7 +70,7 @@ from .streaming import BaseStreamingIngest</code></pre>
 <dl>
 <dt id="edna.ingest.BaseIngest"><code class="flex name class">
 <span>class <span class="ident">BaseIngest</span></span>
-<span>(</span><span>serializer: Serializable, in_serializer: Serializable = None, out_serializer: BufferedSerializable = None, *args, **kwargs)</span>
+<span>(</span><span>serializer: Serializable, in_serializer: Serializable = None, out_serializer: BufferedSerializable = None, logger_name: str = None, *args, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>BaseIngest is the base interface for ingesting messages from various sources,
@@ -97,12 +87,33 @@ either external or internal (i.e. Kafka).</p>
 <p>Create an execution pattern in the <code>run()</code> method of the correct
 <code><a title="edna.core.execution.context.EdnaContext" href="../core/execution/context/index.html#edna.core.execution.context.EdnaContext">EdnaContext</a></code>.</p>
 </li>
-</ul></div>
+</ul>
+<p>Initializes the Primitive.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>serializer</code></strong> :&ensp;<code>Serializable</code></dt>
+<dd>A serializer for this Primitive. It can be used to serialize and deserialize
+records between processes. If not provided, then <code>in_serializer</code> and <code>out_serializer</code> must be provided.</dd>
+<dt><strong><code>in_serializer</code></strong> :&ensp;<code>Serializable</code>, optional</dt>
+<dd>A serializer for this Primitive. It can be used when reading
+from the input stream. Defaults to None.</dd>
+<dt><strong><code>out_serializer</code></strong> :&ensp;<code>Serializable</code>, optional</dt>
+<dd>A serializer for this Primitive. It can be used when writing
+to the output stream. Defaults to None.</dd>
+<dt><strong><code>logger_name</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>A name for this Primitive's <code>logger</code>. If no name is provided, <code>logger</code> uses
+the class name. Defaults to None.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>ValueError</code></dt>
+<dd>Raised when a serializer is passed incorrectly</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class BaseIngest(object):
+<pre><code class="python">class BaseIngest(EdnaPrimitive):
     &#34;&#34;&#34;BaseIngest is the base interface for ingesting messages from various sources, 
     either external or internal (i.e. Kafka).
 
@@ -116,22 +127,15 @@ either external or internal (i.e. Kafka).</p>
         `edna.core.execution.context.EdnaContext`.
     &#34;&#34;&#34;
     execution_mode: IngestPattern
-    serializer: Serializable
-    in_serializer: Serializable
-    out_serializer: BufferedSerializable
-    def __init__(self, serializer: Serializable, in_serializer: Serializable = None, out_serializer: BufferedSerializable = None, *args, **kwargs):
-        self.serializer = serializer
-        if self.serializer is None:
-            if in_serializer is None:
-                raise ValueError(&#34;`in_serializer` cannot be None if serializer is `None` for Ingest Primitive&#34;)
-            if out_serializer is None:
-                raise ValueError(&#34;`in_serializer` cannot be None if serializer is `None` for Ingest Primitive&#34;)
-            self.in_serializer = in_serializer
-            self.out_serializer = out_serializer
-        else:   # TODO does not check if serializer is a BufferedSerializable or Serializable
-            self.in_serializer = self.serializer
-            self.out_serializer = self.serializer</code></pre>
+    def __init__(self, serializer: Serializable, in_serializer: Serializable = None, out_serializer: BufferedSerializable = None, logger_name: str = None, *args, **kwargs):
+        if logger_name is None:
+            logger_name = self.__class__.__name__
+        super().__init__(serializer=serializer, in_serializer=in_serializer, out_serializer=out_serializer, logger_name=logger_name)</code></pre>
 </details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="edna.core.primitives.EdnaPrimitive" href="../core/primitives/index.html#edna.core.primitives.EdnaPrimitive">EdnaPrimitive</a></li>
+</ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="edna.ingest.streaming.BaseStreamingIngest" href="streaming/index.html#edna.ingest.streaming.BaseStreamingIngest">BaseStreamingIngest</a></li>
@@ -139,18 +143,6 @@ either external or internal (i.e. Kafka).</p>
 <h3>Class variables</h3>
 <dl>
 <dt id="edna.ingest.BaseIngest.execution_mode"><code class="name">var <span class="ident">execution_mode</span> : <a title="edna.types.enums.IngestPattern.IngestPattern" href="../types/enums/IngestPattern.html#edna.types.enums.IngestPattern.IngestPattern">IngestPattern</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="edna.ingest.BaseIngest.in_serializer"><code class="name">var <span class="ident">in_serializer</span> : <a title="edna.serializers.Serializable" href="../serializers/index.html#edna.serializers.Serializable">Serializable</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="edna.ingest.BaseIngest.out_serializer"><code class="name">var <span class="ident">out_serializer</span> : <a title="edna.serializers.BufferedSerializable.BufferedSerializable" href="../serializers/BufferedSerializable.html#edna.serializers.BufferedSerializable.BufferedSerializable">BufferedSerializable</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="edna.ingest.BaseIngest.serializer"><code class="name">var <span class="ident">serializer</span> : <a title="edna.serializers.Serializable" href="../serializers/index.html#edna.serializers.Serializable">Serializable</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -181,9 +173,6 @@ either external or internal (i.e. Kafka).</p>
 <h4><code><a title="edna.ingest.BaseIngest" href="#edna.ingest.BaseIngest">BaseIngest</a></code></h4>
 <ul class="">
 <li><code><a title="edna.ingest.BaseIngest.execution_mode" href="#edna.ingest.BaseIngest.execution_mode">execution_mode</a></code></li>
-<li><code><a title="edna.ingest.BaseIngest.in_serializer" href="#edna.ingest.BaseIngest.in_serializer">in_serializer</a></code></li>
-<li><code><a title="edna.ingest.BaseIngest.out_serializer" href="#edna.ingest.BaseIngest.out_serializer">out_serializer</a></code></li>
-<li><code><a title="edna.ingest.BaseIngest.serializer" href="#edna.ingest.BaseIngest.serializer">serializer</a></code></li>
 </ul>
 </li>
 </ul>

@@ -34,7 +34,7 @@ class Serializable:
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def read(self, in_stream: bytes): 
+    def read(cls, in_stream: bytes): 
         &#34;&#34;&#34;Convert from bytes to Serializable
 
         Args:
@@ -42,7 +42,7 @@ class Serializable:
         &#34;&#34;&#34;
         raise NotImplementedError
     @abstractmethod
-    def write(self, out_stream): 
+    def write(cls, out_stream): 
         &#34;&#34;&#34;Convert from Serializable to bytes
 
         Args:
@@ -52,7 +52,8 @@ class Serializable:
 
 from .StringSerializer import StringSerializer
 from .KafkaStringSerializer import KafkaStringSerializer
-from .BufferedSerializable import BufferedSerializable</code></pre>
+from .BufferedSerializable import BufferedSerializable
+from .MsgPackBufferedSerializable import MsgPackBufferedSerializer</code></pre>
 </details>
 </section>
 <section>
@@ -102,7 +103,7 @@ from .BufferedSerializable import BufferedSerializable</code></pre>
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def read(self, in_stream: bytes): 
+    def read(cls, in_stream: bytes): 
         &#34;&#34;&#34;Convert from bytes to Serializable
 
         Args:
@@ -110,7 +111,7 @@ from .BufferedSerializable import BufferedSerializable</code></pre>
         &#34;&#34;&#34;
         raise NotImplementedError
     @abstractmethod
-    def write(self, out_stream): 
+    def write(cls, out_stream): 
         &#34;&#34;&#34;Convert from Serializable to bytes
 
         Args:
@@ -133,7 +134,7 @@ from .BufferedSerializable import BufferedSerializable</code></pre>
 <h3>Methods</h3>
 <dl>
 <dt id="edna.serializers.Serializable.read"><code class="name flex">
-<span>def <span class="ident">read</span></span>(<span>self, in_stream: bytes)</span>
+<span>def <span class="ident">read</span></span>(<span>cls, in_stream: bytes)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Convert from bytes to Serializable</p>
@@ -147,7 +148,7 @@ from .BufferedSerializable import BufferedSerializable</code></pre>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def read(self, in_stream: bytes): 
+def read(cls, in_stream: bytes): 
     &#34;&#34;&#34;Convert from bytes to Serializable
 
     Args:
@@ -157,7 +158,7 @@ def read(self, in_stream: bytes):
 </details>
 </dd>
 <dt id="edna.serializers.Serializable.write"><code class="name flex">
-<span>def <span class="ident">write</span></span>(<span>self, out_stream)</span>
+<span>def <span class="ident">write</span></span>(<span>cls, out_stream)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Convert from Serializable to bytes</p>
@@ -171,7 +172,7 @@ def read(self, in_stream: bytes):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def write(self, out_stream): 
+def write(cls, out_stream): 
     &#34;&#34;&#34;Convert from Serializable to bytes
 
     Args:

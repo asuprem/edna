@@ -26,9 +26,9 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from edna.serializers import Serializable
-from edna.process import BaseProcess
-from edna.emit import BaseEmit
+<pre><code class="python">from __future__ import annotations
+from typing import Dict
+from edna.serializers import Serializable
 from edna.ingest import BaseIngest
 from edna.serializers import Serializable
 from edna.types.enums import IngestPattern
@@ -52,17 +52,18 @@ class BaseStreamingIngest(BaseIngest, Iterator):
     - modify the `__iter__()` method
 
     Attributes:
-        execution_mode (IngestPattern): Sets this primitive as a `CLIENT_SIDE_STREAM`. 
-            The logic for execution is set up in `edna.core.execution.context.SimpleStreamingContext`.
+        execution_mode (IngestPattern): The type of ingest, either STANDARD_INGEST or BUFFERED_INGEST
     &#34;&#34;&#34;    
-    execution_mode = IngestPattern.CLIENT_SIDE_STREAM
-    def __init__(self, serializer: Serializable, in_serializer: Serializable = None, out_serializer: Serializable = None, *args, **kwargs):
+    execution_mode = IngestPattern.STANDARD_INGEST
+    def __init__(self, serializer: Serializable, in_serializer: Serializable = None, out_serializer: Serializable = None, logger_name: str = None, *args, **kwargs):
         &#34;&#34;&#34;Initialize the primitive with the serializer.
 
         Args:
             serializer (Serializable): Serializer for deserialize the streaming records.
         &#34;&#34;&#34;
-        super().__init__(serializer, in_serializer, out_serializer, *args, **kwargs)
+        if logger_name is None:
+            logger_name = self.__class__.__name__
+        super().__init__(serializer, in_serializer, out_serializer, logger_name, *args, **kwargs)
     
     def __iter__(self):
         &#34;&#34;&#34;Returns itself as the iterator.
@@ -73,7 +74,7 @@ class BaseStreamingIngest(BaseIngest, Iterator):
         return self
 
     def __next__(self):
-        &#34;&#34;&#34;Fetches the next record from the source.
+        &#34;&#34;&#34;Fetches the next record from the source and deserializes
 
         Returns:
             (List[obj]): Single fetched record in a singleton format.
@@ -81,12 +82,22 @@ class BaseStreamingIngest(BaseIngest, Iterator):
         return [self.in_serializer.read(self.next())]
 
     def next(self):
-        &#34;&#34;&#34;Method that encapsulates record fetching logic.
+        &#34;&#34;&#34;Method that encapsulates raw record fetching logic.
 
         Raises:
             NotImplementedError: Child classes should implement this method.
         &#34;&#34;&#34;
         raise NotImplementedError
+
+    def build(self, build_configuration: Dict[str,str]):
+        &#34;&#34;&#34;Lazy building for ingest.
+        &#34;&#34;&#34;
+        pass
+
+    def close(self):
+        &#34;&#34;&#34;Shuts down the ingest, closing any connections if they exist
+        &#34;&#34;&#34;
+        pass
 
 from .TwitterStreamingIngest import TwitterStreamingIngest
 from .TwitterFilteredIngest import TwitterFilteredIngest
@@ -136,7 +147,7 @@ __pdoc__[&#34;BaseStreamingIngest.__next__&#34;] = True</code></pre>
 <dl>
 <dt id="edna.ingest.streaming.BaseStreamingIngest"><code class="flex name class">
 <span>class <span class="ident">BaseStreamingIngest</span></span>
-<span>(</span><span>serializer: <a title="edna.serializers.Serializable" href="../../serializers/index.html#edna.serializers.Serializable">Serializable</a>, in_serializer: <a title="edna.serializers.Serializable" href="../../serializers/index.html#edna.serializers.Serializable">Serializable</a> = None, out_serializer: <a title="edna.serializers.Serializable" href="../../serializers/index.html#edna.serializers.Serializable">Serializable</a> = None, *args, **kwargs)</span>
+<span>(</span><span>serializer: Serializable, in_serializer: Serializable = None, out_serializer: Serializable = None, logger_name: str = None, *args, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>BaseStreamingIngest is the base class for generating records from a streaming source, e.g. Kafka.</p>
@@ -162,8 +173,7 @@ fetches records in the background and yields them when it is called.</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
 <dt><strong><code>execution_mode</code></strong> :&ensp;<code>IngestPattern</code></dt>
-<dd>Sets this primitive as a <code>CLIENT_SIDE_STREAM</code>.
-The logic for execution is set up in <code><a title="edna.core.execution.context.SimpleStreamingContext" href="../../core/execution/context/SimpleStreamingContext.html">edna.core.execution.context.SimpleStreamingContext</a></code>.</dd>
+<dd>The type of ingest, either STANDARD_INGEST or BUFFERED_INGEST</dd>
 </dl>
 <p>Initialize the primitive with the serializer.</p>
 <h2 id="args">Args</h2>
@@ -192,17 +202,18 @@ The logic for execution is set up in <code><a title="edna.core.execution.context
     - modify the `__iter__()` method
 
     Attributes:
-        execution_mode (IngestPattern): Sets this primitive as a `CLIENT_SIDE_STREAM`. 
-            The logic for execution is set up in `edna.core.execution.context.SimpleStreamingContext`.
+        execution_mode (IngestPattern): The type of ingest, either STANDARD_INGEST or BUFFERED_INGEST
     &#34;&#34;&#34;    
-    execution_mode = IngestPattern.CLIENT_SIDE_STREAM
-    def __init__(self, serializer: Serializable, in_serializer: Serializable = None, out_serializer: Serializable = None, *args, **kwargs):
+    execution_mode = IngestPattern.STANDARD_INGEST
+    def __init__(self, serializer: Serializable, in_serializer: Serializable = None, out_serializer: Serializable = None, logger_name: str = None, *args, **kwargs):
         &#34;&#34;&#34;Initialize the primitive with the serializer.
 
         Args:
             serializer (Serializable): Serializer for deserialize the streaming records.
         &#34;&#34;&#34;
-        super().__init__(serializer, in_serializer, out_serializer, *args, **kwargs)
+        if logger_name is None:
+            logger_name = self.__class__.__name__
+        super().__init__(serializer, in_serializer, out_serializer, logger_name, *args, **kwargs)
     
     def __iter__(self):
         &#34;&#34;&#34;Returns itself as the iterator.
@@ -213,7 +224,7 @@ The logic for execution is set up in <code><a title="edna.core.execution.context
         return self
 
     def __next__(self):
-        &#34;&#34;&#34;Fetches the next record from the source.
+        &#34;&#34;&#34;Fetches the next record from the source and deserializes
 
         Returns:
             (List[obj]): Single fetched record in a singleton format.
@@ -221,16 +232,27 @@ The logic for execution is set up in <code><a title="edna.core.execution.context
         return [self.in_serializer.read(self.next())]
 
     def next(self):
-        &#34;&#34;&#34;Method that encapsulates record fetching logic.
+        &#34;&#34;&#34;Method that encapsulates raw record fetching logic.
 
         Raises:
             NotImplementedError: Child classes should implement this method.
         &#34;&#34;&#34;
-        raise NotImplementedError</code></pre>
+        raise NotImplementedError
+
+    def build(self, build_configuration: Dict[str,str]):
+        &#34;&#34;&#34;Lazy building for ingest.
+        &#34;&#34;&#34;
+        pass
+
+    def close(self):
+        &#34;&#34;&#34;Shuts down the ingest, closing any connections if they exist
+        &#34;&#34;&#34;
+        pass</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="edna.ingest.BaseIngest" href="../index.html#edna.ingest.BaseIngest">BaseIngest</a></li>
+<li><a title="edna.core.primitives.EdnaPrimitive" href="../../core/primitives/index.html#edna.core.primitives.EdnaPrimitive">EdnaPrimitive</a></li>
 <li>collections.abc.Iterator</li>
 <li>collections.abc.Iterable</li>
 <li>typing.Generic</li>
@@ -240,22 +262,11 @@ The logic for execution is set up in <code><a title="edna.core.execution.context
 <li><a title="edna.ingest.streaming.BaseTwitterIngest.BaseTwitterIngest" href="BaseTwitterIngest.html#edna.ingest.streaming.BaseTwitterIngest.BaseTwitterIngest">BaseTwitterIngest</a></li>
 <li><a title="edna.ingest.streaming.KafkaIngest.KafkaIngest" href="KafkaIngest.html#edna.ingest.streaming.KafkaIngest.KafkaIngest">KafkaIngest</a></li>
 <li><a title="edna.ingest.streaming.SimulatedIngest.SimulatedIngest" href="SimulatedIngest.html#edna.ingest.streaming.SimulatedIngest.SimulatedIngest">SimulatedIngest</a></li>
+<li>edna.ingest.streaming._BufferedIngest._BufferedIngest</li>
 </ul>
 <h3>Class variables</h3>
 <dl>
 <dt id="edna.ingest.streaming.BaseStreamingIngest.execution_mode"><code class="name">var <span class="ident">execution_mode</span> : <a title="edna.types.enums.IngestPattern.IngestPattern" href="../../types/enums/IngestPattern.html#edna.types.enums.IngestPattern.IngestPattern">IngestPattern</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="edna.ingest.streaming.BaseStreamingIngest.in_serializer"><code class="name">var <span class="ident">in_serializer</span> : <a title="edna.serializers.Serializable" href="../../serializers/index.html#edna.serializers.Serializable">Serializable</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="edna.ingest.streaming.BaseStreamingIngest.out_serializer"><code class="name">var <span class="ident">out_serializer</span> : <a title="edna.serializers.BufferedSerializable.BufferedSerializable" href="../../serializers/BufferedSerializable.html#edna.serializers.BufferedSerializable.BufferedSerializable">BufferedSerializable</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="edna.ingest.streaming.BaseStreamingIngest.serializer"><code class="name">var <span class="ident">serializer</span> : <a title="edna.serializers.Serializable" href="../../serializers/index.html#edna.serializers.Serializable">Serializable</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -286,7 +297,7 @@ The logic for execution is set up in <code><a title="edna.core.execution.context
 <span>def <span class="ident">__next__</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Fetches the next record from the source.</p>
+<div class="desc"><p>Fetches the next record from the source and deserializes</p>
 <h2 id="returns">Returns</h2>
 <p>(List[obj]): Single fetched record in a singleton format.</p></div>
 <details class="source">
@@ -294,7 +305,7 @@ The logic for execution is set up in <code><a title="edna.core.execution.context
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def __next__(self):
-    &#34;&#34;&#34;Fetches the next record from the source.
+    &#34;&#34;&#34;Fetches the next record from the source and deserializes
 
     Returns:
         (List[obj]): Single fetched record in a singleton format.
@@ -302,11 +313,41 @@ The logic for execution is set up in <code><a title="edna.core.execution.context
     return [self.in_serializer.read(self.next())]</code></pre>
 </details>
 </dd>
+<dt id="edna.ingest.streaming.BaseStreamingIngest.build"><code class="name flex">
+<span>def <span class="ident">build</span></span>(<span>self, build_configuration: Dict[str, str])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Lazy building for ingest.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def build(self, build_configuration: Dict[str,str]):
+    &#34;&#34;&#34;Lazy building for ingest.
+    &#34;&#34;&#34;
+    pass</code></pre>
+</details>
+</dd>
+<dt id="edna.ingest.streaming.BaseStreamingIngest.close"><code class="name flex">
+<span>def <span class="ident">close</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Shuts down the ingest, closing any connections if they exist</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def close(self):
+    &#34;&#34;&#34;Shuts down the ingest, closing any connections if they exist
+    &#34;&#34;&#34;
+    pass</code></pre>
+</details>
+</dd>
 <dt id="edna.ingest.streaming.BaseStreamingIngest.next"><code class="name flex">
 <span>def <span class="ident">next</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Method that encapsulates record fetching logic.</p>
+<div class="desc"><p>Method that encapsulates raw record fetching logic.</p>
 <h2 id="raises">Raises</h2>
 <dl>
 <dt><code>NotImplementedError</code></dt>
@@ -317,7 +358,7 @@ The logic for execution is set up in <code><a title="edna.core.execution.context
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def next(self):
-    &#34;&#34;&#34;Method that encapsulates record fetching logic.
+    &#34;&#34;&#34;Method that encapsulates raw record fetching logic.
 
     Raises:
         NotImplementedError: Child classes should implement this method.
@@ -358,11 +399,10 @@ The logic for execution is set up in <code><a title="edna.core.execution.context
 <ul class="two-column">
 <li><code><a title="edna.ingest.streaming.BaseStreamingIngest.__iter__" href="#edna.ingest.streaming.BaseStreamingIngest.__iter__">__iter__</a></code></li>
 <li><code><a title="edna.ingest.streaming.BaseStreamingIngest.__next__" href="#edna.ingest.streaming.BaseStreamingIngest.__next__">__next__</a></code></li>
+<li><code><a title="edna.ingest.streaming.BaseStreamingIngest.build" href="#edna.ingest.streaming.BaseStreamingIngest.build">build</a></code></li>
+<li><code><a title="edna.ingest.streaming.BaseStreamingIngest.close" href="#edna.ingest.streaming.BaseStreamingIngest.close">close</a></code></li>
 <li><code><a title="edna.ingest.streaming.BaseStreamingIngest.execution_mode" href="#edna.ingest.streaming.BaseStreamingIngest.execution_mode">execution_mode</a></code></li>
-<li><code><a title="edna.ingest.streaming.BaseStreamingIngest.in_serializer" href="#edna.ingest.streaming.BaseStreamingIngest.in_serializer">in_serializer</a></code></li>
 <li><code><a title="edna.ingest.streaming.BaseStreamingIngest.next" href="#edna.ingest.streaming.BaseStreamingIngest.next">next</a></code></li>
-<li><code><a title="edna.ingest.streaming.BaseStreamingIngest.out_serializer" href="#edna.ingest.streaming.BaseStreamingIngest.out_serializer">out_serializer</a></code></li>
-<li><code><a title="edna.ingest.streaming.BaseStreamingIngest.serializer" href="#edna.ingest.streaming.BaseStreamingIngest.serializer">serializer</a></code></li>
 </ul>
 </li>
 </ul>
