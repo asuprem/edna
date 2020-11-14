@@ -1,3 +1,1 @@
-
-
 from .SQLTupleFactory import SQLTupleFactory
