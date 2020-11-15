@@ -1,14 +1,14 @@
 from edna.ingest.streaming import TwitterStreamingIngest
 from edna.process import BaseProcess
 from edna.emit import KafkaEmit
-from edna.serializers.EmptySerializer import EmptyStringSerializer
+from edna.serializers import EmptySerializer
 from edna.core.execution.context import SimpleStreamingContext
 
 def main():
     
     context = SimpleStreamingContext()
-    ingest_serializer = EmptyStringSerializer()
-    emit_serializer = EmptyStringSerializer()   # twitter already provides byte encoded message
+    ingest_serializer = EmptySerializer()
+    emit_serializer = EmptySerializer()   # twitter already provides byte encoded message
     ingest = TwitterStreamingIngest(serializer=ingest_serializer, bearer_token=context.getVariable("bearer_token"), 
                 tweet_fields=context.getVariable("tweet_fields"), 
                 user_fields=context.getVariable("user_fields"), 

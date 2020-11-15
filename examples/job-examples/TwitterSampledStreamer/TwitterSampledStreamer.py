@@ -1,28 +1,26 @@
 from edna.ingest.streaming import TwitterStreamingIngest
-from edna.process import BaseProcess
-from edna.emit import StdoutEmit
-from edna.serializers.EmptySerializer import EmptyStringSerializer
-from edna.core.execution.context import SimpleStreamingContext
+from edna.emit import StdoutEmit,RecordCounterEmit
+from edna.serializers import EmptySerializer
+from edna.core.execution.context import StreamingContext
+from edna.api import StreamBuilder
 
 def main():
     
-    context = SimpleStreamingContext()
+    context = StreamingContext()
     
-    ingest_serializer = EmptyStringSerializer
-    emit_serializer = EmptyStringSerializer
-    ingest = TwitterStreamingIngest(serializer=ingest_serializer, 
+    stream = StreamBuilder().build(
+        TwitterStreamingIngest(serializer=EmptySerializer(), 
         bearer_token=context.getVariable("bearer_token"), 
         tweet_fields=context.getVariable("tweet_fields"), 
         user_fields=context.getVariable("user_fields"), 
         place_fields=context.getVariable("place_fields"), 
-        media_fields=context.getVariable("media_fields"))
-    process = BaseProcess()
-    emit = StdoutEmit(serializer=emit_serializer)
+        media_fields=context.getVariable("media_fields")),
+        streaming_context=context
+    ).emit(
+        RecordCounterEmit(serializer=EmptySerializer(), record_print=60)
+    )
 
-    context.addIngest(ingest)
-    context.addProcess(process)
-    context.addEmit(emit)
-    
+    context.addStream(stream=stream)
     context.execute()
 
 if  __name__=="__main__":

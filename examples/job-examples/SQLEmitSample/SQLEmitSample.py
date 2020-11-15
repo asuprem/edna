@@ -5,8 +5,7 @@ from edna.process.map import JsonToObject, ObjectToSQL
 from edna.core.factories import SQLTupleFactory
 from edna.emit import SQLEmit
 
-from edna.serializers.EmptySerializer import EmptyStringSerializer
-from edna.serializers.EmptySerializer import EmptyObjectSerializer
+from edna.serializers import EmptySerializer
 
 def main():
 
@@ -24,9 +23,9 @@ def main():
     context = SimpleStreamingContext()
     tuple_factory = SQLTupleFactory(tuple_fields=context.getVariable("sql_fields")) 
 
-    ingest = SimulatedIngest(serializer=EmptyStringSerializer, stream_list=list_of_inserts)
+    ingest = SimulatedIngest(serializer=EmptySerializer(), stream_list=list_of_inserts)
     process = ObjectToSQL(process=JsonToObject(), tuple_factory=tuple_factory)
-    emit = SQLEmit(serializer=EmptyObjectSerializer, 
+    emit = SQLEmit(serializer=EmptySerializer(), 
         database=context.getVariable("database"), 
         host=context.getVariable("host"), 
         user=context.getVariable("user"), 

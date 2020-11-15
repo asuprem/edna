@@ -1,5 +1,5 @@
 from edna.ingest.streaming.BaseTwitterIngest import BaseTwitterIngest
-from edna.serializers.EmptySerializer import EmptyStringSerializer
+from edna.serializers import EmptySerializer
 import requests
 from typing import List, Dict
 
@@ -14,13 +14,13 @@ class TwitterFilteredIngest(BaseTwitterIngest):
     
     """
     base_url = "https://api.twitter.com/2/tweets/search/stream?"
-    def __init__(self, serializer: EmptyStringSerializer, bearer_token: str, filters: List[str], tweet_fields: List[str] = None, user_fields: List[str] = None, media_fields: List[str] = None, 
+    def __init__(self, serializer: EmptySerializer, bearer_token: str, filters: List[str], tweet_fields: List[str] = None, user_fields: List[str] = None, media_fields: List[str] = None, 
                     poll_fields: List[str] = None, place_fields: List[str] = None, *args, **kwargs):
         """Initializes the TwitterFilteredIngest class with the `bearer_token` for authentication and 
         query fields to populate the received tweet object 
 
         Args:
-            serializer (EmptyStringSerializer): An empty serializer for convention.
+            serializer (EmptySerializer): An empty serializer for convention.
             filter (List[str]): List of filters to apply during streaming.
             bearer_token (str): The authenticating v2 bearer token from a Twitter Developer account.
             tweet_fields (List[str], optional): List of tweet fields to retrieve. Defaults to None.

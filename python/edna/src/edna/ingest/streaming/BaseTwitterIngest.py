@@ -2,7 +2,7 @@ from __future__ import annotations
 from edna.ingest.streaming import BaseStreamingIngest
 from edna.process import BaseProcess
 from edna.emit import BaseEmit
-from edna.serializers.EmptySerializer import EmptyStringSerializer
+from edna.serializers import EmptySerializer
 
 from urllib.parse import urlencode
 import requests
@@ -47,13 +47,13 @@ class BaseTwitterIngest(BaseStreamingIngest):
 
     base_url : str
 
-    def __init__(self, serializer: EmptyStringSerializer, bearer_token: str, tweet_fields: List[str] = None, user_fields: List[str] = None, media_fields: List[str] = None, 
+    def __init__(self, serializer: EmptySerializer, bearer_token: str, tweet_fields: List[str] = None, user_fields: List[str] = None, media_fields: List[str] = None, 
                     poll_fields: List[str] = None, place_fields: List[str] = None, *args, **kwargs):
         """Initializes the BaseTwitterIngest class with the `bearer_token` for authentication and 
         query fields to populate the received tweet object 
 
         Args:
-            serializer (EmptyStringSerializer): An empty serializer for convention.
+            serializer (EmptySerializer): An empty serializer for convention.
             bearer_token (str): The authenticating v2 bearer token from a Twitter Developer account.
             tweet_fields (List[str], optional): List of tweet fields to retrieve. Defaults to None.
             user_fields (List[str], optional): List of user fields to retrieve. Defaults to None.
