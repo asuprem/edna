@@ -5,14 +5,24 @@ from edna.core.execution.context import StreamingContext
 
 
 class StreamBuilder:
-    """StreamBuilder takes in an edna ingest and builds a datastream with a root note.
-
-    TODO -- update documentation. This is the entrypoint for a stream.
+    """StreamBuilder is the factory method to build a new DataStream. Call `StreamBuilder.build()` to
+    build a new DataStream.
     """
-    def __init__(self):
-        """We don't need to do anything right now..."""
-        pass
 
-    def build(self, ingest: BaseStreamingIngest, streaming_context: StreamingContext, ingest_name: str = None):
+    @classmethod
+    def build(cls, ingest: BaseStreamingIngest, streaming_context: StreamingContext, ingest_name: str = None) -> DataStream:
+        """Builds a new DataStream.
+
+        Args:
+            ingest (BaseStreamingIngest): The ingest primitive for this DataStream
+            streaming_context (StreamingContext): The context for this DataStream
+            ingest_name (str, optional): The name for this ingest node. Defaults to None.
+
+        Returns:
+            DataStream: Returns a DataStream instance.
+        """
         # This is where we build the DataStream object.
-        return DataStream(ingest=ingest, streaming_context=streaming_context, ingest_name=ingest_name, stream_id=streaming_context.getDatastreamId())
+        return DataStream(  ingest=ingest, 
+                            streaming_context=streaming_context, 
+                            ingest_name=ingest_name, 
+                            stream_id=streaming_context.getDatastreamId())
