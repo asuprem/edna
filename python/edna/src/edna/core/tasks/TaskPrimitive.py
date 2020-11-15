@@ -1,3 +1,4 @@
+from __future__ import annotations
 import threading
 import time
 from edna.defaults import EdnaDefault
@@ -10,8 +11,20 @@ class TaskPrimitive(threading.Thread):
 
     Attributes:
         logger (logging.Logger): Logger for this TaskPrimitive
+        timer (int): The timer for this TaskPrimitive to check for network buffer timeouts
+        MAX_BUFFER_SIZE (int): The maximum size, in bytes of the network buffer
+        MAX_BUFFER_TIMEOUT_S (float): The maximum timeout for the network buffer
+        BUFFER_POLL_TIMEOUT_S (float): The poll timeout for the TaskPrimitive
+        thread_stop (threading.Event): A `thread.Event` to check for TaskPrimitive stop requests
+        
     """
     logger: logging.Logger
+    timer: int
+    MAX_BUFFER_SIZE: int
+    MAX_BUFFER_TIMEOUT_S: float
+    BUFFER_POLL_TIMEOUT_S: float
+    thread_stop: threading.Event
+
     def __init__(self, max_buffer_size : int = EdnaDefault.BUFFER_MAX_SIZE, 
             max_buffer_timeout : float = EdnaDefault.BUFFER_MAX_TIMEOUT_S,
             logger_name: str = None):
