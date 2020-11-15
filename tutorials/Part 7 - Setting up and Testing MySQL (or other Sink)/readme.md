@@ -198,10 +198,10 @@ A factory in OOP is a class or method that constructs and returns on object. The
 
 Once the `tuple_factory` is initialized, it can be called with `tuple_factory.getValues(some_object)`. If `some_object` is the first element from our simulated stream, `tuple_factory` will return `("jessica","st. german")` (leaving out the uneeded `additional` column). The `getFields()` method returns the schema itself: `("first_name", "last_name")`. This also preserves ordering.
 
-We then set up our Ingest with `SimulatedIngest`, with an `EmptyStringSerializer` since we don't need to process the string. Technically, we could create a `JsonSerializer` that will deserialize the string, but it's a good idea not to have any additional processing in an Ingest beyond what is absolutely necessary; for example, if our imputs were in bytes, then we would need a `StringSerializer` to convert byte back to string. But in this case, we already have a stream of Strings that we can operate on. We also pass in the simulated stream with `stream_list`.
+We then set up our Ingest with `SimulatedIngest`, with an `EmptySerializer` since we don't need to process the string. Technically, we could create a `JsonSerializer` that will deserialize the string, but it's a good idea not to have any additional processing in an Ingest beyond what is absolutely necessary; for example, if our imputs were in bytes, then we would need a `StringSerializer` to convert byte back to string. But in this case, we already have a stream of Strings that we can operate on. We also pass in the simulated stream with `stream_list`.
 
 ```
-ingest = SimulatedIngest(serializer=EmptyStringSerializer, stream_list=list_of_inserts)
+ingest = SimulatedIngest(serializer=EmptySerializer(), stream_list=list_of_inserts)
 ```
 
 Next, we set up our processes. As a reminder, first we need to convert the json string to an object. Then we need to convert the object to a tuple format. Each of these is what's called a **map** transformation: in a map transformation, each element in a stream is converted to another element (compared to something like a **flatmap** operation, where an element in a stream can be converted to more than 1 element).
@@ -219,7 +219,7 @@ Side note: `ObjectToSQL` is basically a weapper around  `SQLTupleFactory`; we ma
 Then, we create the Emit with `SQLEmit`:
 
 ```
-emit = SQLEmit(serializer=EmptyObjectSerializer, 
+emit = SQLEmit(serializer=EmptySerializer(), 
         database=context.getVariable("database"), 
         host=context.getVariable("host"), 
         user=context.getVariable("user"), 

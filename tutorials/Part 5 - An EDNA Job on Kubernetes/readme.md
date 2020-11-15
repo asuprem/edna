@@ -54,8 +54,8 @@ This manages the Edna Job by configuring and executing it. We don't want to hard
 We then create two serializers:
 
 ```
-ingest_serializer = EmptyStringSerializer()
-emit_serializer = EmptyStringSerializer()
+ingest_serializer = EmptySerializer()
+emit_serializer = EmptySerializer()
 ```
 
 Serialization is an important part of streaming (andany networking). Serialization is technically two tasks:
@@ -63,8 +63,6 @@ Serialization is an important part of streaming (andany networking). Serializati
 - Deserialization: recover an object from bytes
 
 Twitter provides a stream of newline-separated strings. So our `ingest_serializer` does not need to do anything, because we already get a string directly from Twitter.
-
-We do need an emit serializer, though, since we want our emitter to send the information to Kafka, which expects bytes. ~~Since our internal representation is a String, we will use a StringSerializer.~~<span style="color:maroon">This has been updated to EmptyStringSerializer, since Twitter now provides bytes as its message payload, so we don't need to do anything to encode the message.</span>
 
 If you look inside `edna.emit.BaseEmit` class, you will see that the `__call__` method is:
 
