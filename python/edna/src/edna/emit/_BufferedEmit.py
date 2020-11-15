@@ -19,7 +19,7 @@ class _BufferedEmit(BaseEmit):
     """
     buffer: ByteBuffer
 
-    def __init__(self, serializer: MsgPackBufferedSerializer, 
+    def __init__(self, serializer: MsgPackBufferedSerializer = MsgPackBufferedSerializer(), 
         emit_buffer_batch_size: int = 10, emit_buffer_timeout_ms: int = 100, *args, **kwargs):
         """Initializes the emit.
 

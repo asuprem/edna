@@ -11,7 +11,7 @@ class _BufferedIngest(BaseStreamingIngest):
     """This ingest yields record from a network buffer, usually written to by a
     `edna.emit._BufferedEmit`.
     """
-    def __init__(self, serializer: MsgPackBufferedSerializer, receive_from_node_id: int,  *args, **kwargs):
+    def __init__(self, receive_from_node_id: int, serializer: MsgPackBufferedSerializer = MsgPackBufferedSerializer(),  *args, **kwargs):
         """Initializes the ingest
 
         Args:

@@ -10,7 +10,7 @@ import socket
 class KafkaIngest(BaseStreamingIngest):
     """KafkaIngest streams records from a provided kafka topic into the Job. Records are deserialized with the provided serializer.
     """
-    def __init__(self, serializer: Serializable, kafka_topic: str,  bootstrap_server: str = "localhost", bootstrap_port: int = 9092, default_group: str ="default-group", *args, **kwargs):
+    def __init__(self, kafka_topic: str,  bootstrap_server: str = "localhost", bootstrap_port: int = 9092, default_group: str ="default-group", serializer: Serializable = None, *args, **kwargs):
         """Connects to a kafka topic and sets up the ingest
 
         Args:

@@ -27,7 +27,7 @@ class BaseStreamingIngest(BaseIngest, Iterator):
         execution_mode (IngestPattern): The type of ingest, either STANDARD_INGEST or BUFFERED_INGEST
     """    
     execution_mode = IngestPattern.STANDARD_INGEST
-    def __init__(self, serializer: Serializable, in_serializer: Serializable = None, out_serializer: Serializable = None, logger_name: str = None, *args, **kwargs):
+    def __init__(self, serializer: Serializable = None, in_serializer: Serializable = None, out_serializer: Serializable = None, logger_name: str = None, *args, **kwargs):
         """Initialize the primitive with the serializer.
 
         Args:

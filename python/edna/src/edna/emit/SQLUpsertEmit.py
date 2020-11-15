@@ -7,10 +7,11 @@ from edna.core.factories import SQLTupleFactory
 
 class SQLUpsertEmit(SQLEmit):
     emit_buffer : List[Tuple]
-    def __init__(self, serializer: Serializable, host: str, database: str, 
+    def __init__(self, host: str, database: str, 
         user: str, password: str, table: str,
         tuple_factory: SQLTupleFactory,
-        emit_buffer_batch_size: int = 10, emit_buffer_timeout_ms: int = 100, *args, **kwargs):
+        emit_buffer_batch_size: int = 10, emit_buffer_timeout_ms: int = 100, 
+        serializer: Serializable = None, *args, **kwargs):
         
         
         if tuple_factory.getUpsertCount() == 0:

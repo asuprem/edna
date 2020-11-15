@@ -9,8 +9,10 @@ import socket
 from typing import List
 class KafkaEmit(BaseEmit):
     """An Emitter that writes to a Kafka topic."""
-    def __init__(self, serializer: Serializable, kafka_topic: str, bootstrap_server: str = "localhost", bootstrap_port: int = 9092, 
-        emit_buffer_batch_size: int = 10, emit_buffer_timeout_ms: int = 100, topic_retention_ms : int = 86400000, *args, **kwargs):   # For java, need to ensure it is a bytesSerializer
+    def __init__(self, kafka_topic: str, bootstrap_server: str = "localhost", bootstrap_port: int = 9092, 
+        emit_buffer_batch_size: int = 10, emit_buffer_timeout_ms: int = 100, 
+        topic_retention_ms : int = 86400000, 
+        serializer: Serializable = None, *args, **kwargs):   # For java, need to ensure it is a bytesSerializer
         """Connects to a specified kafka topic and sets up the emitter.
 
         Args:

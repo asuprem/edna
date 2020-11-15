@@ -6,7 +6,9 @@ import time
 
 class RecordCounterEmit(BaseEmit):
     """An Emitter that counts the number of records"""
-    def __init__(self, serializer: Serializable, record_print: int = 1000, emit_buffer_batch_size: int = 10, emit_buffer_timeout_ms: int = 100, *args, **kwargs):
+    def __init__(self, record_print: int = 1000, 
+        emit_buffer_batch_size: int = 10, emit_buffer_timeout_ms: int = 100, 
+        serializer: Serializable = None, *args, **kwargs):
         self.index = 0
         self.record_print = record_print
         self.record_timer = time.time()

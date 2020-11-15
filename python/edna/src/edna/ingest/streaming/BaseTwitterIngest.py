@@ -47,8 +47,8 @@ class BaseTwitterIngest(BaseStreamingIngest):
 
     base_url : str
 
-    def __init__(self, serializer: EmptySerializer, bearer_token: str, tweet_fields: List[str] = None, user_fields: List[str] = None, media_fields: List[str] = None, 
-                    poll_fields: List[str] = None, place_fields: List[str] = None, *args, **kwargs):
+    def __init__(self, bearer_token: str, tweet_fields: List[str] = None, user_fields: List[str] = None, media_fields: List[str] = None, 
+                    poll_fields: List[str] = None, place_fields: List[str] = None, serializer: EmptySerializer = None, *args, **kwargs):
         """Initializes the BaseTwitterIngest class with the `bearer_token` for authentication and 
         query fields to populate the received tweet object 
 
@@ -61,7 +61,7 @@ class BaseTwitterIngest(BaseStreamingIngest):
             poll_fields (List[str], optional): List of poll fields to retrieve. Defaults to None.
             place_fields (List[str], optional): List of place fields to retrieve. Defaults to None.
         """
-
+        super().__init__(serializer=serializer, *args, **kwargs)
         tweet_fields = self.verify_fields(tweet_fields, self.tweet_fields)
         user_fields = self.verify_fields(user_fields, self.user_fields)
         media_fields = self.verify_fields(media_fields, self.media_fields)
@@ -74,7 +74,7 @@ class BaseTwitterIngest(BaseStreamingIngest):
         self.running = False
         self.response = Generator
         self.setup(*args, **kwargs)
-        super().__init__(serializer=serializer, *args, **kwargs)
+        
 
     def next(self):
         """Sets up a connection to the Twitter API endpoint and retrieves records

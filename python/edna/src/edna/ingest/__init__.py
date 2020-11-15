@@ -1,4 +1,5 @@
 from __future__ import annotations
+from edna.serializers import EmptySerializer
 from edna.core.primitives import EdnaPrimitive
 from edna.serializers import Serializable, BufferedSerializable
 from edna.types.enums import IngestPattern
@@ -17,6 +18,8 @@ class BaseIngest(EdnaPrimitive):
     """
     execution_mode: IngestPattern
     def __init__(self, serializer: Serializable, in_serializer: Serializable = None, out_serializer: BufferedSerializable = None, logger_name: str = None, *args, **kwargs):
+        if serializer is None:
+            serializer = EmptySerializer()
         if logger_name is None:
             logger_name = self.__class__.__name__
         super().__init__(serializer=serializer, in_serializer=in_serializer, out_serializer=out_serializer, logger_name=logger_name)

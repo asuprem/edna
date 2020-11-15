@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Dict
 from edna.types.enums import EmitPattern
-from edna.serializers import Serializable, BufferedSerializable
+from edna.serializers import Serializable, EmptySerializer
 import time
 from edna.core.primitives import EdnaPrimitive
 
@@ -24,7 +24,7 @@ class BaseEmit(EdnaPrimitive):
         emit_pattern (EmitPattern): The type of emit, either STANDARD_EMIT or BUFFERED_EMIT
     """
     emit_pattern: EmitPattern = EmitPattern.STANDARD_EMIT
-    def __init__(self, serializer: Serializable, 
+    def __init__(self, serializer: Serializable = EmptySerializer(), 
             in_serializer: Serializable = None, 
             out_serializer: Serializable = None, 
             emit_buffer_batch_size: int = 10, 
@@ -43,6 +43,8 @@ class BaseEmit(EdnaPrimitive):
         """
         if logger_name is None:
             logger_name = self.__class__.__name__
+        if serializer is None:
+            serializer = EmptySerializer()
         super().__init__(serializer=serializer, in_serializer=in_serializer, out_serializer=out_serializer, logger_name=logger_name)
 
 
