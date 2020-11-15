@@ -45,23 +45,24 @@ class EdnaPrimitive(object):
         Raises:
             ValueError: Raised when a serializer is passed incorrectly
         """
+        if logger_name is None:
+            self.logger = logging.getLogger(self.__class__.__name__)
+        else:
+            self.logger = logging.getLogger(logger_name)
 
         self.serializer = serializer
         if self.serializer is None:
             if in_serializer is None:
-                raise ValueError("`in_serializer` cannot be None if serializer is `None` for Primitive")
+                self.logger.warn("`in_serializer` is `None` for Primitive")
             if out_serializer is None:
-                raise ValueError("`in_serializer` cannot be None if serializer is `None` for Primitive")
+                self.logger.warn("`out_serializer` is `None` for Primitive")
             self.in_serializer = in_serializer
             self.out_serializer = out_serializer
         else:
             self.in_serializer = self.serializer
             self.out_serializer = self.serializer
 
-        if logger_name is None:
-            self.logger = logging.getLogger(self.__class__.__name__)
-        else:
-            self.logger = logging.getLogger(logger_name)
+        
 
     def __call__(self, record: List[object]) -> List[object]:
         """Used by edna.process and edna.emit primitives. When called, they will process and 
