@@ -9,7 +9,7 @@ def main():
     context = StreamingContext()
     
     stream = StreamBuilder().build(
-        TwitterStreamingIngest(serializer=EmptySerializer(), 
+        TwitterStreamingIngest(
         bearer_token=context.getVariable("bearer_token"), 
         tweet_fields=context.getVariable("tweet_fields"), 
         user_fields=context.getVariable("user_fields"), 
@@ -17,7 +17,7 @@ def main():
         media_fields=context.getVariable("media_fields")),
         streaming_context=context
     ).emit(
-        RecordCounterEmit(serializer=EmptySerializer(), record_print=60)
+        RecordCounterEmit(record_print=60)
     )
 
     context.addStream(stream=stream)
