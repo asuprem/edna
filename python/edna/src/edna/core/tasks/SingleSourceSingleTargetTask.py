@@ -114,7 +114,7 @@ class SingleSourceSingleTargetTask(TaskPrimitive):
 
                     
     def shutdown(self):
-        """Shuts down the task
+        """Shuts down the task.
         """
         self.logger.info("Shutting down task")
         self.ingest_executor.shutdown(wait=False)

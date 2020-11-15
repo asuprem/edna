@@ -74,11 +74,21 @@ class BaseEmit(EdnaPrimitive):
         self.emit_buffer_index += 1
         self.emit_buffer[self.emit_buffer_index] = self.out_serializer.write(message)
         # Write buffer and clear if throughput barriers are met
-        if (time.time() - self.timer) > self.emit_buffer_timeout_s:    # Buffer timeout reached
-            self.write_buffer()
-        if self.emit_buffer_index+1 == self.emit_buffer_batch_size: # Buffer too large
-            self.write_buffer()
+        self.checkBufferTimeout()
+        self.checkBufferSize()
+        
 
+    def checkBufferTimeout(self):
+        """Check if the buffer has timed out and flushes them.
+        """
+        if (time.time() - self.timer) > self.emit_buffer_timeout_s:    # Buffer timeout reached
+            self.flush()
+
+    def checkBufferSize(self):
+        """Checks if the buffer is full and flushes them.
+        """
+        if self.emit_buffer_index+1 == self.emit_buffer_batch_size: # Buffer too large
+            self.flush()
 
     def write_buffer(self):
         """Calls `write()` to write the buffer and resets the buffer"""
