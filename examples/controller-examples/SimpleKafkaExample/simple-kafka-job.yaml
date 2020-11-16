@@ -5,7 +5,7 @@ metadata:
 spec:
   import_key: job1-stream
   export_key: out-topic
-  jobname: test-job
+  jobname: SimpleKafkaExample
   applicationname: controller-examples
   filename: SimpleKafkaExample
   jobcontext: ednaconf

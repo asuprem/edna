@@ -1,28 +1,34 @@
-from edna.core.execution.context import SimpleStreamingContext
+import logging
+from edna.core.execution.context import StreamingContext
+from edna.api import StreamBuilder
+
 from edna.ingest.streaming import KafkaIngest
-from edna.process import BaseProcess
 from edna.emit import KafkaEmit
 from edna.serializers import KafkaStringSerializer
 from edna.serializers import StringSerializer
 
 
 def main():
-    context = SimpleStreamingContext()     # Choose an appropriate context, such as SimpleStreamingContext
+    logging.basicConfig(format='[%(asctime)s] - %(name)s - %(levelname)s - %(message)s',level=logging.INFO, datefmt="%H:%M:%S")
+    context = StreamingContext()     # Choose an appropriate context, such as SimpleStreamingContext
     
-    ingest_serializer = KafkaStringSerializer()  # e.g. KafkaStringSerializer
-    emit_serializer = StringSerializer()    # e.g. StringSerializer
+    ingest_serializer = KafkaStringSerializer()
+    emit_serializer = StringSerializer()
     
-    ingest = KafkaIngest(ingest_serializer, 
-        kafka_topic=context.getVariable("import_key"),
-        bootstrap_server=context.getVariable("bootstrap_server"))    # e.g. KafkaIngest
-    process = BaseProcess()                     # e.g. BaseProcess
-    emit = KafkaEmit(emit_serializer, 
-        kafka_topic=context.getVariable("export_key"),
-        bootstrap_server=context.getVariable("bootstrap_server"))           # e.g. KafkaEmit
 
-    context.addIngest(ingest=ingest)        # Registers the ingest primitive
-    context.addProcess(process=process)     # Registers the process primitive
-    context.addEmit(emit=emit)              # Registers the emit primitive
+    stream = StreamBuilder.build(
+        ingest=KafkaIngest(
+            ingest_serializer, 
+            kafka_topic=context.getVariable("import_key"),
+            bootstrap_server=context.getVariable("bootstrap_server"))
+    ).emit(
+        KafkaEmit(
+            emit_serializer, 
+            kafka_topic=context.getVariable("export_key"),
+            bootstrap_server=context.getVariable("bootstrap_server"))
+    )
+    
+    context.addStream(stream)
 
     context.execute()   # Executes  the context
 

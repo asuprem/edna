@@ -1,4 +1,6 @@
-from edna.core.execution.context import SimpleStreamingContext
+import logging
+from edna.api import StreamBuilder
+from edna.core.execution.context import StreamingContext
 from edna.serializers import KafkaStringSerializer
 from edna.ingest.streaming import KafkaIngest
 from edna.process import BaseProcess
@@ -6,24 +8,24 @@ from edna.emit import KafkaEmit
 
 
 def main():
-    context = SimpleStreamingContext()
-    ingestSerializer = KafkaStringSerializer()
-    emitSerializer = KafkaStringSerializer()
+    logging.basicConfig(format='[%(asctime)s] - %(name)s - %(levelname)s - %(message)s',level=logging.INFO, datefmt="%H:%M:%S")
+    context = StreamingContext()
 
-    ingest = KafkaIngest(serializer=ingestSerializer, 
-        kafka_topic=context.getVariable("import_key"),
-        bootstrap_server=context.getVariable("bootstrap_server"), 
-        bootstrap_port=context.getVariable("bootstrap_port"))
-    process = BaseProcess()
-    emit = KafkaEmit(serializer=emitSerializer, 
-        kafka_topic=context.getVariable("export_key"),
-        bootstrap_server=context.getVariable("bootstrap_server"),
-        bootstrap_port=context.getVariable("bootstrap_port"))
+    stream = StreamBuilder.build(
+        KafkaIngest(
+            serializer=KafkaStringSerializer(), 
+            kafka_topic=context.getVariable("import_key"),
+            bootstrap_server=context.getVariable("bootstrap_server"), 
+            bootstrap_port=context.getVariable("bootstrap_port"))
+    ).emit(
+        KafkaEmit(
+            serializer=KafkaStringSerializer(), 
+            kafka_topic=context.getVariable("export_key"),
+            bootstrap_server=context.getVariable("bootstrap_server"),
+            bootstrap_port=context.getVariable("bootstrap_port"))
+    )
 
-    context.addIngest(ingest=ingest)
-    context.addEmit(emit=emit)
-    context.addProcess(process=process)
-
+    context.addStream(stream)
     context.execute()
 
 
