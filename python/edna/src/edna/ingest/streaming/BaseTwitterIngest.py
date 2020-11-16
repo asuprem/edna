@@ -44,7 +44,6 @@ class BaseTwitterIngest(BaseStreamingIngest):
     place_fields: Dict[str,type] = {    "full_name": str, "id": str, "contained_within": list, "country": str, "country_code": str, "geo": dict, "name": str,
                         "place_type": str
                         }
-
     base_url : str
 
     def __init__(self, bearer_token: str, tweet_fields: List[str] = None, user_fields: List[str] = None, media_fields: List[str] = None, 
@@ -67,8 +66,11 @@ class BaseTwitterIngest(BaseStreamingIngest):
         media_fields = self.verify_fields(media_fields, self.media_fields)
         poll_fields = self.verify_fields(poll_fields, self.poll_fields)
         place_fields = self.verify_fields(place_fields, self.place_fields)
+        
+        expansion_fields = self.build_expansion_field(tweet_fields, user_fields, media_fields, poll_fields, place_fields)
 
-        self.url = self.build_url(tweet_fields, user_fields, media_fields, poll_fields, place_fields)
+        self.url = self.build_url(tweet_fields, user_fields, media_fields, poll_fields, place_fields, expansion_fields)
+        self.logger.debug(self.url)
         self.bearer_token = bearer_token
         self.headers = self.create_headers(self.bearer_token)
         self.running = False
@@ -118,8 +120,23 @@ class BaseTwitterIngest(BaseStreamingIngest):
                 return valid_fields
         return None
 
+    def build_expansion_field(self, tweet_fields: List[str] = None, user_fields: List[str] = None, media_fields: List[str] = None, 
+                        poll_fields: List[str] = None, place_fields: List[str] = None) -> List[str]:
+        expansion_fields = []
+        if user_fields is not None:
+            expansion_fields+=["author_id"]
+        if media_fields is not None:
+            expansion_fields+=["attachments.media_keys"]
+        if poll_fields is not None:
+            expansion_fields += ["attachments.poll_ids"]
+        if place_fields is not None:
+            expansion_fields += ["geo.place_id"]
+        if len(expansion_fields) == 0:
+            expansion_fields = None
+        return expansion_fields 
+
     def build_url(self, tweet_fields: List[str] = None, user_fields: List[str] = None, media_fields: List[str] = None, 
-                        poll_fields: List[str] = None, place_fields: List[str] = None):
+                        poll_fields: List[str] = None, place_fields: List[str] = None, expansion_fields: List[str] = None):
         """Helper function to build the query url
 
         Args:
@@ -141,10 +158,11 @@ class BaseTwitterIngest(BaseStreamingIngest):
         if self.base_url[-1] != "?":
             raise ValueError("Base URL does not end with '?': {base_url}".format(base_url = self.base_url))
         vars = {    "tweet.fields":tweet_fields, 
+                    "expansions":expansion_fields,
                     "user.fields":user_fields, 
                     "place.fields":place_fields,
                     "media.fields":media_fields,
-                    "poll.fields":poll_fields   }
+                    "poll.fields":poll_fields}
         vars = {item:",".join(vars[item]) for item in vars if vars[item] is not None}
         encoded_suffix = urlencode(vars)
         if len(encoded_suffix):
