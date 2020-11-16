@@ -6,7 +6,7 @@ from edna.api import StreamBuilder
 from edna.ingest.streaming import SimulatedIngest
 from edna.process.map import JsonToObject, ObjectToSQL
 from edna.core.factories import SQLTupleFactory
-from edna.emit import SQLUpsertEmit
+from edna.emit import SQLEmit
 
 from edna.serializers import EmptySerializer
 
