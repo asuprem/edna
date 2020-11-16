@@ -185,7 +185,7 @@ Here, each entry has a first name, a last name, and an `additional` column that 
 Next we set up the streaming context.
 
 ```
-context = SimpleStreamingContext()
+context = StreamingContext()
 ```
 
 Then we set up a tuple factory with:
@@ -201,31 +201,31 @@ Once the `tuple_factory` is initialized, it can be called with `tuple_factory.ge
 We then set up our Ingest with `SimulatedIngest`, with an `EmptySerializer` since we don't need to process the string. Technically, we could create a `JsonSerializer` that will deserialize the string, but it's a good idea not to have any additional processing in an Ingest beyond what is absolutely necessary; for example, if our imputs were in bytes, then we would need a `StringSerializer` to convert byte back to string. But in this case, we already have a stream of Strings that we can operate on. We also pass in the simulated stream with `stream_list`.
 
 ```
-ingest = SimulatedIngest(serializer=EmptySerializer(), stream_list=list_of_inserts)
+SimulatedIngest(stream_list=list_of_inserts)
 ```
 
 Next, we set up our processes. As a reminder, first we need to convert the json string to an object. Then we need to convert the object to a tuple format. Each of these is what's called a **map** transformation: in a map transformation, each element in a stream is converted to another element (compared to something like a **flatmap** operation, where an element in a stream can be converted to more than 1 element).
 
-We can chain **map** processes trivially since each of them is a 1-1 operation. This is because `BaseProccess` can be provided a chained process to call. So if we have 3 processes to chain, we could do that with: `process=Process3(process=Process2(process=Process1()))` (note: I am still working on converting this to a functional API where one could do: `Process1().Process2().Process3()`, but that's taking a while). We apply our transformations with:
+We can chain **map** processes trivially since each of them is a 1-1 operation. 
 
 ```
-process = ObjectToSQL(process=JsonToObject(), tuple_factory=tuple_factory)
+StreamBuilder.build(ingest).map(JsonToObject()).map(ObjectToSQL(tuple_factory=tuple_factory))
 ```
 
-Here, we applied two **map** processes: first a JsonToObject() to convert the incoming json string to a dictionary, and then an ObjectoSQL with the created `tuple_factory`.
+Here, we applied two **map** processes: first a `JsonToObject()` to convert the incoming json string to a dictionary, and then an `ObjectoSQL()` with the created `tuple_factory`.
 
 Side note: `ObjectToSQL` is basically a weapper around  `SQLTupleFactory`; we make `SQLTupleFactory` its own class because for a large job, an instance of the factory could be used in multiple places and making it its own object can allow for easier resource management down the line.
 
 Then, we create the Emit with `SQLEmit`:
 
 ```
-emit = SQLEmit(serializer=EmptySerializer(), 
-        database=context.getVariable("database"), 
-        host=context.getVariable("host"), 
-        user=context.getVariable("user"), 
-        password=context.getVariable("password"),
-        table=context.getVariable("table"),
-        tuple_factory=tuple_factory)
+SQLEmit( 
+      database=context.getVariable("database"), 
+      host=context.getVariable("host"), 
+      user=context.getVariable("user"), 
+      password=context.getVariable("password"),
+      table=context.getVariable("table"),
+      tuple_factory=tuple_factory)
 ```
 
 Note that we pass the same instance of `SQLTupleFactory` (i.e. `tuple_factory`) here. If you look inside `SQLEmit`, you will see the following:

@@ -143,15 +143,31 @@ Run the following lines.
 Note: You can use the provided `cluster.yaml` file to launch a cluster. It will create a cluster with 1 control node and 1 worker node.
 
 ```
+# This creates a cluster with the name `kind` using the configuration inn `cluster.yaml`
 sudo kind create cluster --name kind --config cluster.yaml
+
+# This gets existing clusters deployed by kind
 sudo kind get clusters
+
+# This gets cluster nodes (e.g. vms) available to Kubernetes
 sudo kubectl get nodes
 
+# This creates a deployment, e.g. a container, as a hello-world application using the echoserver image from Dockerhub
 sudo kubectl create deployment hello-node --image=k8s.gcr.io/echoserver:1.4
+
+# This gets the list of deployments currently in Kubernetes
 sudo kubectl get deployments
+
+# This gets the list of pods (actual containers) in Kubernetes
 sudo kubectl get pods
+
+# This gets any Kubernetes events that have occured
 sudo kubectl get events
+
+# This displays the Kubernetes configuration
 sudo kubectl config view
+
+# This exposes the deployment we applied to a load balanced service to make it accessible from outside the cluster
 sudo kubectl expose deployment hello-node --type=LoadBalancer --port=8080
 ```
 

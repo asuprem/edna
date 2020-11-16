@@ -39,66 +39,55 @@ The `ednaconf.yaml` associated with the ~~StreamingContext~~ SimpleStreamingCont
     - In Kubernetes, the full DNS address of a service is: `<service-name>.<namespace>.svc.cluster.local`. 
     - Resolving this gets us `edna-cluster-kafka-bootstrap.kafka.svc.cluster.local`
 
-### ~~StreamingContext~~ SimpleStreamingContext
+### StreamingContext
 
-First we create the ~~StreamingContext~~ SimpleStreamingContext:
+First we create the StreamingContext:
 
 ```
-context = SimpleStreamingContext()
+context = StreamingContext()
 ```
 
 This manages the Edna Job by configuring and executing it. We don't want to hard-code any variables for the job, because this makes management of resources and jobs difficult. Instead, we will always try for configurable jobs. In this case, the configuration is set up by passing variables into the `StreamingContext` through a configuration file. `StreamingContext` loads variables from a local file with the default name `ednaconf.yaml`. A top level field called `variables` should contain all Context variables we want to pass. 
 
 ### Serializers 
-
-We then create two serializers:
-
-```
-ingest_serializer = EmptySerializer()
-emit_serializer = EmptySerializer()
-```
-
 Serialization is an important part of streaming (andany networking). Serialization is technically two tasks:
 - Serialization: convert an object to bytes
 - Deserialization: recover an object from bytes
 
-Twitter provides a stream of newline-separated strings. So our `ingest_serializer` does not need to do anything, because we already get a string directly from Twitter.
+In this case, we don't need any serialization and deserialization because Twitter provides a stream of newline-separated strings and we aren't doing anything fancy. Not providing a serializer to the ingest or emit means Edna will default to `edna.serializers.EmptySerializer` (see `edna.ingest.BaseIngest` and `edna.emit.BaseEmit`'s `__init__()` methods)
 
-If you look inside `edna.emit.BaseEmit` class, you will see that the `__call__` method is:
+If you look inside `edna.emit.BaseEmit` class, you will see that the `call` method contains the following line:
 
 ```
-def __call__(self, message):
-    self.write(self.serializer.write(message))
+self.emit_buffer[self.emit_buffer_index] = self.out_serializer.write(message)
 ```
 
-So any Emit primitive, when called to emit a message, will call its own `write()` method after serializing the message.
+So any Emit primitive, when called to emit a message, will save a serialized message to its buffer for emitting.
 
 ### Setting up primitives
 
-Next we set up the ingest, process, and emit primitives. We will pass in the serializers plus the context variables stored in the `StreamingContext` with `getVariable()`. 
+We set up the ingest and emit primitives. We will pass in the context variables stored in the `StreamingContext` with `getVariable()`. 
 
 ```
-ingest = TwitterStreamingIngest(serializer=ingest_serializer, 
-    bearer_token=context.getVariable("bearer_token"), 
-    tweet_fields=context.getVariable("tweet_fields"), 
-    user_fields=context.getVariable("user_fields"), 
-    place_fields=context.getVariable("place_fields"), 
-    media_fields=context.getVariable("media_fields"))
-process = BaseProcess()
-emit = KafkaEmit(serializer=emit_serializer, 
-    kafka_topic=context.getVariable("kafka_topic"), 
-    bootstrap_server=context.getVariable("bootstrap_server"),
-    bootstrap_port=context.getVariable("bootstrap_port"))
+stream = StreamBuilder.build(
+        TwitterStreamingIngest(
+        bearer_token=context.getVariable("bearer_token"), 
+        tweet_fields=context.getVariable("tweet_fields"), 
+        user_fields=context.getVariable("user_fields"), 
+        place_fields=context.getVariable("place_fields"), 
+        media_fields=context.getVariable("media_fields")),
+        streaming_context=context
+    ).emit(
+        StdoutEmit()
+    )
 ```
 
-### Adding primitives
+### Adding the stream
 
-We then add the primitives to the `StreamingContext`:
+We then add the stream to `StreamingContext`:
 
 ```
-context.addIngest(ingest)
-context.addProcess(process)
-context.addEmit(emit)
+context.addStream(stream=stream)
 ```
 
 ###  Execution
@@ -111,10 +100,6 @@ context.execute()
 
 which, in turn, calls the `run()` method of `StreamingContext()`:
 
-```
-for streaming_item in self.ingest:  # This calls __next__
-    self.emit(self.process(streaming_item))
-```
 
 # Running the Job
 
