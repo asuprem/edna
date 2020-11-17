@@ -61,6 +61,7 @@ class Map(BaseProcess):
 from .JsonToObject import JsonToObject
 from .ObjectToSQL import ObjectToSQL
 from .ObjectToJson import ObjectToJson
+from .KeyedSelect import KeyedSelect
 
 SklearnClassifier = None
 try:
