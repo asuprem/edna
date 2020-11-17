@@ -1,13 +1,13 @@
 # Triggers for aggregate emits...
 
 # Triggers take in a record and determine, according to their memory, 
-# if a message should trigger an emit ona  process
+# if a message should trigger an emit on a  process
 class Trigger:
     def __init__(self):
-        raise NotImplementedError()
+        pass
 
     def check(self, record: object) -> bool:
-        raise NotImplementedError()
+        return True
 
 
 from .CountTrigger import CountTrigger

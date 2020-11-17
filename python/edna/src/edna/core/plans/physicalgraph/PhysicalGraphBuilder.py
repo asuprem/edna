@@ -99,20 +99,21 @@ class PhysicalGraphBuilder:
                         # In this case, it is not chainable so we will create it later
                         create_node_flag = True
                 if context.logical_stream_graph.node_list[stream_node_idx].process_node_type == SingleOutputStreamGraphNodeProcessType.FILTER \
-                    or context.logical_stream_graph.node_list[stream_node_idx].process_node_type == SingleOutputStreamGraphNodeProcessType.FLATTEN:
+                    or context.logical_stream_graph.node_list[stream_node_idx].process_node_type == SingleOutputStreamGraphNodeProcessType.FLATTEN \
+                    or context.logical_stream_graph.node_list[stream_node_idx].process_node_type == SingleOutputStreamGraphNodeProcessType.AGGREGATE:
                     # These are pseudoemits
                     emit_node_flag = True
                     if physical_graph.getHeadByStreamNodeId(parent_node_id).isChainable():
                         physical_graph.insertProcessNodeInHead(context.logical_stream_graph.node_list[stream_node_idx])
                     else:
                         create_node_flag = True
-                if context.logical_stream_graph.node_list[stream_node_idx].process_node_type == SingleOutputStreamGraphNodeProcessType.AGGREGATE:
-                    # This is a pseudoingest. So if the prior head is chainable, we need to close it.
-                    if physical_graph.getHeadByStreamNodeId(parent_node_id).isChainable():
-                        physical_graph.insertEmitNodeInHead(PhysicalGraphBuilder.buildBufferedEmit(context.getNewStreamingNodeId()))
-
-                    else:
-                        create_node_flag = True
+                #if context.logical_stream_graph.node_list[stream_node_idx].process_node_type == SingleOutputStreamGraphNodeProcessType.AGGREGATE:
+                #    # This is a pseudoingest. So if the prior head is chainable, we need to close it.
+                #    if physical_graph.getHeadByStreamNodeId(parent_node_id).isChainable():
+                #        physical_graph.insertEmitNodeInHead(PhysicalGraphBuilder.buildBufferedEmit(context.getNewStreamingNodeId()))
+                #
+                #    else:
+                #        create_node_flag = True
 
                     
                 if create_node_flag:

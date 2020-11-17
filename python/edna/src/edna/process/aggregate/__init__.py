@@ -33,7 +33,7 @@ class Aggregate(BaseProcess):
             BaseProcess: A chained process primitive.
         """
         super().__init__(process=process,  *args, **kwargs)
-        self.trigger = None # The actual trigger
+        self.trigger = Trigger() # The actual trigger
         self.triggeredEmit = None   # What is emitted when the aggregate is triggered
     
     def process(self, message: object) -> List[object]:

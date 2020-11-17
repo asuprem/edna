@@ -10,9 +10,13 @@ from edna.emit import BaseEmit
 from edna.core.plans.streamgraph import SingleOutputStreamGraphNode
 from edna.types.enums import SingleOutputStreamGraphNodeType
 from edna.types.enums import SingleOutputStreamGraphNodeProcessType
+
+from edna.triggers import Trigger
+
 from edna.process.map import Map
 from edna.process.filter import Filter
 from edna.process.flatten import Flatten
+from edna.process.aggregate import Aggregate
 
 class DataStream:
     """DataStream exposes a fluent api for building edna jobs.
@@ -153,8 +157,23 @@ class DataStream:
         self.addSingleOutputStreamNode(flatten_node)
         return self
 
-    
+    def aggregate(self, aggregate_process: Aggregate, trigger_by: Trigger = None, process_name: str = None) -> DataStream:
+        if trigger_by is not None:  # Throw error if no trigger???
+            aggregate_process.addTrigger(trigger_by)
+        aggregate_node = SingleOutputStreamGraphNode(node_type=SingleOutputStreamGraphNodeType.PROCESS,
+                            process_node_type=SingleOutputStreamGraphNodeProcessType.AGGREGATE,
+                            node_id=self.streaming_context.getNewStreamingNodeId(), 
+                            name=process_name,
+                            node_callable=aggregate_process)
+        self.addSingleOutputStreamNode(aggregate_node)
+        return self
 
+    """
+    Fort this to work, ????? what to do ???
+    def trigger(self, trigger_by: Trigger) -> DataStream:
+        if self.stream_graph.getHeadNode().process_node_type == SingleOutputStreamGraphNodeProcessType.AGGREGATE:
+            self.stream_graph.getHeadNode().node_callable
+    """
     # ------------------------------------------------------------------------------------
     def emit(self, emit_process: BaseEmit, emit_name: str = None) -> DataStream:
         """Adds an emit process primitive to the current head node and returns the DataStream object
