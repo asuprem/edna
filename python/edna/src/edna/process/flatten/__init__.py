@@ -33,28 +33,28 @@ class Flatten(BaseProcess):
         """
         super().__init__(process=process,  *args, **kwargs)
     
-    def process(self, message: List[object]) -> List[object]:
-        """This is the entrypoint to this primitive to flatten a message. It is called by the BaseProcess parent
+    def process(self, record: List[object]) -> List[object]:
+        """This is the entrypoint to this primitive to flatten a record. It is called by the BaseProcess parent
         from the `__call__()` method. It subsequently calls the `flatten()` method.
 
         This should NOT be modified.
 
-        Args:
-            message (obj): A message to process with this primitive
+        Args:record
+            record (obj): A record to process with this primitive
 
         Returns:
-            (List[obj]): A processed message in a singleton list.
+            (List[obj]): A processed record in a singleton list.
         """
-        return self.flatten(message)
+        return self.flatten(record)
 
-    def flatten(self, message: List[object]) -> List[object]:
+    def flatten(self, record: List[object]) -> List[object]:
         """Logic for flattening. Subclasses need to implement this.
 
         Args:
-            message (obj): The message to process with this flatenning logic
+            record (obj): The record to process with this flatenning logic
 
         Returns:
-            (obj): A processed message as an array. Must be an array of records.
+            (obj): A processed record as an array. Must be an array of records.
         """
         raise NotImplementedError()
 

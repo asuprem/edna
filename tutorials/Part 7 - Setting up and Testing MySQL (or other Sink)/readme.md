@@ -250,8 +250,8 @@ where the `emit_buffer` contains the actual values obtained by the previous proc
 
 ```
 # For ObjectToSQL
-def map(self, message: Dict):
-    return self.tuple_factory.getValues(message=message)    
+def map(self, record: Dict):
+    return self.tuple_factory.getValues(record=record)    
 ```
 
 ## Some additional notes

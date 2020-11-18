@@ -36,27 +36,27 @@ class Aggregate(BaseProcess):
         self.trigger = Trigger() # The actual trigger
         self.triggeredEmit = None   # What is emitted when the aggregate is triggered
     
-    def process(self, message: object) -> List[object]:
-        """This is the entrypoint to this primitive to aggregate a message. It is called by the BaseProcess parent
+    def process(self, record: object) -> List[object]:
+        """This is the entrypoint to this primitive to aggregate a record. It is called by the BaseProcess parent
         from the `__call__()` method. It subsequently calls the `aggregate()` method.
 
         This should NOT be modified.
 
         Args:
-            message (obj): A message to process with this primitive
+            record (obj): A record to process with this primitive
 
         Returns:
-            (List[obj]): A processed message in a singleton list.
+            (List[obj]): A processed record in a singleton list.
         """
-        self.aggregate(message)
-        return self.checkTrigger(message)
+        self.aggregate(record)
+        return self.checkTrigger(record)
 
 
     def aggregate(self, record: object):
         """TODO Logic for aggregating. Subclasses need to implement this.
 
         Args:
-            message (obj): The message to process with this aggregating logic
+            record (obj): The record to process with this aggregating logic
         """
         raise NotImplementedError()
 

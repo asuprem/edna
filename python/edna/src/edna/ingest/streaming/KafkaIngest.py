@@ -14,10 +14,10 @@ class KafkaIngest(BaseStreamingIngest):
         """Connects to a kafka topic and sets up the ingest
 
         Args:
-            serializer (Serializable): Serializer to convert a message to bytes before sending to kafka.
+            serializer (Serializable): Serializer to convert a record to bytes before sending to kafka.
             kafka_topic (str): Name of kafka topic to publish to.
             bootstrap_server (str, optional): Address of the Kafka bootstrap server. Defaults to "localhost".
-            bootstrap_port (int, optional): Bootstrap server port on which the topic is listening for messages. Defaults to 9092.
+            bootstrap_port (int, optional): Bootstrap server port on which the topic is listening for records. Defaults to 9092.
             default_group (str, optional): Group name for this consumer group. Defaults to "default-group".
         """
         super().__init__(serializer=serializer, *args, **kwargs)
@@ -43,23 +43,23 @@ class KafkaIngest(BaseStreamingIngest):
         Returns:
             (obj): A record.
         """
-        kafka_message = None
-        while kafka_message is None:
-            kafka_message = self.consumer.poll(timeout=1.0)
-            if kafka_message is None:
-                # There is no message to retrieve (methinks)    TODO
+        kafka_record = None
+        while kafka_record is None:
+            kafka_record = self.consumer.poll(timeout=1.0)
+            if kafka_record is None:
+                # There is no record to retrieve (methinks)    TODO
                 sleep(0.1)
                 continue
-            if kafka_message.error():
-                if kafka_message.error().code() == confluent_kafka.KafkaError._PARTITION_EOF:
-                    kafka_message = None
+            if kafka_record.error():
+                if kafka_record.error().code() == confluent_kafka.KafkaError._PARTITION_EOF:
+                    kafka_record = None
                     pass # TODO will need to add exception handling at some point
                     # End of partition event
                     #sys.stderr.write('%% %s [%d] reached end at offset %d\n' %
-                    #                    (kafka_message.topic(), kafka_message.partition(), kafka_message.offset()))
-                elif kafka_message.error():
-                    raise confluent_kafka.KafkaException(kafka_message.error())
-        return kafka_message.value()
+                    #                    (kafka_record.topic(), kafka_record.partition(), kafka_record.offset()))
+                elif kafka_record.error():
+                    raise confluent_kafka.KafkaException(kafka_record.error())
+        return kafka_record.value()
 
     def create_topic(self, topic_name: str, conf: Dict):
         """Helper function to create a topic. Blocks until topic is created.

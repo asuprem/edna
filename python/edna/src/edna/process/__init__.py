@@ -6,7 +6,7 @@ from edna.core.primitives import EdnaPrimitive
 
 
 class BaseProcess(EdnaPrimitive):
-    """BaseProcess is the base class for performing operations on streaming messages.
+    """BaseProcess is the base class for performing operations on streaming records.
 
     Any child class must:
     
@@ -41,38 +41,38 @@ class BaseProcess(EdnaPrimitive):
         super().__init__(serializer=serializer, in_serializer=in_serializer, out_serializer=out_serializer, logger_name=logger_name)
         self.replaceChainedProcess(process)
 
-    def __call__(self, message: List[object]) -> List[object]:
-        """This is the entrypoint to this primitive to process a message. For example, you can do the following
+    def __call__(self, record: List[object]) -> List[object]:
+        """This is the entrypoint to this primitive to process a record. For example, you can do the following
 
         ```
         process = BaseProcess(*args)
-        processed_message = process(message)
+        processed_record = process(record)
         ```
 
         Args:
-            message (List[obj]): A list of messages to process with this primitive. Usually Singleton unless the preceding is a 1-N mapping
+            record (List[obj]): A list of record to process with this primitive. Usually Singleton unless the preceding is a 1-N mapping
 
         Returns:
-            (obj): A processed message
+            (obj): A processed record
         """
         complete_results = []   # TODO Update this to a RecordCollecton
-        intermediate_result = self.chained_process(message)    # Returns a list
+        intermediate_result = self.chained_process(record)    # Returns a list
         #if self.process_name == "ObjectToJson":
         for item in intermediate_result:    # is a list
             complete_results += self.process(item)
         return complete_results
 
 
-    def process(self, message: object) -> List[object]:
-        """Logic for message processing. Inheriting classes should implement this. We return a singleton to work with Emit
+    def process(self, record: object) -> List[object]:
+        """Logic for record processing. Inheriting classes should implement this. We return a singleton to work with Emit
 
         Args:
-            message (obj): The message to process with this logic
+            record (obj): The record to process with this logic
 
         Returns:
-            (obj): A processed message
+            (obj): A processed record
         """
-        return [message]
+        return [record]
 
     def replaceChainedProcess(self, process: BaseProcess = None):
         self.chained_process = process if process is not None else lambda x: x

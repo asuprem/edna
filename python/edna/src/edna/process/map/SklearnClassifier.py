@@ -26,8 +26,8 @@ class SklearnClassifier(Map):
         self.classifier = joblib.load(classifier_path)
         super().__init__(process=process, *args, **kwargs)
 
-    def map(self,message : object):
-        return self.classifier.predict(message)
+    def map(self, record : object):
+        return self.classifier.predict(record)
 
 
         

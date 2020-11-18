@@ -12,11 +12,11 @@ class BufferedSerializable(Serializable):
     Subclasses should:
     
         - Implement `__init__()` method
-        - Implement the `feed()` method. `feed()` receives a `buffered_message`, which is 
+        - Implement the `feed()` method. `feed()` receives a `buffered_record`, which is 
             byte array from the network buffer. They array contains a list of records, 
             with possibly incomplete records since the network buffer has limited capacity.
             The deserializer should keep track of incomplete records and use the byte array to 
-            complete existing incomplete message and store records in an internal buffer.
+            complete existing incomplete record and store records in an internal buffer.
         - Implement the `next()` method. `next()` should yield a single record from the internal
             buffer. `next()` should follow the ingest order and yield records in FIFO fashion.
         - Implement the `write()` method. `write()` should serialize a record and return a byte array.
@@ -26,11 +26,11 @@ class BufferedSerializable(Serializable):
         """
         raise NotImplementedError
 
-    def feed(self, buffered_message: bytes):
-        """Updates internal record buffer with the `buffered_message`
+    def feed(self, buffered_record: bytes):
+        """Updates internal record buffer with the `buffered_record`
 
         Args:
-            buffered_message (bytes): A byte-array representation of records from a network stack.
+            buffered_record (bytes): A byte-array representation of records from a network stack.
         """
         raise NotImplementedError
 
@@ -52,7 +52,7 @@ class BufferedSerializable(Serializable):
 
     @abstractmethod
     def read(cls, in_stream: Any):
-        """Returns the message because the subclasses are tightly coupled with the ingest and perform the deserialization with `next()`.
+        """Returns the record because the subclasses are tightly coupled with the ingest and perform the deserialization with `next()`.
 
         Args:
             in_stream (Any): A deserialized record

@@ -30,18 +30,18 @@ class SQLTupleFactory(abc.ABC):
     def getUpsert(self):
         return self.upsert_tuple
 
-    def getValues(self, message: Dict):
-        """Extracts a tuple of values from the message using `field_tuple`'s fields.
+    def getValues(self, record: Dict):
+        """Extracts a tuple of values from the record using `field_tuple`'s fields.
         This can be overridden for efficiency to hardcode an object model.
 
         Args:
-            message (obj): A record to process
+            record (obj): A record to process
         Returns:
             (Tuple): A Tuple of all values corresponding to the `field_tuple`
         """
         values_list = [None]*self.field_len
         for idx,field in enumerate(self.field_tuple):
-            values_list[idx] = message[field]
+            values_list[idx] = record[field]
         return tuple(values_list)
 
     def getFieldCount(self):

@@ -12,7 +12,7 @@ class PhysicalGraphNode(GraphNode):
     of the <ingest-process-emit> primitives, but all need not exist.
     
     Ingest can be a StreamGraphNode encapsulating an edna ingest, or a buffer-ingest. A buffer-ingest is instrinsically tied to the 
-    PhysicalGraph, since it must specify the parent PhysicalGraphNode that will send messages to this buffer ingest. Ingest can also be
+    PhysicalGraph, since it must specify the parent PhysicalGraphNode that will send records to this buffer ingest. Ingest can also be
     a join.
 
     Emit can be a StreamGraphNode encapsulating an edna emit or a buffer-emit. Buffer-emits do not need to store where they send data.

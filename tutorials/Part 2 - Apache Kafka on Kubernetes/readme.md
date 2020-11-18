@@ -75,7 +75,7 @@ sudo kubectl wait kafka/edna-cluster --for=condition=Ready --timeout=300s -n kaf
 This will timeout in 5 min, so if it takes longer, just rerun the command, or run it with a longer timeout.
 
 ## Testing kafka
-You should open two terminals. You will use `Terminal 1` to send messages to kafka under a particular topic. `Terminal 2` will subscribe to that topic and pull any messages as and when the are published to the topic from `Terminal 1` (basically a glorified one-way chat).
+You should open two terminals. You will use `Terminal 1` to send records to kafka under a particular topic. `Terminal 2` will subscribe to that topic and pull any records as and when the are published to the topic from `Terminal 1` (basically a glorified one-way chat).
 
 ### Terminal 1
 First run:
@@ -84,7 +84,7 @@ First run:
 sudo kubectl -n default run kafka-producer -ti --image=strimzi/kafka:0.19.0-kafka-2.5.0 --rm=true --restart=Never -- bin/kafka-console-producer.sh --broker-list edna-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092 --topic my-topic
 ```
 
-Wait a few moments for it to launch. Now you can enter messages. The first message you enter might show an error about a "missing Leader" but this will likely be automatically fixed in the backend by the controller.
+Wait a few moments for it to launch. Now you can enter messages (records). The first message you enter might show an error about a "missing Leader" but this will likely be automatically fixed in the backend by the controller.
 
 Now you can write messages. But first...
 
@@ -111,7 +111,7 @@ Let's analyze the two lines to learn more about what they are doing.
     - `--broker-list edna-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092`: The address for the broker. You can get the address by doing `kubectl get services -n kafka` and taking node of the routing information. It should match this.
     - `--topic my-topic`: What topic to publish to.
 
-The line for the consumer on `Terminal 2` is mostly the same, the sole difference being it launches `kafka-console-consumer.sh` and has a `--from-beginning` flag to tell the consumer to pull all messages under the topic.
+The line for the consumer on `Terminal 2` is mostly the same, the sole difference being it launches `kafka-console-consumer.sh` and has a `--from-beginning` flag to tell the consumer to pull all records under the topic.
 
 ## Deleting
 Once you are done, delete with:

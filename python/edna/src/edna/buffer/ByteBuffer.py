@@ -56,36 +56,36 @@ class ByteBuffer:
             return NameUtils.attachNameSuffix(name, suffix_length=5)
         return name
 
-    def computeOverflow(self, message_length: int) -> int:
-        """Compute the overflow of provided message length given the current 
+    def computeOverflow(self, record_length: int) -> int:
+        """Compute the overflow of provided record length given the current 
         internal buffer size and the `MAX_BUFFER_SIZE`. The overflow is how
-        much of the message will not fit into the current buffer because of
+        much of the record will not fit into the current buffer because of
         `MAX_BUFFER_SIZE`
 
         Args:
-            message_length (int): The length of the current message (in bytes).
+            record_length (int): The length of the current record (in bytes).
 
         Returns:
-            int: Overflow of message in internal buffer. 
+            int: Overflow of record in internal buffer. 
         """
-        return self.buffer.tell() + message_length - self.MAX_BUFFER_SIZE
+        return self.buffer.tell() + record_length - self.MAX_BUFFER_SIZE
 
-    def computeWriteIndex(self, message_length: int, overflow: int) -> int:
-        """Compute how much of the message to write given the message lenth and
+    def computeWriteIndex(self, record_length: int, overflow: int) -> int:
+        """Compute how much of the record to write given the record lenth and
         overflow, the latter obtained from `computeOverflow()`. In case of 0 overflow,
-        the entire message can be written into the buffer.
+        the entire record can be written into the buffer.
 
         Args:
-            message_length (int): Length of message
-            overflow (int): Message overflow, obtained from `computeOverflow`
+            record_length (int): Length of record
+            overflow (int): Record overflow, obtained from `computeOverflow`
 
         Returns:
-            int: Index up to which current message can be written into buffer. Returns length of message
+            int: Index up to which current record can be written into buffer. Returns length of record
                 if overflow is 0.
         """
-        write_index = message_length # This is how much of the message we will write
+        write_index = record_length # This is how much of the record we will write
         if overflow >= 0:   # Add =0 for consistency
-            write_index = message_length - overflow
+            write_index = record_length - overflow
         return write_index
 
     def sendBufferAndReset(self):
@@ -107,35 +107,35 @@ class ByteBuffer:
         """
         self.buffer = io.BytesIO()
 
-    def addStragglers(self, message: bytes, message_length: int, write_length: int):
-        """Adds the remaining contents of a message after a buffer reset in 
-        case of overflow due to lalrge message.
+    def addStragglers(self, record: bytes, record_length: int, write_length: int):
+        """Adds the remaining contents of a record after a buffer reset in 
+        case of overflow due to lalrge record.
 
         Args:
-            message (bytes): The full message.
-            message_length (int): The length of the message
-            write_length (int): The message write index to write from. This is obtained from `computeWriteIndex`
+            record (bytes): The full record.
+            record_length (int): The length of the record
+            write_length (int): The record write index to write from. This is obtained from `computeWriteIndex`
         """
-        if write_length < message_length:
-            self.buffer.write(message[write_length:])
+        if write_length < record:
+            self.buffer.write(record[write_length:])
 
 
-    def write(self, message: bytes):
-        """Writes a given message into the internal buffer. If the messaage is too large to fit
-        into the current buffer, `write()` will ad as much of the message as possible to the buffer,
-        emit the buffer to the provided socket, reset, and fill it with the rest of the message.
+    def write(self, record: bytes):
+        """Writes a given record into the internal buffer. If the messaage is too large to fit
+        into the current buffer, `write()` will ad as much of the record as possible to the buffer,
+        emit the buffer to the provided socket, reset, and fill it with the rest of the record.
 
         Args:
-            message (bytes): The message to write to the buffer.
+            record (bytes): The record to write to the buffer.
         """
         # TODO for java, add a reentrant lock here
-        message_length = len(message)
-        overflow = self.computeOverflow(message_length=message_length)
-        write_length = self.computeWriteIndex(message_length=message_length, overflow=overflow)
-        # Write to buffer main message
-        self.buffer.write(message[:write_length])
+        record_length = len(record)
+        overflow = self.computeOverflow(record_length=record_length)
+        write_length = self.computeWriteIndex(record_length=record_length, overflow=overflow)
+        # Write to buffer main record
+        self.buffer.write(record[:write_length])
 
         if self.buffer.tell() == self.MAX_BUFFER_SIZE:
             self.send_buffer_and_reset()
         
-        self.addStragglers(message, message_length, write_length)
+        self.addStragglers(record, record_length, write_length)

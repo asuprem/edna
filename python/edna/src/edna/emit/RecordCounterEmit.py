@@ -14,7 +14,7 @@ class RecordCounterEmit(BaseEmit):
         self.record_timer = time.time()
         super().__init__(serializer=serializer, emit_buffer_batch_size=emit_buffer_batch_size,emit_buffer_timeout_ms=emit_buffer_timeout_ms, *args, **kwargs)
     def write(self):
-        """Writes the message to the standard output. Ideally, the message should be a string. This is useful only for debugging."""
+        """Writes the record to the standard output. Ideally, the record should be a string. This is useful only for debugging."""
         # NOT an efficient method, but really, who uses this for a real Job?
         for buffer_idx in range(self.emit_buffer_index+1):
             if self.index % self.record_print == 0:

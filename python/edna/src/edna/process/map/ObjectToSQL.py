@@ -48,17 +48,17 @@ class ObjectToSQL(Map):
         super().__init__(process=process, *args, **kwargs)
 
 
-    def map(self, message: Dict):   # For Java, __init__ takes a TupleModel and a TupleFactory...
+    def map(self, record: Dict):   # For Java, __init__ takes a TupleModel and a TupleFactory...
         """Returns a dictionary of "fields" and "values" for a SQLEmit emitter.
 
         Args:
-            message (Dict): A record to process
+            record (Dict): A record to process
 
         Returns:
             (Dict[str,tuple]): A dictionary with two keys, "fields" and "tuples", used by SQLEmit to insert into
                 a database.
         """
-        return self.tuple_factory.getValues(message=message)
+        return self.tuple_factory.getValues(record=record)
 
         
 

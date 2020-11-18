@@ -21,13 +21,13 @@ class StringFlatten(Flatten):
         super().__init__(process=process, *args, **kwargs)
         self.separator = separator
     
-    def flatten(self, message: str) -> List[str]:
+    def flatten(self, record: str) -> List[str]:
         """Flattens a record using the separator and python's string `split()`.
 
         Args:
-            message (str): A record to flatten.
+            record (str): A record to flatten.
 
         Returns:
             List[str]: An array of tokenized strings
         """
-        return message.split(self.separator)
+        return record.split(self.separator)

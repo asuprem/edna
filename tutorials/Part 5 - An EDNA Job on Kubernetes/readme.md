@@ -59,10 +59,10 @@ In this case, we don't need any serialization and deserialization because Twitte
 If you look inside `edna.emit.BaseEmit` class, you will see that the `call` method contains the following line:
 
 ```
-self.emit_buffer[self.emit_buffer_index] = self.out_serializer.write(message)
+self.emit_buffer[self.emit_buffer_index] = self.out_serializer.write(record)
 ```
 
-So any Emit primitive, when called to emit a message, will save a serialized message to its buffer for emitting.
+So any Emit primitive, when called to emit a record, will save a serialized record to its buffer for emitting.
 
 ### Setting up primitives
 

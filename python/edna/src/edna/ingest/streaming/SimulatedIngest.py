@@ -50,7 +50,7 @@ class SimulatedIngest(BaseStreamingIngest):
         """Initialized the SimulatedIngest by recording the `stream_list` and preparing to emit them.
 
         Args:
-            serializer (Serializable): Serializer to convert a message if needed.
+            serializer (Serializable): Serializer to convert a record if needed.
             stream_list (List): List of stream elements to emit. Can be omitted if a 
                 callable is used Defaults to None.
             stream_callback (Callable): A callback to generate new elements based on the index.

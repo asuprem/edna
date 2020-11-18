@@ -55,7 +55,7 @@ What we are actually learning here is:
 
 ## Setting up multiple jobs
 
-We are going to use Kafka as the streaming backbone for all jobs. Kafka operates as a pub/sub interface, where publishers send messages to a **topic**, and subscribers pull messages from the same **topic**.
+We are going to use Kafka as the streaming backbone for all jobs. Kafka operates as a pub/sub interface, where publishers send records to a **topic**, and subscribers pull records from the same **topic**.
 
 So within an application, we need to make sure two jobs that need to talk to each other use the same topic. A job, therefore, will have two topics it connects to:
 
@@ -91,10 +91,10 @@ As I mentioned before, Kafka expects bytes. So we will use a couple different ty
     - **KafkaStringSerializer**: Encode the string to plain bytes for Kafka.
 
 We are basically testing the following interactions:
-- Deserializing a plain bytes message
+- Deserializing a plain bytes record
 - Serializing a string to a messagepack byte payload
 - Deserializing a messagepack byte payload
-- Serializing to a plain bytes message
+- Serializing to a plain bytes record
 
 
 # Running the Application

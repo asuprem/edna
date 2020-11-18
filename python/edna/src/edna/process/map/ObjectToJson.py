@@ -8,5 +8,5 @@ class ObjectToJson(Map):
         Map (BaseProcess): The interface this process implements
     """
     process_name : str = "ObjectToJson"
-    def map(self, message: str):
-        return ujson.dumps(message)
+    def map(self, record: str):
+        return ujson.dumps(record)

@@ -11,8 +11,8 @@ class BaseEmit(EdnaPrimitive):
 
     Any child class must:
 
-    - Implement the `write()` method. The write method will write all messages in the `self.emit_buffer` variable.
-        `self.emit_buffer` is a List of Serialized messages
+    - Implement the `write()` method. The write method will write all records in the `self.emit_buffer` variable.
+        `self.emit_buffer` is a List of Serialized records
 
     - Call `super().__init__()` at the end of initialization
     
@@ -58,23 +58,23 @@ class BaseEmit(EdnaPrimitive):
         
         
 
-    def __call__(self, message):
+    def __call__(self, record):
         """Wrapper for emitting a record using the emitter's logic. This is the entry point for emitting and should not be modified.
 
         Args:
-            message (List[object]): A list of message that should be Serializable to bytes with `serializer`
+            record (List[object]): A list of record that should be Serializable to bytes with `serializer`
         """
-        for item in message:
+        for item in record:
             self.call(item)
         
-    def call(self, message):
+    def call(self, record):
         """Writes records to the internal buffer.
 
         Args:
-            message (obj): A record.
+            record (obj): A record.
         """
         self.emit_buffer_index += 1
-        self.emit_buffer[self.emit_buffer_index] = self.out_serializer.write(message)
+        self.emit_buffer[self.emit_buffer_index] = self.out_serializer.write(record)
         # Write buffer and clear if throughput barriers are met
         self.checkBufferTimeout()
         self.checkBufferSize()
@@ -104,9 +104,9 @@ class BaseEmit(EdnaPrimitive):
         self.timer = time.time()
 
 
-    def write(self):        # For Java, need Emit to be a templated function for message type
-        """Writes serialized messages. This should be implemented by inheriting classes to emit with the appropriate logic.
-        Subclasses will write messages in the `emit_buffer` of the class. 
+    def write(self):        # For Java, need Emit to be a templated function for record type
+        """Writes serialized records. This should be implemented by inheriting classes to emit with the appropriate logic.
+        Subclasses will write records in the `emit_buffer` of the class. 
 
         Subclasses will also need to handle cases where the `emit_buffer` is not full by checking with `self.emit_buffer_index`.
 

@@ -32,28 +32,28 @@ class Filter(BaseProcess):
         """
         super().__init__(process=process,  *args, **kwargs)
     
-    def process(self, message: object) -> List[object]:
-        """This is the entrypoint to this primitive to filter a message. It is called by the BaseProcess parent
+    def process(self, record: object) -> List[object]:
+        """This is the entrypoint to this primitive to filter a record. It is called by the BaseProcess parent
         from the `__call__()` method. It subsequently calls the `filter()` method.
 
         This should NOT be modified.
 
         Args:
-            message (obj): A message to process with this primitive
+            record (obj): A record to process with this primitive
 
         Returns:
-            (List[obj]): A processed message in a singleton list.
+            (List[obj]): A processed record in a singleton list.
         """
-        return self.filter(message)
+        return self.filter(record)
 
-    def filter(self, message: object) -> List[object]:
+    def filter(self, record: object) -> List[object]:
         """Logic for filtering. Subclasses need to implement this.
 
         Args:
-            message (obj): The message to process with this filtering logic
+            record (obj): The record to process with this filtering logic
 
         Returns:
-            (obj): A processed message as an array. Must be an array.
+            (obj): A processed record as an array. Must be an array.
         """
         raise NotImplementedError()
 

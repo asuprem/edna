@@ -16,10 +16,10 @@ class KafkaEmit(BaseEmit):
         """Connects to a specified kafka topic and sets up the emitter.
 
         Args:
-            serializer (Serializable): Serializer to convert a message to bytes before sending to kafka.
+            serializer (Serializable): Serializer to convert a record to bytes before sending to kafka.
             kafka_topic (str): Name of kafka topic to publish to.
             bootstrap_server (str, optional): Address of the Kafka bootstrap server. Defaults to "localhost".
-            bootstrap_port (int, optional): Bootstrap server port on which the topic is listening for messages. Defaults to 9092.
+            bootstrap_port (int, optional): Bootstrap server port on which the topic is listening for records. Defaults to 9092.
         """
         self.retention_ms = topic_retention_ms
         self.kafka_topic = kafka_topic
@@ -34,9 +34,9 @@ class KafkaEmit(BaseEmit):
         super().__init__(serializer=serializer, emit_buffer_batch_size=emit_buffer_batch_size,emit_buffer_timeout_ms=emit_buffer_timeout_ms, *args, **kwargs)
 
     def write(self):
-        """Publishes the internal buffer message to the instance's saved kafka topic. Since
-        kafka already handles high-throughput low-latency message production asynchronously, 
-        `write()` sends messages one by one from the emit_buffer
+        """Publishes the internal buffer record to the instance's saved kafka topic. Since
+        kafka already handles high-throughput low-latency record production asynchronously, 
+        `write()` sends records one by one from the emit_buffer
         """
 
         for buffer_idx in range(self.emit_buffer_index+1):

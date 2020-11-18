@@ -1,7 +1,7 @@
 # Triggers for aggregate emits...
 
 # Triggers take in a record and determine, according to their memory, 
-# if a message should trigger an emit on a  process
+# if a record should trigger an emit on a  process
 class Trigger:
     def __init__(self):
         pass

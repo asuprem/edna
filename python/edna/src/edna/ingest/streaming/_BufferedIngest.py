@@ -52,8 +52,8 @@ class _BufferedIngest(BaseStreamingIngest):
                 # No more records to process
                 try:    # Get new records
                     self.client.settimeout(self.MAX_BUFFER_TIMEOUT_S)   # TODO pass them from task primitive...
-                    message = self.client.recv(self.MAX_BUFFER_SIZE)
-                    self.serializer.feed(message)   # Send to the MsgPackBufferedSerializer...
+                    record = self.client.recv(self.MAX_BUFFER_SIZE)
+                    self.serializer.feed(record)   # Send to the MsgPackBufferedSerializer...
                 except socket.timeout as e: # No records received
                     pass
         return record

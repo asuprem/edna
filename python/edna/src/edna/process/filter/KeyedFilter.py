@@ -20,5 +20,5 @@ class KeyedFilter(Filter):
         self.key = key
         self.filter_callable = filter_callable
     
-    def filter(self, message: str):
-        return [message] if self.filter_callable(message[self.key]) else []
+    def filter(self, record: str):
+        return [record] if self.filter_callable(record[self.key]) else []

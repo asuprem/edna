@@ -7,8 +7,8 @@ class MsgPackBufferedSerializer(BufferedSerializable):
     def __init__(self):
         pass
 
-    def feed(self, buffered_message: bytes):
-        self.deserializer.feed(buffered_message)
+    def feed(self, buffered_record: bytes):
+        self.deserializer.feed(buffered_record)
 
     def next(self):
         return next(self.deserializer)

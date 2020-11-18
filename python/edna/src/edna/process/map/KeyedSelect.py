@@ -16,5 +16,5 @@ class KeyedSelect(Map):
         process: BaseProcess = None, 
         *args, **kwargs) -> BaseProcess:
         self.keys = keys
-    def map(self, message: str):
-        return {key:message[key] for key in self.keys}
+    def map(self, record: str):
+        return {key:record[key] for key in self.keys}

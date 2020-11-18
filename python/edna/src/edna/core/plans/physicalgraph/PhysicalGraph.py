@@ -319,7 +319,7 @@ class PhysicalGraph:
     """Types of physicalgraphnodes:
         - ingest-primitive - contains just a source
             for item in ingest: 
-                o_buffer(message)
+                o_buffer(record)
         - process-primitive - contains just a process
             for item in i_buffer:
                 o_buffer(process())

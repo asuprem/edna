@@ -9,5 +9,5 @@ class ChainedProcess(BaseProcess):
         super().__init__(process=inner_process,  *args, **kwargs)
         self.outer_process = outer_process
 
-    def process(self, message):
-        return self.outer_process(message)
+    def process(self, record):
+        return self.outer_process(record)
