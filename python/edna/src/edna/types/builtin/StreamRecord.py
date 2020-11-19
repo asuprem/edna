@@ -10,7 +10,7 @@ class StreamRecord(StreamElement):
         super().__init__(StreamElementType.RECORD)
         self.value = value
 
-    def getValue(self):
+    def getValue(self) -> object:
         return self.value
 
     
