@@ -4,5 +4,5 @@ from .BufferMode import BufferMode
 from .SingleOutputStreamGraphNodeType import SingleOutputStreamGraphNodeType
 from .SingleOutputStreamGraphNodeProcessType import SingleOutputStreamGraphNodeProcessType
 from .StreamGraphNodeType import StreamGraphNodeType
-
+from .StreamElementType import StreamElementType
 from .PhysicalGraphNodeType import PhysicalGraphNodeType
