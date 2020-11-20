@@ -1,5 +1,5 @@
 from __future__ import annotations
-from python.edna.src.edna.types.builtin.StreamRecord import StreamRecord
+from edna.types.builtin import StreamRecord
 from typing import List
 from edna.process import BaseProcess
 

@@ -1,7 +1,7 @@
 from __future__ import annotations
-from edna.process import BaseProcess
-
 from typing import List
+from edna.process import BaseProcess
+from edna.types.builtin import StreamRecord, RecordCollection
 
 
 class Flatten(BaseProcess):
@@ -33,7 +33,7 @@ class Flatten(BaseProcess):
         """
         super().__init__(process=process,  *args, **kwargs)
     
-    def process(self, record: List[object]) -> List[object]:
+    def process(self, record: object) -> List[StreamRecord]:
         """This is the entrypoint to this primitive to flatten a record. It is called by the BaseProcess parent
         from the `__call__()` method. It subsequently calls the `flatten()` method.
 
@@ -47,7 +47,7 @@ class Flatten(BaseProcess):
         """
         return self.flatten(record)
 
-    def flatten(self, record: List[object]) -> List[object]:
+    def flatten(self, record: object) -> List[StreamRecord]:
         """Logic for flattening. Subclasses need to implement this.
 
         Args:
