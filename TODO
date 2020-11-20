@@ -1,21 +1,3 @@
-----------------------------------------------------------------
-
-mvn exec:java --host...<> --edna <path/to/edna/library>? OR <http host for pypi server> --homedir <path to directory with apps and jobs>
-
-when applied, we will use docker api to ????
-
-https://github.com/docker-java/docker-java/blob/master/docs/getting_started.md
-
-unix:///var/run/docker.sock
-
-
-https://www.baeldung.com/docker-java-api
-
-
-
-basically use dockerfactory to create a docker build....
-
-
 -------------------------------------------------------------------
 
 an edna-client to 
@@ -58,7 +40,7 @@ Add Part 9 -- ednajobcontroller
 
 
 
-----------------------------------------------
+-----------------------------------------------------------
 
 So we have a ednastream object. ednastream is a graph. It stores the graph inside, 
 and each function appends a node to the internal graph. An ednastream has 3 types of nodes:
