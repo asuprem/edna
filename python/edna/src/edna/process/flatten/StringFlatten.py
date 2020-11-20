@@ -1,4 +1,5 @@
 from __future__ import annotations
+from edna.types.builtin import StreamRecord
 from typing import List
 from edna.process.flatten import Flatten
 from edna.process import BaseProcess
@@ -21,7 +22,7 @@ class StringFlatten(Flatten):
         super().__init__(process=process, *args, **kwargs)
         self.separator = separator
     
-    def flatten(self, record: str) -> List[str]:
+    def flatten(self, record: str) -> List[StreamRecord]:
         """Flattens a record using the separator and python's string `split()`.
 
         Args:
@@ -30,4 +31,4 @@ class StringFlatten(Flatten):
         Returns:
             List[str]: An array of tokenized strings
         """
-        return record.split(self.separator)
+        return map(StreamRecord, record.split(self.separator))
