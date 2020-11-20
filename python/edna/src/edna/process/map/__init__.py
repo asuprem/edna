@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import List
 import warnings
 from edna.process import BaseProcess
+from edna.types.builtin import StreamRecord
 
 
 class Map(BaseProcess):
@@ -33,7 +34,7 @@ class Map(BaseProcess):
         """
         super().__init__(process=process,  *args, **kwargs)
     
-    def process(self, record: object) -> List[object]:
+    def process(self, record: object) -> List[StreamRecord]:
         """This is the entrypoint to this primitive to map a record. It is called by the BaseProcess parent
         from the `__call__()` method. It subsequently calls the `map()` method.
 
@@ -45,7 +46,7 @@ class Map(BaseProcess):
         Returns:
             (List[obj]): A processed record in a singleton list.
         """
-        return [self.map(record)]
+        return [StreamRecord(self.map(record))]
 
     def map(self, record: object) -> object:
         """Logic for mapping. Subclasses need to implement this.
