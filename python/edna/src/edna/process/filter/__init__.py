@@ -56,3 +56,4 @@ class Filter(BaseProcess):
         raise NotImplementedError()
 
 from .KeyedFilter import KeyedFilter
+from .RobustJsonToObject import RobustJsonToObject
