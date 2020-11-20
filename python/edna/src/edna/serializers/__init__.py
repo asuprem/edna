@@ -27,3 +27,4 @@ from .KafkaStringSerializer import KafkaStringSerializer
 from .BufferedSerializable import BufferedSerializable
 from .MsgPackBufferedSerializable import MsgPackBufferedSerializer
 from .EmptySerializer import EmptySerializer
+from .MsgPackSerializer import MsgPackSerializer
