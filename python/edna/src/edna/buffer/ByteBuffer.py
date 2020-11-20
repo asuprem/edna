@@ -116,7 +116,7 @@ class ByteBuffer:
             record_length (int): The length of the record
             write_length (int): The record write index to write from. This is obtained from `computeWriteIndex`
         """
-        if write_length < record:
+        if write_length < record_length:
             self.buffer.write(record[write_length:])
 
 
