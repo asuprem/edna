@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import List
 from edna.process import BaseProcess
 from edna.triggers import Trigger
+from edna.types.builtin import StreamRecord
 
 class Aggregate(BaseProcess):
     """An Aggregate Process gathers the input and aggregates them for other operations. 
@@ -21,8 +22,9 @@ class Aggregate(BaseProcess):
         BaseProcess (BaseProcess): A process to chain
     """
     trigger: Trigger
-    triggeredEmit: List[object]
+    triggeredEmit: List[StreamRecord]
     process_name : str = "Aggregate"
+    reset_flag : bool
     def __init__(self, process: BaseProcess = None, *args, **kwargs) -> BaseProcess:
         """Initializes the Process primitive. It can take a Process primitive as input to chain them.
 
@@ -35,8 +37,9 @@ class Aggregate(BaseProcess):
         super().__init__(process=process,  *args, **kwargs)
         self.trigger = Trigger() # The actual trigger
         self.triggeredEmit = None   # What is emitted when the aggregate is triggered
+        self.reset_flag = True
     
-    def process(self, record: object) -> List[object]:
+    def process(self, record: object) -> List[StreamRecord]:
         """This is the entrypoint to this primitive to aggregate a record. It is called by the BaseProcess parent
         from the `__call__()` method. It subsequently calls the `aggregate()` method.
 
@@ -48,6 +51,8 @@ class Aggregate(BaseProcess):
         Returns:
             (List[obj]): A processed record in a singleton list.
         """
+        if self.reset_flag:
+            self.resetAggregate()
         self.aggregate(record)
         return self.checkTrigger(record)
 
@@ -70,10 +75,21 @@ class Aggregate(BaseProcess):
 
     def checkTrigger(self, record: object) -> List[object]:
         if self.trigger.check(record):
-            self.reset()
+            self.setResetFlag()
             return self.triggeredEmit
         else:
             return []
+
+    def setResetFlag(self):
+        self.reset_flag = True
+
+    def unsetResetFlag(self):
+        self.reset_flag = False
+
+    def resetAggregate(self):
+        self.unsetResetFlag()
+        self.reset()
+        
 
     def reset(self):
         raise NotImplementedError()

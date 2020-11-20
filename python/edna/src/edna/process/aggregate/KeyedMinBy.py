@@ -1,5 +1,6 @@
 from edna.process.aggregate import Aggregate
 from edna.process import BaseProcess
+from edna.types.builtin import StreamRecord
 
 class KeyedMinBy(Aggregate):
     process_name: str = "KeyedMinBy"    
@@ -13,7 +14,7 @@ class KeyedMinBy(Aggregate):
     def aggregate(self, record: object):
         if record[self.key] < self.min:
             self.min = record[self.key]
-            self.triggeredEmit = [record]
+            self.triggeredEmit = [StreamRecord(record)]
 
 
     def reset(self):
