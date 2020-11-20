@@ -3,10 +3,11 @@ from edna.types.builtin import StreamElement
 from edna.types.enums import StreamElementType
 
 
-class StreamCheckpoint(StreamElement):
+class StreamWatermark(StreamElement):
     def __init__(self):
-        super().__init__(None, StreamElementType.CHECKPOINT)
+        super().__init__(None, StreamElementType.WATERMARK)
+
+    def isWatermark(self):
+        return True
 
     
-    def isCheckpoint(self):
-        return True

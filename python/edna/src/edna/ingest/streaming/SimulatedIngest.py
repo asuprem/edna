@@ -42,6 +42,21 @@ class SimulatedIngestCallable:
         """
         raise NotImplementedError()
 
+    def hasNext(self, index) -> bool:
+        """Return True if there is still elements left to yield
+
+        Args:
+            index ([type]): [description]
+
+        Raises:
+            RuntimeError: [description]
+
+        Returns:
+            [type]: [description]
+        """
+        raise NotImplementedError()
+
+
 class SimulatedIngest(BaseStreamingIngest):
     """The SimulatedIngest is used for testing EDNA Jobs. 
     Given a list of Serializable items, it will provide them when `__next__()` is called.
@@ -65,6 +80,7 @@ class SimulatedIngest(BaseStreamingIngest):
         if stream_list is None and stream_callback is not None:
             self.stream_callback = stream_callback
         self.index = -1 # Because we need to increment the index before returning the value
+        self.hasnext = True
         super().__init__(serializer=serializer, *args, **kwargs)
 
     def next(self):
@@ -74,8 +90,14 @@ class SimulatedIngest(BaseStreamingIngest):
             (obj): A record.
         """
         self.index+=1
-        return self.stream_callback(self.index)
+        return_val = self.stream_callback(self.index)
+        if not self.stream_callback.hasNext(self.index+1):
+            self.hasnext = False
+        return return_val
     
+    def hasNext(self) -> bool:
+        return self.hasnext
+
     class _ListCallable(SimulatedIngestCallable):
         def __init__(self, stream_list: List):
             """This internal class implements a ListCallable -- basically a very thin wrapper around a python List.
@@ -96,10 +118,11 @@ class SimulatedIngest(BaseStreamingIngest):
             Returns:
                 (obj): A record from `stream_list`
             """
-            while index == self.max_index:
-                sleep(1)
+            
             return self.stream_list[index]
 
+        def hasNext(self, index) -> bool:
+            return index < self.max_index
 
 
 

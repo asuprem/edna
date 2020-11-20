@@ -5,6 +5,7 @@ from edna.serializers import Serializable, EmptySerializer
 import time
 from edna.core.primitives import EdnaPrimitive
 from edna.types.builtin import StreamRecord, RecordCollection
+from edna.types.enums import StreamElementType
 
 class BaseEmit(EdnaPrimitive):
     """BaseEmit is the base class for writing records from a process primitive to a sink, 
@@ -65,8 +66,19 @@ class BaseEmit(EdnaPrimitive):
         Args:
             record (List[object]): A list of record that should be Serializable to bytes with `serializer`
         """
+        shutdown_flag = False
         for stream_record in record:
-            self.call(stream_record.getValue())
+            if stream_record.elementType == StreamElementType.SHUTDOWN:
+                self.logger.debug("Received SHUTDOWN for emit")
+                shutdown_flag = True
+            if stream_record.elementType == StreamElementType.CHECKPOINT:
+                self.logger.debug("Received CHECKPOINT for emit")
+                raise NotImplementedError()
+            if stream_record.elementType == StreamElementType.WATERMARK:
+                self.logger.debug("Received WATERMARK for emit")
+            if stream_record.elementType == StreamElementType.RECORD:
+                self.call(stream_record.getValue())
+        return shutdown_flag
         
     def call(self, record: object):
         """Writes records to the internal buffer.
@@ -127,11 +139,26 @@ class BaseEmit(EdnaPrimitive):
         Args:
             build_configuration (Dict[str, str]): The build configuration.
         """
+        self.logger.debug("Receved build configuration and building Emit")
+        self.buildEmit(build_configuration)
+        self.logger.debug("Finished building emit")
+
+    def buildEmit(self, build_configuration: Dict[str, str]):
+        """Subclasses should implement this
+
+        Args:
+            build_configuration (Dict[str, str]): The build configuration.
+        """
         pass
 
     def close(self):
         """Shutdown emit, including closing any connections if they have been made
         """
+        self.logger.debug("Shutting down Emit")
+        self.shutdownEmit()
+        self.logger.debug("Completed shut down for Emit")
+
+    def shutdownEmit(self):
         pass
 
 from .KafkaEmit import KafkaEmit

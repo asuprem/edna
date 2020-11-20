@@ -39,7 +39,7 @@ class _BufferedEmit(BaseEmit):
         self.emit_pattern = EmitPattern.BUFFERED_EMIT
         self.buffer = None
 
-    def build(self, build_configuration: Dict[str, str]):
+    def buildEmit(self, build_configuration: Dict[str, str]):
         """Builds the internal network buffer for the emitter.
 
         Args:
@@ -58,7 +58,7 @@ class _BufferedEmit(BaseEmit):
         self.buffer.sendBufferAndReset()    # TODO handle this in a more elegant manner, re have buffer handle it itself on separate thread
         # Or this is the correct method -- we trigger the send becase write is triggered, which happens only when there is a timeout...
 
-    def close(self):
+    def shutdownEmit(self):
         """Shuts down the emit, closing any connections if needed.
         """
         self.sender.close()

@@ -4,13 +4,14 @@ from edna.types.enums import StreamElementType
 
 
 class StreamRecord(StreamElement):
-    value: object
+    
 
     def __init__(self, value: object):
-        super().__init__(StreamElementType.RECORD)
-        self.value = value
+        super().__init__(value, StreamElementType.RECORD)
 
-    def getValue(self) -> object:
-        return self.value
+    def isRecord(self):
+        return True
+
+    
 
     

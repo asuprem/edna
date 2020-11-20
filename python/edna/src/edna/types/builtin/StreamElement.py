@@ -8,15 +8,26 @@ class StreamElement:
     """
     elementType: StreamElementType
     eventTime: int
-    def __init__(self, elementType: StreamElementType):
+    value: object
+    def __init__(self, value, elementType: StreamElementType):
         self.eventTime = time.time()
         self.elementType = elementType
+        self.value = value
 
     def isRecord(self):
-        return self.elementType == StreamElementType.RECORD
+        return False
     
     def isCheckpoint(self):
-        return self.elementType == StreamElementType.CHECKPOINT
+        return False
+
+    def isWatermark(self):
+        return False
+
+    def isShutdown(self):
+        return False
 
     def getEventTime(self):
         return self.eventTime
+
+    def getValue(self) -> object:
+        return self.value

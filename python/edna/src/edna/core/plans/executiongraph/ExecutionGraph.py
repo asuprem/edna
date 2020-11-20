@@ -107,7 +107,7 @@ class ExecutionGraph:
                 time.sleep(EdnaDefault.TASK_POLL_TIMEOUT_S)
         except KeyboardInterrupt:
             self.logger.info("Keyboard interrupt received. Shutting down tasks")
-            for task_primitive in self.task_primitive_list:
+            for task_primitive in reversed(self.task_primitive_list):   # TODO bad workaround for the libgcc_s.so.1 must be installed for pthread_cancel to work
                 task_primitive.stop()
             self.logger.info("Rejoining main thread")
             for task_primitive in self.task_primitive_list:

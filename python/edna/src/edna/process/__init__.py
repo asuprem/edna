@@ -3,7 +3,8 @@ from __future__ import annotations
 from edna.serializers import BufferedSerializable
 from typing import List
 from edna.core.primitives import EdnaPrimitive
-from edna.types.builtin import StreamRecord, RecordCollection
+from edna.types.builtin import StreamElement, StreamRecord, RecordCollection
+from edna.types.enums import StreamElementType
 
 class BaseProcess(EdnaPrimitive):
     """BaseProcess is the base class for performing operations on streaming records.
@@ -41,7 +42,7 @@ class BaseProcess(EdnaPrimitive):
         super().__init__(serializer=serializer, in_serializer=in_serializer, out_serializer=out_serializer, logger_name=logger_name)
         self.replaceChainedProcess(process)
 
-    def __call__(self, record: RecordCollection[StreamRecord]) -> RecordCollection[StreamRecord]:
+    def __call__(self, record: RecordCollection[StreamElement]) -> RecordCollection[StreamElement]:
         """This is the entrypoint to this primitive to process a record. For example, you can do the following
 
         ```
@@ -57,13 +58,25 @@ class BaseProcess(EdnaPrimitive):
         """
         complete_results = RecordCollection([])   # TODO Update this to a RecordCollecton
         intermediate_result = self.chained_process(record)    # Returns a list
-        #if self.process_name == "ObjectToJson":
+        #if self.process_name == "ObjectToJson":)
         for stream_record in intermediate_result:    # is a list
-            complete_results += self.process(stream_record.getValue())
+            if stream_record.isShutdown():
+                self.logger.debug("Received SHUTDOWN StreamElement")
+                complete_results += [stream_record]
+            elif stream_record.isCheckpoint():
+                self.logger.debug("Received CHECKPOINT StreamElement")
+                complete_results += [stream_record]
+            elif stream_record.isWatermark():
+                self.logger.debug("Received WATERMARK StreamElement")
+                complete_results += [stream_record]
+            elif stream_record.isRecord():
+                complete_results += self.process(stream_record.getValue())
+            else:
+                raise RuntimeError("Unexpeected value for StreamElementType")
         return complete_results
 
 
-    def process(self, record: object) -> List[StreamRecord]:
+    def process(self, record: object) -> List[StreamElement]:
         """Logic for record processing. Inheriting classes should implement this. We return a singleton to work with Emit
 
         Args:

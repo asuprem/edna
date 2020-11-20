@@ -59,7 +59,7 @@ class _BufferedIngest(BaseStreamingIngest):
         return record
                 
                 
-    def build(self, build_configuration: Dict[str,str]):
+    def buildIngest(self, build_configuration: Dict[str,str]):
         """Builds the network buffer receiver.
 
         Args:
@@ -69,12 +69,13 @@ class _BufferedIngest(BaseStreamingIngest):
         self.MAX_BUFFER_SIZE = build_configuration["max_buffer_size"]
         self.MAX_BUFFER_TIMEOUT_S = build_configuration["max_buffer_timeout"]
         self.receiver = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.receiver.bind((build_configuration["ip"], build_configuration["ingest_port"]))
+        #self.receiver.bind((build_configuration["ip"], build_configuration["ingest_port"]))
+        self.receiver.bind(('', build_configuration["ingest_port"]))
         self.receiver.listen(1)
         self.client, _ = self.receiver.accept()
 
 
-    def close(self):
+    def shutdownIngest(self):
         """Shuts down the ingest, closing any connections if needed.
         """
         self.receiver.close()

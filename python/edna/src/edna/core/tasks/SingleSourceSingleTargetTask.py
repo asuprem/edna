@@ -1,4 +1,5 @@
 from __future__ import annotations
+from logging import shutdown
 from typing import Dict
 import time
 from concurrent.futures.thread import ThreadPoolExecutor
@@ -95,19 +96,23 @@ class SingleSourceSingleTargetTask(TaskPrimitive):
     def run(self):
         """Builds the ingest primitive, then begins executing the task.
         """
-        self.logger.info("Starting Task execution")
         self.buildIngest()
+        self.logger.info("Starting Task execution")
         record_future = None
-        while self.running():
+        shutdown_flag = False
+        while self.running() and not shutdown_flag:
             if record_future is None:
                 record_future = self.ingest_executor.submit(next,self.ingest_primitive)
             if record_future.done():
                 streaming_records = record_future.result()
                 intermediate_record = self.process_primitive(streaming_records)
-                self.emit_primitive(intermediate_record)
+                shutdown_flag = self.emit_primitive(intermediate_record)
                 record_future = None
                 self.emit_primitive.checkBufferTimeout()
-
+            if shutdown_flag:
+                self.logger.debug("Stream has ended. Setting shutdown signal in Task Node and flushing")
+                self.emit_primitive.flush()
+                self.stop()
             self.emit_primitive.checkBufferTimeout()
         self.logger.info("Task shutdown requested")
         self.shutdown()
@@ -117,11 +122,12 @@ class SingleSourceSingleTargetTask(TaskPrimitive):
         """Shuts down the task.
         """
         self.logger.info("Shutting down task")
-        self.ingest_executor.shutdown(wait=False)
-        self.logger.info("Shut down ingest executor thread")
+        self.logger.info("Sent shut down signal to ingest primitive")
         self.ingest_primitive.close()    
-        self.logger.info("Shut down ingest primitive")
+        self.logger.info("Shut down ingest executor thread")
         self.emit_primitive.flush()
         self.logger.info("Flushed remaining records")
         self.emit_primitive.close()
         self.logger.info("Shut down emit primitive")
+        self.logger.info("Shut down ingest primitive")
+        self.ingest_executor.shutdown(wait=False)
