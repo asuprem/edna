@@ -3,7 +3,7 @@ from __future__ import annotations
 from edna.serializers import BufferedSerializable
 from typing import List
 from edna.core.primitives import EdnaPrimitive
-
+from edna.types.builtin import StreamRecord, RecordCollection
 
 class BaseProcess(EdnaPrimitive):
     """BaseProcess is the base class for performing operations on streaming records.
@@ -41,7 +41,7 @@ class BaseProcess(EdnaPrimitive):
         super().__init__(serializer=serializer, in_serializer=in_serializer, out_serializer=out_serializer, logger_name=logger_name)
         self.replaceChainedProcess(process)
 
-    def __call__(self, record: List[object]) -> List[object]:
+    def __call__(self, record: RecordCollection[StreamRecord]) -> RecordCollection[StreamRecord]:
         """This is the entrypoint to this primitive to process a record. For example, you can do the following
 
         ```
@@ -55,15 +55,15 @@ class BaseProcess(EdnaPrimitive):
         Returns:
             (obj): A processed record
         """
-        complete_results = []   # TODO Update this to a RecordCollecton
+        complete_results = RecordCollection([])   # TODO Update this to a RecordCollecton
         intermediate_result = self.chained_process(record)    # Returns a list
         #if self.process_name == "ObjectToJson":
-        for item in intermediate_result:    # is a list
-            complete_results += self.process(item)
+        for stream_record in intermediate_result:    # is a list
+            complete_results += self.process(stream_record.getValue())
         return complete_results
 
 
-    def process(self, record: object) -> List[object]:
+    def process(self, record: object) -> List[StreamRecord]:
         """Logic for record processing. Inheriting classes should implement this. We return a singleton to work with Emit
 
         Args:
@@ -72,12 +72,11 @@ class BaseProcess(EdnaPrimitive):
         Returns:
             (obj): A processed record
         """
-        return [record]
+        return [StreamRecord(record)]
 
     def replaceChainedProcess(self, process: BaseProcess = None):
         self.chained_process = process if process is not None else lambda x: x
 
-from .map import Map
 
 __pdoc__ = {}
 __pdoc__["BaseProcess.__call__"] = True
