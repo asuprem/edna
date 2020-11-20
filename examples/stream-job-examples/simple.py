@@ -4,27 +4,15 @@ from edna.ingest.streaming import SimulatedIngest
 
 from edna.serializers import EmptySerializer
 
-from edna.process.map import JsonToObject
-from edna.process.filter import KeyedFilter
-
 from edna.emit import StdoutEmit
 
 import logging
 
-import pdb
-
-
-def filteractorid(actorid):
-    return True if actorid>205 else False
-
-def filteractorid2(actorid):
-    return True if actorid<205 and actorid>202 else False
 
 def main():
 
     logging.basicConfig(format='[%(asctime)s] - %(name)s - %(levelname)s - %(message)s',level=logging.INFO, datefmt="%H:%M:%S")
     
- 
     list_of_inserts = ['{"actor_id":210, "first_name":"jess", "last_name":"st. german", "additional":"unneeded1"}',
             '{"actor_id":201, "first_name":"jess", "last_name":"courtney", "additional":"unneeded2"}', 
             '{"actor_id":202, "first_name":"jess", "last_name":"mishra", "additional":"unneeded3"}', 
@@ -36,25 +24,16 @@ def main():
             '{"actor_id":208, "first_name":"jess", "last_name":"changed", "additional":"unneeded9"}',
             '{"actor_id":209, "first_name":"jess", "last_name":"changed", "additional":"unneeded10"}']
     
+    #list_of_inserts = ['{"actor_id":210, "first_name":"jess", "last_name":"st. german", "additional":"unneeded1"}']
 
     context = StreamingContext()
-    
     # Ok, so we have a stream     
     stream = StreamBuilder.build(ingest=SimulatedIngest(serializer=EmptySerializer(), stream_list=list_of_inserts), streaming_context=context)
-    stream = stream.map(map_process=JsonToObject()) \
-            .filter(filter_process=KeyedFilter(filter_callable=filteractorid, key="actor_id")) \
-            .emit(emit_process=StdoutEmit(serializer=EmptySerializer()))
-
-    stream1 = StreamBuilder.build(ingest=SimulatedIngest(serializer=EmptySerializer(), stream_list=list_of_inserts), streaming_context=context)
-    stream1 = stream1.map(map_process=JsonToObject()) \
-                    .filter(filter_process=KeyedFilter(filter_callable=filteractorid2, key="actor_id")) \
-                    .emit(emit_process=StdoutEmit(serializer=EmptySerializer()))
+    stream = stream.emit(StdoutEmit(serializer=EmptySerializer()))
     
-
     context.addStream(stream=stream)
-    context.addStream(stream=stream1)
     context.execute()
-    #pdb.set_trace()
+
 
 if __name__ == "__main__":
     main()

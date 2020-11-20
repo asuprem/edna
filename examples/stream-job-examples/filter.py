@@ -42,17 +42,13 @@ def main():
     # Ok, so we have a stream     
     stream = StreamBuilder.build(ingest=SimulatedIngest(serializer=EmptySerializer(), stream_list=list_of_inserts), streaming_context=context)
     stream = stream.map(map_process=JsonToObject()) \
-            .filter(filter_process=KeyedFilter(filter_callable=filteractorid, key="actor_id")) \
+            .filter(filter_process=KeyedFilter(filter_callable=filteractorid2, key="actor_id")) \
             .emit(emit_process=StdoutEmit(serializer=EmptySerializer()))
 
-    stream1 = StreamBuilder.build(ingest=SimulatedIngest(serializer=EmptySerializer(), stream_list=list_of_inserts), streaming_context=context)
-    stream1 = stream1.map(map_process=JsonToObject()) \
-                    .filter(filter_process=KeyedFilter(filter_callable=filteractorid2, key="actor_id")) \
-                    .emit(emit_process=StdoutEmit(serializer=EmptySerializer()))
+
     
 
     context.addStream(stream=stream)
-    context.addStream(stream=stream1)
     context.execute()
     #pdb.set_trace()
 
