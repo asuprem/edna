@@ -4,7 +4,7 @@ from edna.serializers import Serializable
 from edna.ingest import BaseIngest
 from edna.serializers import Serializable
 from edna.types.enums import IngestPattern
-
+from edna.types.builtin import StreamRecord, RecordCollection
 from typing import Iterator
 
 class BaseStreamingIngest(BaseIngest, Iterator):
@@ -45,15 +45,19 @@ class BaseStreamingIngest(BaseIngest, Iterator):
         """
         return self
 
-    def __next__(self):
+    def __next__(self) -> RecordCollection[StreamRecord]:
         """Fetches the next record from the source and deserializes
 
         Returns:
-            (List[obj]): Single fetched record in a singleton format.
+            (RecordCollection[StreamRecord]): Single fetched record in a singleton format.
         """
-        return [self.in_serializer.read(self.next())]
+        return RecordCollection(
+            [
+                StreamRecord(self.in_serializer.read(self.next()))
+                ]
+        )
 
-    def next(self):
+    def next(self) -> object:
         """Method that encapsulates raw record fetching logic.
 
         Raises:
