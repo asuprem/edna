@@ -11,7 +11,7 @@ import logging
 
 def main():
 
-    logging.basicConfig(format='[%(asctime)s] - %(name)s - %(levelname)s - %(message)s',level=logging.INFO, datefmt="%H:%M:%S")
+    logging.basicConfig(format='[%(asctime)s] - %(name)s - %(levelname)s - %(message)s',level=logging.DEBUG, datefmt="%H:%M:%S")
     
     list_of_inserts = ['{"actor_id":210, "first_name":"jess", "last_name":"st. german", "additional":"unneeded1"}',
             '{"actor_id":201, "first_name":"jess", "last_name":"courtney", "additional":"unneeded2"}', 

@@ -16,16 +16,18 @@ class streamgen(SimulatedIngestCallable):
     def compute_stream(self, index):
         repeat=random.randint(1,4)
         return ' '.join([chr(index%26+97)*repeat]*repeat)
+    def hasNext(self, index) -> bool:
+        return True
 
 
 def main():
 
-    logging.basicConfig(format='[%(asctime)s] - %(name)s - %(levelname)s - %(message)s',level=logging.INFO, datefmt="%H:%M:%S")
+    logging.basicConfig(format='[%(asctime)s] - %(name)s - %(levelname)s - %(message)s',level=logging.DEBUG, datefmt="%H:%M:%S")
 
     context = StreamingContext()
     
     # Ok, so we have a stream     
-    stream = StreamBuilder.build(ingest=SimulatedIngest(serializer=EmptySerializer(), stream_callback=streamgen()), streaming_context=context)
+    stream = StreamBuilder.build(ingest=SimulatedIngest(serializer=EmptySerializer(), stream_callback=streamgen(), watermark_timer = 1), streaming_context=context)
     stream = stream.flatten(flatten_process=StringFlatten(separator=" ")) \
                 .emit(emit_process=StdoutEmit(serializer=EmptySerializer()))
 
