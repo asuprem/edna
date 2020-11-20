@@ -1,7 +1,8 @@
-from typing import Callable
+from __future__ import annotations
+from typing import Callable, List
 from edna.process.filter import Filter
 from edna.process import BaseProcess
-
+from edna.types.builtin import StreamRecord
 
 class KeyedFilter(Filter):
     """Removes values.
@@ -20,5 +21,5 @@ class KeyedFilter(Filter):
         self.key = key
         self.filter_callable = filter_callable
     
-    def filter(self, record: str):
-        return [record] if self.filter_callable(record[self.key]) else []
+    def filter(self, record: str) -> List[StreamRecord]:
+        return [StreamRecord(record)] if self.filter_callable(record[self.key]) else []

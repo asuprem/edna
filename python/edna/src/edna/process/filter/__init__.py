@@ -1,4 +1,5 @@
 from __future__ import annotations
+from python.edna.src.edna.types.builtin.StreamRecord import StreamRecord
 from typing import List
 from edna.process import BaseProcess
 
@@ -32,7 +33,7 @@ class Filter(BaseProcess):
         """
         super().__init__(process=process,  *args, **kwargs)
     
-    def process(self, record: object) -> List[object]:
+    def process(self, record: object) -> List[StreamRecord]:
         """This is the entrypoint to this primitive to filter a record. It is called by the BaseProcess parent
         from the `__call__()` method. It subsequently calls the `filter()` method.
 
@@ -46,14 +47,14 @@ class Filter(BaseProcess):
         """
         return self.filter(record)
 
-    def filter(self, record: object) -> List[object]:
+    def filter(self, record: object) -> List[StreamRecord]:
         """Logic for filtering. Subclasses need to implement this.
 
         Args:
             record (obj): The record to process with this filtering logic
 
         Returns:
-            (obj): A processed record as an array. Must be an array.
+            (List[StreamRecord]): A processed record as an array. Must be an array.
         """
         raise NotImplementedError()
 
