@@ -4,6 +4,7 @@ from edna.types.enums import EmitPattern
 from edna.serializers import Serializable, EmptySerializer
 import time
 from edna.core.primitives import EdnaPrimitive
+from edna.types.builtin import StreamRecord, RecordCollection
 
 class BaseEmit(EdnaPrimitive):
     """BaseEmit is the base class for writing records from a process primitive to a sink, 
@@ -58,16 +59,16 @@ class BaseEmit(EdnaPrimitive):
         
         
 
-    def __call__(self, record):
+    def __call__(self, record: RecordCollection[StreamRecord]):
         """Wrapper for emitting a record using the emitter's logic. This is the entry point for emitting and should not be modified.
 
         Args:
             record (List[object]): A list of record that should be Serializable to bytes with `serializer`
         """
-        for item in record:
-            self.call(item)
+        for stream_record in record:
+            self.call(stream_record.getValue())
         
-    def call(self, record):
+    def call(self, record: object):
         """Writes records to the internal buffer.
 
         Args:
