@@ -13,7 +13,7 @@ import pdb
 
 class streamgen(SimulatedIngestCallable):
     def compute_stream(self, index):
-        return 'a'*1000
+        return 'a'*10000000
 
 
 def main():
