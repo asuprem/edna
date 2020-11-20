@@ -25,5 +25,4 @@ class Serializable:
 from .StringSerializer import StringSerializer
 from .KafkaStringSerializer import KafkaStringSerializer
 from .BufferedSerializable import BufferedSerializable
-from .MsgPackBufferedSerializable import MsgPackBufferedSerializer
 from .MsgPackSerializer import MsgPackSerializer
