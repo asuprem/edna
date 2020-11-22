@@ -1,5 +1,5 @@
 from __future__ import annotations
-from logging import shutdown
+from queue import Queue
 from typing import Dict
 import time
 from concurrent.futures.thread import ThreadPoolExecutor
@@ -31,7 +31,10 @@ class SingleSourceSingleTargetTask(TaskPrimitive):
     ingest_build_configuration: Dict[str,str]
     emit_build_configuration: Dict[str,str]
 
-    def __init__(self, ingest_primitive: BaseStreamingIngest,
+    def __init__(self, 
+            task_node_id: int,
+            message_queue: Queue,
+            ingest_primitive: BaseStreamingIngest,
             emit_primitive: BaseEmit,
             process_primitive: BaseProcess = None,
             ingest_port : int = None,
@@ -52,7 +55,7 @@ class SingleSourceSingleTargetTask(TaskPrimitive):
             max_buffer_timeout (float, optional): The maximim timeout for the network buffer. Defaults to EdnaDefault.BUFFER_MAX_TIMEOUT_S.
             logger_name (str, optional): The name for this TaskPrimitive's logger. Defaults to None.
         """
-        super().__init__(max_buffer_size=max_buffer_size, max_buffer_timeout=max_buffer_timeout, logger_name=logger_name)
+        super().__init__(task_node_id=task_node_id, message_queue=message_queue, max_buffer_size=max_buffer_size, max_buffer_timeout=max_buffer_timeout, logger_name=logger_name)
         # Set up process primitive
         self.process_primitive = process_primitive if process_primitive is not None else lambda x: x
         # Set up ingest port or primitive
@@ -74,7 +77,7 @@ class SingleSourceSingleTargetTask(TaskPrimitive):
         # Set up emits (standard emit is already set up earlier...)
         self.emit_build_configuration = {}
         if self.emit_primitive.emit_pattern == EmitPattern.BUFFERED_EMIT:
-            self.emit_build_configuration["ip"] = EdnaDefault.TASK_PRIMITIVE_HOST
+            self.emit_build_configuration["ip"] = EdnaDefault.TASK_PRIMITIVE_HOST_NAME
             self.emit_build_configuration["emit_port"] = emit_port
             self.emit_build_configuration["max_buffer_size"] = self.MAX_BUFFER_SIZE
             self.emit_build_configuration["max_buffer_timeout"] = self.MAX_BUFFER_TIMEOUT_S
@@ -112,15 +115,17 @@ class SingleSourceSingleTargetTask(TaskPrimitive):
             if shutdown_flag:
                 self.logger.debug("Stream has ended. Setting shutdown signal in Task Node and flushing")
                 self.emit_primitive.flush()
-                self.stop()
             self.emit_primitive.checkBufferTimeout()
-        self.logger.info("Task shutdown requested")
+        self.logger.info("Task shutdown requested or stream ended")
+        self.message_queue.put(self.task_node_id, block=True)
         self.shutdown()
 
                     
     def shutdown(self):
         """Shuts down the task.
         """
+        while self.running():
+            time.sleep(EdnaDefault.TASK_POLL_TIMEOUT_S)
         self.logger.info("Shutting down task")
         self.logger.info("Sent shut down signal to ingest primitive")
         self.ingest_primitive.close()    
