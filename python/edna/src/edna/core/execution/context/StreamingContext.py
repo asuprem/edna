@@ -38,6 +38,7 @@ class StreamingContext(EdnaContext):
     streaming_node_id : int # Running count of stream node ids
     physical_node_id : int # Running count of physical node ids
     datastream_id : int # Running count of streams
+    task_primitive_id : int
     stream_collection : Dict[int, DataStream]
     logical_stream_graph : StreamGraph
     physical_graph : PhysicalGraph
@@ -59,6 +60,7 @@ class StreamingContext(EdnaContext):
         self.streaming_node_id = -1
         self.physical_node_id = -1
         self.datastream_id = -1
+        self.task_primitive_id = -1
         self.stream_collection = {}
         self.logical_stream_graph = None
         self.physical_graph = None
@@ -95,6 +97,11 @@ class StreamingContext(EdnaContext):
         self.physical_node_id += 1
         self.logger.debug("New physical node id requested: {physical_node_id}".format(physical_node_id=self.physical_node_id))
         return self.physical_node_id
+
+    def getNewTaskPrimitiveNodeId(self) -> int:
+        self.task_primitive_id += 1
+        self.logger.debug("New task primitive node id requested: {task_node_id}".format(task_node_id=self.task_primitive_id))
+        return self.task_primitive_id
 
     def addStream(self, stream: DataStream):
         """Add a DataStream to this context
@@ -149,7 +156,7 @@ class StreamingContext(EdnaContext):
 
         self.execution_context = ExecutionGraph()
         self.logger.info("Converting PhysicalGraph to ExecutionGraph")
-        self.execution_context.buildExecutionGraph(self.physical_graph)
+        self.execution_context.buildExecutionGraph(self.physical_graph, self)
         #pdb.set_trace()
 
         self.logger.info("Executing the context")
