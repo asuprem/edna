@@ -14,11 +14,13 @@ import pdb
 class streamgen(SimulatedIngestCallable):
     def compute_stream(self, index):
         return 'a'*10000000
+    def hasNext(self, index) -> bool:
+        return True
 
 
 def main():
 
-    logging.basicConfig(format='[%(asctime)s] - %(name)s - %(levelname)s - %(message)s',level=logging.INFO, datefmt="%H:%M:%S")
+    logging.basicConfig(format='[%(asctime)s] - %(name)s - %(levelname)s - %(message)s',level=logging.DEBUG, datefmt="%H:%M:%S")
 
     context = StreamingContext()
     
