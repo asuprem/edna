@@ -5,7 +5,7 @@ from edna.types.enums import StreamElementType
 
 class StreamWatermark(StreamElement):
     def __init__(self):
-        super().__init__(None, StreamElementType.WATERMARK)
+        super().__init__(None, StreamElementType.WATERMARK, 3)
 
     def isWatermark(self):
         return True

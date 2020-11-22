@@ -7,7 +7,7 @@ class StreamRecord(StreamElement):
     
 
     def __init__(self, value: object):
-        super().__init__(value, StreamElementType.RECORD)
+        super().__init__(value, StreamElementType.RECORD, 1)
 
     def isRecord(self):
         return True

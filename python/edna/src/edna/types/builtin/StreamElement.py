@@ -9,10 +9,12 @@ class StreamElement:
     elementType: StreamElementType
     eventTime: int
     value: object
-    def __init__(self, value, elementType: StreamElementType):
+    elementTypeSecondary: int
+    def __init__(self, value, elementType: StreamElementType, elementTypeSecondary: int):
         self.eventTime = time.time()
         self.elementType = elementType
         self.value = value
+        self.elementTypeSecondary = elementTypeSecondary
 
     def isRecord(self):
         return False
