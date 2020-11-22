@@ -101,3 +101,5 @@ from .KeyedMaxBy import KeyedMaxBy
 from .KeyedMin import KeyedMin
 from .KeyedMinBy import KeyedMinBy
 from .KeyedSum import KeyedSum
+from .ArrayWindowedFunction import ArrayWindowedFunction
+from .WindowedFunction import WindowedFunction
