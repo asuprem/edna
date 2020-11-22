@@ -4,8 +4,7 @@ from edna.types.enums import EmitPattern
 from edna.serializers import Serializable, EmptySerializer
 import time
 from edna.core.primitives import EdnaPrimitive
-from edna.types.builtin import StreamRecord, RecordCollection
-from edna.types.enums import StreamElementType
+from edna.types.builtin import StreamRecord, StreamElement, RecordCollection
 
 class BaseEmit(EdnaPrimitive):
     """BaseEmit is the base class for writing records from a process primitive to a sink, 
@@ -68,29 +67,30 @@ class BaseEmit(EdnaPrimitive):
         """
         shutdown_flag = False
         for stream_record in record:
-            if stream_record.elementType == StreamElementType.SHUTDOWN:
+            if stream_record.isShutdown():
                 self.logger.debug("Received SHUTDOWN for emit")
                 shutdown_flag = True
-            if stream_record.elementType == StreamElementType.CHECKPOINT:
+            if stream_record.isCheckpoint():
                 self.logger.debug("Received CHECKPOINT for emit")
                 raise NotImplementedError()
-            if stream_record.elementType == StreamElementType.WATERMARK:
+            if stream_record.isWatermark():
                 self.logger.debug("Received WATERMARK for emit")
-            if stream_record.elementType == StreamElementType.RECORD:
-                self.call(stream_record.getValue())
+            #if stream_record.elementType == StreamElementType.RECORD:
+            self.call(stream_record)
         return shutdown_flag
         
-    def call(self, record: object):
+    def call(self, record: StreamElement):
         """Writes records to the internal buffer.
 
         Args:
             record (obj): A record.
         """
-        self.emit_buffer_index += 1
-        self.emit_buffer[self.emit_buffer_index] = self.out_serializer.write(record)
-        # Write buffer and clear if throughput barriers are met
-        self.checkBufferTimeout()
-        self.checkBufferSize()
+        if record.isRecord():
+            self.emit_buffer_index += 1
+            self.emit_buffer[self.emit_buffer_index] = self.out_serializer.write(record.getValue())
+            # Write buffer and clear if throughput barriers are met
+            self.checkBufferTimeout()
+            self.checkBufferSize()
         
 
     def checkBufferTimeout(self):
