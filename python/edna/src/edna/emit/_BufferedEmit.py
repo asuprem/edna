@@ -6,10 +6,10 @@ from edna.buffer import ByteBuffer
 from edna.types.enums import EmitPattern
 from typing import Dict
 from edna.emit import BaseEmit
+from edna.types.builtin import StreamElement
 
 from typing import Dict
 import socket
-from typing import List
 
 class _BufferedEmit(BaseEmit):
     """This emit writes to a network buffer to perform inter-task communication.
@@ -47,8 +47,17 @@ class _BufferedEmit(BaseEmit):
                 `emit_port`, `max_buffer_size` in bytes, and `max_buffer_timeout`
         """
         self.sender = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        #self.sender.connect((build_configuration["ip"], build_configuration["emit_port"]))
         self.sender.connect((build_configuration["ip"], build_configuration["emit_port"]))
+        self.logger.debug("Completed connecting BufferedEmit to BufferedIngest on port %i"%build_configuration["emit_port"])
         self.buffer = ByteBuffer(self.sender, build_configuration["max_buffer_size"], build_configuration["max_buffer_timeout"], buffer_mode=BufferMode.WRITE)
+
+    def call(self, record: StreamElement):
+        self.emit_buffer_index += 1
+        self.emit_buffer[self.emit_buffer_index] = self.out_serializer.write((record.elementTypeSecondary, record.getValue()))
+        # Write buffer and clear if throughput barriers are met
+        self.checkBufferTimeout()
+        self.checkBufferSize()
 
     def write(self):
         """Writes the internal emit buffer to the network buffer.

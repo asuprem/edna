@@ -1,10 +1,10 @@
+from __future__ import annotations
 from edna.defaults import EdnaDefault
 from edna.serializers import MsgPackBufferedSerializer
-from edna.types.enums import IngestPattern
-from edna.serializers import Serializable
+from edna.types.enums import IngestPattern, StreamElementType
 from edna.ingest.streaming import BaseStreamingIngest
-
-from typing import Dict
+from edna.types.builtin import RecordCollection, StreamElement, StreamCheckpoint, StreamRecord, StreamWatermark, StreamShutdown
+from typing import Dict, Tuple
 import socket
 
 class _BufferedIngest(BaseStreamingIngest):
@@ -38,7 +38,42 @@ class _BufferedIngest(BaseStreamingIngest):
         """
         return self.receive_from_node_id
 
-    def next(self) -> object:
+
+    def __next__(self) -> RecordCollection[StreamElement]:
+        """Fetches the next record from the source and deserializes
+
+        Returns:
+            (RecordCollection[StreamRecord]): Single fetched record in a singleton format.
+        """
+
+        if self.shutdownWatermark:
+            return self.waitForShutdown()
+        if self.shutdownSignal:
+            return self.shutdownSignalReceived()
+        
+        stream_record = self.next()
+        if stream_record[0] == 2:
+            stream_record = StreamCheckpoint()
+        elif stream_record[0] == 1:
+            stream_record = StreamRecord(stream_record[1])
+        elif stream_record[0] == 4:
+            stream_record = StreamShutdown()
+        elif stream_record[0] == 3:
+            stream_record = StreamWatermark()
+        else:
+            raise RuntimeError("Invalid Stream Element type")
+        return_record = RecordCollection(
+            [
+                stream_record
+                ]
+        )
+        if stream_record.isShutdown():
+            self.logger.debug("Received shutdown watermark for BufferedIngest. Setting flags.")
+            self.shutdownWatermark = True
+
+        return return_record
+
+    def next(self) -> Tuple[int,object]:
         """Yields a record from the source.
 
         Returns:
@@ -72,6 +107,7 @@ class _BufferedIngest(BaseStreamingIngest):
         #self.receiver.bind((build_configuration["ip"], build_configuration["ingest_port"]))
         self.receiver.bind(('', build_configuration["ingest_port"]))
         self.receiver.listen(1)
+        self.logger.debug("Completed building BufferedIngest listening on port %i"%build_configuration["ingest_port"])
         self.client, _ = self.receiver.accept()
 
 
