@@ -1,4 +1,5 @@
 from __future__ import annotations
+from edna.core.execution.context import StreamingContext
 from edna.core.tasks import SingleSourceSingleTargetTask
 from edna.core.plans.physicalgraph import PhysicalGraph
 from typing import List, Dict
@@ -8,7 +9,7 @@ from edna.core.plans.physicalgraph import PhysicalGraph
 from edna.defaults import EdnaDefault
 import time
 import logging
-
+from queue import Empty, Queue
 
 class ExecutionGraph:
     """ExecutionGraph represents the actual executable components of an Edna Job. 
@@ -29,9 +30,11 @@ class ExecutionGraph:
     task_primitive_list: List[TaskPrimitive]
     buffer_emit_addresses: Dict[int,int]
     buffer_ingest_addresses: Dict[int,int]
+    task_primitive_nodes: Dict[int,int]
     port_callable: _PortCallable
     task_order: List[int]
     logger: logging.Logger
+    message_queue: Queue
 
     def __init__(self, port_range_min: int = 35000):
         """Initializes an empty ExecutionGraph
@@ -43,14 +46,18 @@ class ExecutionGraph:
         self.buffer_emit_addresses = {}
         self.buffer_ingest_addresses = {}
         self.task_primitive_list = []
+        self.task_primitive_nodes = {}
         self.task_order = []
+        self.tasks_with_buffers = []
+        self.tasks_without_buffers = []
         if port_range_min is None:
             self.port_callable = self._EdnaEnginePortCallable()
         else:
             self.port_callable = self._PortCallable(port_range_min)
         self.logger = logging.getLogger(self.__class__.__name__)
+        self.message_queue = Queue()
     
-    def buildExecutionGraph(self, physical_graph: PhysicalGraph):
+    def buildExecutionGraph(self, physical_graph: PhysicalGraph, context: StreamingContext):
         """Converts a PhysicalGraph to TaskPrimitives in an ExecutionGraph
 
         Args:
@@ -78,40 +85,80 @@ class ExecutionGraph:
                     ingest=ingest_port,
                     emit=emit_port
                 ))
+                task_primitive_node_id = context.getNewTaskPrimitiveNodeId()
+                if task_primitive_node_id in self.task_primitive_nodes:
+                    raise RuntimeError("Task node with this id already exists in this ExecutionGraph")
                 self.task_primitive_list.append(
-                    SingleSourceSingleTargetTask(ingest_primitive=physical_graph.physical_node_list[physical_graph_node_idx].internal_stream_graph.node_list[0].node_callable,
+                    SingleSourceSingleTargetTask(
+                        task_node_id=task_primitive_node_id,
+                        message_queue=self.message_queue,
+                        ingest_primitive=physical_graph.physical_node_list[physical_graph_node_idx].internal_stream_graph.node_list[0].node_callable,
                         emit_primitive=physical_graph.physical_node_list[physical_graph_node_idx].internal_stream_graph.node_list[-1].node_callable,
                         process_primitive=root_process,
                         ingest_port=ingest_port,
                         emit_port=emit_port,
                         max_buffer_size=EdnaDefault.BUFFER_MAX_SIZE,
                         max_buffer_timeout=EdnaDefault.BUFFER_MAX_TIMEOUT_S,
-                        logger_name="TaskPrimitive-For-TaskNode-"+str(physical_graph_node_idx)
+                        logger_name="TaskPrimitive-For-TaskNode-"+str(task_primitive_node_id)
                     )
                 )
+                if ingest_port is not None: # Meaning this task has a buffered_ingest, so needs to be started first...
+                    self.tasks_with_buffers.append(len(self.task_primitive_list) - 1 )
+                else: # this task has no ingest_port, i.e. regular ingest, i.e. non-blocking, to a degree...
+                    self.tasks_without_buffers.append(len(self.task_primitive_list) - 1)
+
+
+                # TODO physical_graph_node_idx is replaced with task_primitive_node_id
+                self.task_primitive_nodes[task_primitive_node_id] = 1
         #pdb.set_trace()
 
         
     def execute(self):
         """Executes the ExecutionGraph's TaskPrimitives
         """
-        for task_primitive in self.task_primitive_list:
-            task_primitive.start()
+        # Start the thread's activity (where the ingests are blocked...)
+        self.logger.info("Building internal processing tasks, if any")
+        for task_primitive_idx in self.tasks_with_buffers:
+            self.task_primitive_list[task_primitive_idx].start()
 
+        # Start all emits
+        self.logger.info("Building emit modules for all tasks")
         for task_primitive in self.task_primitive_list:
             task_primitive.build()
 
+
+        # Start non-blocking ingests
+        self.logger.info("Building ingest tasks")
+        for task_primitive_idx in self.tasks_without_buffers:
+            self.task_primitive_list[task_primitive_idx].start()
+        
+
         try:
             self.logger.info("All tasks are executing")
-            while True:
+            task_nodes_complete = False # This is to poll the queue and check if any of the task nodes have informed us that they are done. If so, we remove them from the list of task nodes
+            while not task_nodes_complete:
                 time.sleep(EdnaDefault.TASK_POLL_TIMEOUT_S)
+                ended_task = None
+                try:
+                    ended_task = self.message_queue.get(block=True, timeout=EdnaDefault.TASK_POLL_TIMEOUT_S)
+                except Empty:
+                    ended_task = None
+                if ended_task is not None:
+                    self.logger.info("Task %i has ended"%ended_task)
+                    self.task_primitive_nodes.pop(ended_task, None)
+                if len(self.task_primitive_nodes) == 0:
+                    self.logger.info("All tasks have ended")
+                    task_nodes_complete = True
+                     
         except KeyboardInterrupt:
-            self.logger.info("Keyboard interrupt received. Shutting down tasks")
-            for task_primitive in reversed(self.task_primitive_list):   # TODO bad workaround for the libgcc_s.so.1 must be installed for pthread_cancel to work
-                task_primitive.stop()
-            self.logger.info("Rejoining main thread")
-            for task_primitive in self.task_primitive_list:
-                task_primitive.join()
+            self.logger.info("Keyboard interrupt received.")    
+
+        self.logger.info("Shutting down tasks.")
+        for task_primitive in reversed(self.task_primitive_list):   # TODO bad workaround for the libgcc_s.so.1 must be installed for pthread_cancel to work
+            task_primitive.stop()
+        self.logger.info("Rejoining main thread")
+        for task_primitive in self.task_primitive_list:
+            task_primitive.join()
         self.logger.info("Finished Execution")
 
 
