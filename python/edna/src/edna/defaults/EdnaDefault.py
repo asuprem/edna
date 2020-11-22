@@ -17,5 +17,6 @@ class EdnaDefault(ABC):
     BUFFER_NAME : str = "default"
 
     TASK_PRIMITIVE_HOST : str = "0.0.0.0"
+    TASK_PRIMITIVE_HOST_NAME : str = "localhost"
     POLL_TIMEOUT_S : float = 0.1
     TASK_POLL_TIMEOUT_S: float = 0.1
