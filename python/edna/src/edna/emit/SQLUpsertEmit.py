@@ -25,7 +25,7 @@ class SQLUpsertEmit(SQLEmit):
     def build_statement(self):
         if self.query_base is None:
         # TODO protect againsnt inject
-            #TODO Finish this
+            # TODO Finish this
             fields = ",".join(self.tuple_factory.getFields())
             value_types = ",".join(["%s"]*self.tuple_factory.getFieldCount())
             upsert = ",".join([" ".join([" ", item, "=", "VALUES(%s)"%item]) for item in self.tuple_factory.getUpsert()])   # UPDATE field = VALUES(field)
