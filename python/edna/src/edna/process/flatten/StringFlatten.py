@@ -31,4 +31,4 @@ class StringFlatten(Flatten):
         Returns:
             List[str]: An array of tokenized strings
         """
-        return map(StreamRecord, record.split(self.separator))
+        return list(map(StreamRecord, record.split(self.separator)))
