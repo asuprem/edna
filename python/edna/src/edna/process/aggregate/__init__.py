@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import List
 from edna.process import BaseProcess
 from edna.triggers import Trigger
-from edna.types.builtin import StreamRecord
+from edna.types.builtin import StreamRecord, StreamElement
 
 class Aggregate(BaseProcess):
     """An Aggregate Process gathers the input and aggregates them for other operations. 
@@ -54,6 +54,8 @@ class Aggregate(BaseProcess):
         if self.reset_flag:
             self.resetAggregate()
         self.aggregate(record)
+        #to_return = self.checkTrigger(record)
+        #print(to_return)
         return self.checkTrigger(record)
 
 
@@ -94,6 +96,9 @@ class Aggregate(BaseProcess):
     def reset(self):
         raise NotImplementedError()
 
+    def shutdownTrigger(self) -> List[StreamElement]:
+        return self.triggeredEmit
+
 
 
 from .KeyedMax import KeyedMax
@@ -103,3 +108,4 @@ from .KeyedMinBy import KeyedMinBy
 from .KeyedSum import KeyedSum
 from .ArrayWindowedFunction import ArrayWindowedFunction
 from .WindowedFunction import WindowedFunction
+from .RecordCount import RecordCount
