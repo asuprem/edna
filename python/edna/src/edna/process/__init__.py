@@ -62,6 +62,7 @@ class BaseProcess(EdnaPrimitive):
         for stream_record in intermediate_result:    # is a list
             if stream_record.isShutdown():
                 self.logger.debug("Received SHUTDOWN StreamElement")
+                complete_results += self.shutdownTrigger()
                 complete_results += [stream_record]
             elif stream_record.isCheckpoint():
                 self.logger.debug("Received CHECKPOINT StreamElement")
@@ -72,7 +73,8 @@ class BaseProcess(EdnaPrimitive):
             elif stream_record.isRecord():
                 complete_results += self.process(stream_record.getValue())
             else:
-                raise RuntimeError("Unexpeected value for StreamElementType")
+                raise RuntimeError("Unexpected value for StreamElementType")
+        #self.logger.info((record[0].getValue(), [(type(item.getValue()), item.getValue()) for item in complete_results]))
         return complete_results
 
 
@@ -89,6 +91,9 @@ class BaseProcess(EdnaPrimitive):
 
     def replaceChainedProcess(self, process: BaseProcess = None):
         self.chained_process = process if process is not None else lambda x: x
+
+    def shutdownTrigger(self) -> List[StreamElement]:
+        return []
 
 
 __pdoc__ = {}
