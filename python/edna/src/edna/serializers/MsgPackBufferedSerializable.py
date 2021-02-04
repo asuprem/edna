@@ -2,6 +2,7 @@ from edna.serializers import BufferedSerializable
 import msgpack
 
 class MsgPackBufferedSerializer(BufferedSerializable):
+    #serializer = msgpack.Packer().pack
     serializer = msgpack.Packer().pack
     deserializer = msgpack.Unpacker()
     def __init__(self):
