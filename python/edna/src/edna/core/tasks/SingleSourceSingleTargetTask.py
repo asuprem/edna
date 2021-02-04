@@ -1,4 +1,6 @@
 from __future__ import annotations
+from edna.types.builtin import StreamElement
+from edna.types.builtin import RecordCollection
 from queue import Queue
 from typing import Dict
 import time
@@ -101,14 +103,26 @@ class SingleSourceSingleTargetTask(TaskPrimitive):
         """
         self.buildIngest()
         self.logger.info("Starting Task execution")
-        record_future = None
+        # Used to collect the record future object, poll it, and process it when it is available
+        record_future = None    
+        # Used to check if a shutdown has been applied through a shutdown emit. If so, flush and shut down.
         shutdown_flag = False
+        # Processing flag is set when the record future is not yet available.
+        processing_flag = False
         while self.running() and not shutdown_flag:
-            if record_future is None:
+            if record_future is None and not processing_flag:
                 record_future = self.ingest_executor.submit(next,self.ingest_primitive)
+                processing_flag = True
             if record_future.done():
-                streaming_records = record_future.result()
+                processing_flag = False
+                streaming_records:RecordCollection[StreamElement] = record_future.result()
+                print ("Received from ingest --> ", streaming_records[0].elementType, streaming_records[0].getValue())
                 intermediate_record = self.process_primitive(streaming_records)
+                # TODO TODO TODO TODO TODO TODO TODO TODO THIS IS THE ERROR
+                try:
+                    self.logger.debug("Generated/ingested --> %s\nProcessed --> %s\nState:  %s"%(str([(type(item), item.getValue()) for item in streaming_records]),str([(type(item), item.getValue()) for item in intermediate_record]),str(self.process_primitive.count)))
+                except:
+                    self.logger.debug("Generated/ingested --> %s\nProcessed --> %s"%(str([(type(item), item.getValue()) for item in streaming_records]),str([(type(item), item.getValue()) for item in intermediate_record])))
                 shutdown_flag = self.emit_primitive(intermediate_record)
                 record_future = None
                 self.emit_primitive.checkBufferTimeout()
