@@ -7,7 +7,7 @@ class Trigger:
         pass
 
     def check(self, record: object) -> bool:
-        return True
+        return False
 
 
 from .CountTrigger import CountTrigger
