@@ -109,6 +109,7 @@ class SingleSourceSingleTargetTask(TaskPrimitive):
         shutdown_flag = False
         # Processing flag is set when the record future is not yet available.
         processing_flag = False
+
         while self.running() and not shutdown_flag:
             if record_future is None and not processing_flag:
                 record_future = self.ingest_executor.submit(next,self.ingest_primitive)
@@ -116,13 +117,9 @@ class SingleSourceSingleTargetTask(TaskPrimitive):
             if record_future.done():
                 processing_flag = False
                 streaming_records:RecordCollection[StreamElement] = record_future.result()
-                print ("Received from ingest --> ", streaming_records[0].elementType, streaming_records[0].getValue())
+                self.logger.debug("Received  --> %s"%str([(type(item), item.getValue()) for item in streaming_records]))
                 intermediate_record = self.process_primitive(streaming_records)
-                # TODO TODO TODO TODO TODO TODO TODO TODO THIS IS THE ERROR
-                try:
-                    self.logger.debug("Generated/ingested --> %s\nProcessed --> %s\nState:  %s"%(str([(type(item), item.getValue()) for item in streaming_records]),str([(type(item), item.getValue()) for item in intermediate_record]),str(self.process_primitive.count)))
-                except:
-                    self.logger.debug("Generated/ingested --> %s\nProcessed --> %s"%(str([(type(item), item.getValue()) for item in streaming_records]),str([(type(item), item.getValue()) for item in intermediate_record])))
+                self.logger.debug("Processed --> %s"%str([(type(item), item.getValue()) for item in intermediate_record]))
                 shutdown_flag = self.emit_primitive(intermediate_record)
                 record_future = None
                 self.emit_primitive.checkBufferTimeout()
@@ -130,23 +127,33 @@ class SingleSourceSingleTargetTask(TaskPrimitive):
                 self.logger.debug("Stream has ended. Setting shutdown signal in Task Node and flushing")
                 self.emit_primitive.flush()
             self.emit_primitive.checkBufferTimeout()
-        self.logger.info("Task shutdown requested or stream ended")
-        self.message_queue.put(self.task_node_id, block=True)
+        if not self.running() and not shutdown_flag:
+            self.logger.info("Task shutdown requested")
+        if self.running() and shutdown_flag:
+            self.logger.info("Stream ended.")
+        if not self.running() and shutdown_flag:
+            self.logger.info("Task shutdown requested or stream ended. Unclear")
+        #self.message_queue.put(self.task_node_id, block=True)
         self.shutdown()
 
                     
     def shutdown(self):
         """Shuts down the task.
         """
-        while self.running():
-            time.sleep(EdnaDefault.TASK_POLL_TIMEOUT_S)
+        
         self.logger.info("Shutting down task")
         self.logger.info("Sent shut down signal to ingest primitive")
-        self.ingest_primitive.close()    
+        shutdown_future = self.ingest_executor.submit(self.ingest_primitive.close)
+        while not shutdown_future.done():
+            time.sleep(EdnaDefault.TASK_POLL_TIMEOUT_S)
         self.logger.info("Shut down ingest executor thread")
         self.emit_primitive.flush()
         self.logger.info("Flushed remaining records")
         self.emit_primitive.close()
         self.logger.info("Shut down emit primitive")
         self.logger.info("Shut down ingest primitive")
+        self.message_queue.put(self.task_node_id, block=True)
+        while self.running():
+            time.sleep(EdnaDefault.TASK_POLL_TIMEOUT_S)
         self.ingest_executor.shutdown(wait=False)
+        
