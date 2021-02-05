@@ -21,6 +21,7 @@ class EdnaPrimitive(object):
             implemented in subclasses.
     """
     logger: logging.Logger
+    logger_name: str
     serializer: Serializable
     in_serializer: Serializable
     out_serializer: Serializable
@@ -46,9 +47,10 @@ class EdnaPrimitive(object):
             ValueError: Raised when a serializer is passed incorrectly
         """
         if logger_name is None:
-            self.logger = logging.getLogger(self.__class__.__name__)
+            self.logger_name = self.__class__.__name__
         else:
-            self.logger = logging.getLogger(logger_name)
+            self.logger_name = logger_name
+        self.setLogger(self.logger_name)
 
         self.serializer = serializer
         if self.serializer is None:
@@ -84,3 +86,10 @@ class EdnaPrimitive(object):
             List[object]: A list of records from a source
         """
         raise NotImplementedError
+
+    def setLogger(self, loggerName: str):
+        self.logger = logging.getLogger(loggerName)
+
+    def setLoggerWithId(self, loggerId: int):
+        self.logger_name = "Task-%i-%s"%(loggerId, self.logger_name)
+        self.logger = logging.getLogger(self.logger_name)
