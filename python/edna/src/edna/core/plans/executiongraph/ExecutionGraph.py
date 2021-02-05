@@ -92,7 +92,8 @@ class ExecutionGraph:
                     self.logger.info("Mapped Physical node {pnode} to Task Node {tnode}".format(pnode=physical_graph_node_idx, tnode=task_primitive_node_id))
                 physical_graph.physical_node_list[physical_graph_node_idx].internal_stream_graph.node_list[0].node_callable.setLoggerWithId(task_primitive_node_id)
                 physical_graph.physical_node_list[physical_graph_node_idx].internal_stream_graph.node_list[-1].node_callable.setLoggerWithId(task_primitive_node_id)
-                root_process.setLoggerWithId(task_primitive_node_id)
+                if root_process is not None:
+                    root_process.setLoggerWithId(task_primitive_node_id)
                 self.task_primitive_list.append(
                     SingleSourceSingleTargetTask(
                         task_node_id=task_primitive_node_id,
