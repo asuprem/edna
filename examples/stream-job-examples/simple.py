@@ -7,12 +7,14 @@ from edna.serializers import EmptySerializer
 from edna.emit import StdoutEmit
 
 import logging
-
+import ctypes
 
 def main():
 
     logging.basicConfig(format='[%(asctime)s] - %(name)s - %(levelname)s - %(message)s',level=logging.DEBUG, datefmt="%H:%M:%S")
     
+    #libgcc_s = ctypes.CDLL('libgcc_s.so.1')
+
     list_of_inserts = ['{"actor_id":210, "first_name":"jess", "last_name":"st. german", "additional":"unneeded1"}',
             '{"actor_id":201, "first_name":"jess", "last_name":"courtney", "additional":"unneeded2"}', 
             '{"actor_id":202, "first_name":"jess", "last_name":"mishra", "additional":"unneeded3"}', 

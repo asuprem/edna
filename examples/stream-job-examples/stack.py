@@ -8,7 +8,7 @@ from edna.emit import RecordCounterEmit
 from edna.ingest.streaming.SimulatedIngest import SimulatedIngestCallable
 import logging
 
-import pdb
+
 
 
 class streamgen(SimulatedIngestCallable):
