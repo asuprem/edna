@@ -179,11 +179,15 @@ class ExecutionGraph:
 
         self.logger.info("Shutting down tasks.")
         for task_primitive in reversed(self.task_primitive_list):   # TODO bad workaround for the libgcc_s.so.1 must be installed for pthread_cancel to work
+            self.logger.info("Shutting down Task-%i"%task_primitive.task_node_id)
             task_primitive.stop()
         self.logger.info("Rejoining main thread")
-        for task_primitive in self.task_primitive_list:
+        for task_primitive in reversed(self.task_primitive_list):
+            self.logger.info("Rejoining for Task-%i"%task_primitive.task_node_id)
             task_primitive.join()
+                
         self.logger.info("Finished Execution")
+        return True
 
 
     def populateBufferAddresses(self, physical_graph: PhysicalGraph):

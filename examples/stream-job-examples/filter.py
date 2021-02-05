@@ -10,7 +10,7 @@ from edna.process.filter import KeyedFilter
 from edna.emit import StdoutEmit
 
 import logging
-
+#libgcc_s = ctypes.CDLL('libgcc_s.so.1')
 
 
 
@@ -19,10 +19,11 @@ def filteractorid(actorid):
 
 def filteractorid2(actorid):
     return True if actorid<205 and actorid>202 else False
+    # Expected outut -- Actor ids 203, 204
 
 def main():
-
-    logging.basicConfig(format='[%(asctime)s] - %(name)s - %(levelname)s - %(message)s',level=logging.DEBUG, datefmt="%H:%M:%S")
+    
+    logging.basicConfig(format='[%(asctime)s] - %(name)s - %(levelname)s - %(message)s',level=logging.INFO, datefmt="%H:%M:%S")
     
  
     list_of_inserts = ['{"actor_id":210, "first_name":"jess", "last_name":"st. german", "additional":"unneeded1"}',

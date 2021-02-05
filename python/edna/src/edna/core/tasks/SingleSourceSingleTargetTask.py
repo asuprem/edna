@@ -134,7 +134,7 @@ class SingleSourceSingleTargetTask(TaskPrimitive):
         if not self.running() and shutdown_flag:
             self.logger.info("Task shutdown requested or stream ended. Unclear")
         #self.message_queue.put(self.task_node_id, block=True)
-        self.shutdown()
+        return self.shutdown()
 
                     
     def shutdown(self):
@@ -156,4 +156,7 @@ class SingleSourceSingleTargetTask(TaskPrimitive):
         while self.running():
             time.sleep(EdnaDefault.TASK_POLL_TIMEOUT_S)
         self.ingest_executor.shutdown(wait=False)
+        self.logger.info("Finished")
+        return True
+        
         

@@ -160,7 +160,7 @@ class StreamingContext(EdnaContext):
         #pdb.set_trace()
 
         self.logger.info("Executing the context")
-        self.execution_context.execute()
+        execution = self.execution_context.execute()
         self.logger.info("Finished executing context")
         
 
