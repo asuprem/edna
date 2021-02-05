@@ -45,7 +45,7 @@ class ExecutionGraph:
 
         self.buffer_emit_addresses = {}
         self.buffer_ingest_addresses = {}
-        self.task_primitive_list = []
+        self.task_primitive_list: List[SingleSourceSingleTargetTask] = []
         self.task_primitive_nodes = {}
         self.task_order = []
         self.tasks_with_buffers = []
@@ -80,7 +80,7 @@ class ExecutionGraph:
                     base_process_nodes.node_callable.replaceChainedProcess(root_process)
                     # del root_process
                     root_process = base_process_nodes.node_callable
-                self.logger.info("Building Task Node {node} with ingest-port {ingest} and emit-port {emit}".format(
+                self.logger.info("Building Physical Node {node} with ingest-port {ingest} and emit-port {emit}".format(
                     node=physical_graph_node_idx,
                     ingest=ingest_port,
                     emit=emit_port
@@ -88,6 +88,11 @@ class ExecutionGraph:
                 task_primitive_node_id = context.getNewTaskPrimitiveNodeId()
                 if task_primitive_node_id in self.task_primitive_nodes:
                     raise RuntimeError("Task node with this id already exists in this ExecutionGraph")
+                else:
+                    self.logger.info("Mapped Physical node {pnode} to Task Node {tnode}".format(pnode=physical_graph_node_idx, tnode=task_primitive_node_id))
+                physical_graph.physical_node_list[physical_graph_node_idx].internal_stream_graph.node_list[0].node_callable.setLoggerWithId(task_primitive_node_id)
+                physical_graph.physical_node_list[physical_graph_node_idx].internal_stream_graph.node_list[-1].node_callable.setLoggerWithId(task_primitive_node_id)
+                root_process.setLoggerWithId(task_primitive_node_id)
                 self.task_primitive_list.append(
                     SingleSourceSingleTargetTask(
                         task_node_id=task_primitive_node_id,
@@ -99,14 +104,32 @@ class ExecutionGraph:
                         emit_port=emit_port,
                         max_buffer_size=EdnaDefault.BUFFER_MAX_SIZE,
                         max_buffer_timeout=EdnaDefault.BUFFER_MAX_TIMEOUT_S,
-                        logger_name="TaskPrimitive-For-TaskNode-"+str(task_primitive_node_id)
+                        logger_name="Task-%i-Primitive"%task_primitive_node_id
                     )
                 )
                 if ingest_port is not None: # Meaning this task has a buffered_ingest, so needs to be started first...
                     self.tasks_with_buffers.append(len(self.task_primitive_list) - 1 )
                 else: # this task has no ingest_port, i.e. regular ingest, i.e. non-blocking, to a degree...
                     self.tasks_without_buffers.append(len(self.task_primitive_list) - 1)
-
+                self.logger.info("Added new Task Primitive Node with: \
+                \n\tId: {tnode} \
+                \n\tIngest Port: {iport} \
+                \n\tEmit Port: {eport} \
+                \n\tBuffer Size: {bsize} \
+                \n\tBuffer Timeout: {btime} \
+                \n\tLogger Name: {lname} \
+                \n\tIngest Primitive: {iprim} \
+                \n\tEmit Primitive: {eprim} \
+                \n\tIngest Serializer: {iser} \
+                \n\tIngest Deserializer: {ideser} \
+                \n\tEmit Serializer: {eser} ".format(
+                    tnode=task_primitive_node_id,iport=ingest_port, eport=emit_port, bsize=EdnaDefault.BUFFER_MAX_SIZE, btime=EdnaDefault.BUFFER_MAX_TIMEOUT_S,lname="Task-%i-Primitive"%task_primitive_node_id,
+                    iprim=str(self.task_primitive_list[-1].ingest_primitive),
+                    eprim=str(self.task_primitive_list[-1].emit_primitive),
+                    iser=str(self.task_primitive_list[-1].ingest_primitive.serializer),
+                    ideser=str(self.task_primitive_list[-1].ingest_primitive.serializer.deserializer),
+                    eser=str(self.task_primitive_list[-1].emit_primitive.out_serializer)
+                ))
 
                 # TODO physical_graph_node_idx is replaced with task_primitive_node_id
                 self.task_primitive_nodes[task_primitive_node_id] = 1
