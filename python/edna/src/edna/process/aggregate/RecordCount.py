@@ -9,6 +9,7 @@ class RecordCount(Aggregate):
         super().__init__(process=process, *args, **kwargs)
         self.count = 0
         self.triggeredEmit = [StreamRecord(0)]
+        
 
     def aggregate(self, record: object):
         self.count += 1

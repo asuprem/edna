@@ -75,6 +75,10 @@ class Aggregate(BaseProcess):
         """
         self.trigger = trigger
 
+    # TODO This will cause an error at some point, because triggeredEmit is a List[StreamRecord[object]], and is meant to
+    # be returned by the shutdownTrigger() function, which returns the raw contents to the intermediate results
+    # However, when we return it in the __call__() with checkTrigger as is done here, remember that BaseProcess() 
+    # encapsulates all returns with [StreamRecord()], so we get a nested streamrecord (oof). Gotta fix that...
     def checkTrigger(self, record: object) -> List[object]:
         if self.trigger.check(record):
             self.setResetFlag()

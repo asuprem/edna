@@ -10,6 +10,7 @@ from edna.types.builtin import StreamElement
 
 from typing import Dict
 import socket
+import msgpack
 
 class _BufferedEmit(BaseEmit):
     """This emit writes to a network buffer to perform inter-task communication.
@@ -50,9 +51,10 @@ class _BufferedEmit(BaseEmit):
         #self.sender.connect((build_configuration["ip"], build_configuration["emit_port"]))
         self.sender.connect((build_configuration["ip"], build_configuration["emit_port"]))
         self.logger.debug("Completed connecting BufferedEmit to BufferedIngest on port %i"%build_configuration["emit_port"])
-        self.buffer = ByteBuffer(self.sender, build_configuration["max_buffer_size"], build_configuration["max_buffer_timeout"], buffer_mode=BufferMode.WRITE)
+        self.buffer = ByteBuffer(self.logger, self.sender, build_configuration["max_buffer_size"], build_configuration["max_buffer_timeout"], buffer_mode=BufferMode.WRITE)
 
     def call(self, record: StreamElement):
+        #print("Emitting at bufferemit --> ", (type(record.getValue()), record.getValue()))
         self.emit_buffer_index += 1
         self.emit_buffer[self.emit_buffer_index] = self.out_serializer.write((record.elementTypeSecondary, record.getValue()))
         # Write buffer and clear if throughput barriers are met
@@ -62,6 +64,10 @@ class _BufferedEmit(BaseEmit):
     def write(self):
         """Writes the internal emit buffer to the network buffer.
         """
+        #import time
+        #time.sleep(600)
+        #print("current buffer contents -->", [msgpack.unpackb(item, raw=False) for item in self.emit_buffer[:self.emit_buffer_index+1]])
+        self.logger.debug("current buffer contents --> %s"%str([msgpack.unpackb(item, raw=False) for item in self.emit_buffer[:self.emit_buffer_index+1]]))
         for buffer_idx in range(self.emit_buffer_index+1):
             self.buffer.write(self.emit_buffer[buffer_idx])
         self.buffer.sendBufferAndReset()    # TODO handle this in a more elegant manner, re have buffer handle it itself on separate thread

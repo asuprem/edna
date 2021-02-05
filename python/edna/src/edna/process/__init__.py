@@ -61,7 +61,7 @@ class BaseProcess(EdnaPrimitive):
         #if self.process_name == "ObjectToJson":)
         for stream_record in intermediate_result:    # is a list
             if stream_record.isShutdown():
-                self.logger.debug("Received SHUTDOWN StreamElement")
+                self.logger.debug("Received SHUTDOWN StreamElement. Using shutdown trigger %s"%str(self.shutdownTrigger()))
                 complete_results += self.shutdownTrigger()
                 complete_results += [stream_record]
             elif stream_record.isCheckpoint():

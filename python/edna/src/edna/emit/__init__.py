@@ -65,6 +65,7 @@ class BaseEmit(EdnaPrimitive):
         Args:
             record (List[object]): A list of record that should be Serializable to bytes with `serializer`
         """
+        self.logger.debug("Received records to emit: %s"%str(record))
         shutdown_flag = False
         for stream_record in record:
             if stream_record.isShutdown():

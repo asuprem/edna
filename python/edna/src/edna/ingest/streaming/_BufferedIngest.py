@@ -70,7 +70,8 @@ class _BufferedIngest(BaseStreamingIngest):
         if stream_record.isShutdown():
             self.logger.debug("Received shutdown watermark for BufferedIngest. Setting flags.")
             self.shutdownWatermark = True
-
+        #print("Ingested at bufferedingest -->", (type(stream_record.getValue()), stream_record.getValue()))
+        self.logger.debug("Build buffer record --> %s", str((return_record[0].elementType, return_record[0].getValue())))
         return return_record
 
     def next(self) -> Tuple[int,object]:
@@ -83,14 +84,19 @@ class _BufferedIngest(BaseStreamingIngest):
         while record is None:
             try:    # Check if we still have records to process
                 record = self.serializer.next()
+                self.logger.debug("IngestBuffer -- raw buffer record (%s)  %s"%(str(self.serializer), str(record)))
             except StopIteration:
                 # No more records to process
                 try:    # Get new records
                     self.client.settimeout(self.MAX_BUFFER_TIMEOUT_S)   # TODO pass them from task primitive...
                     serialized_record = self.client.recv(self.MAX_BUFFER_SIZE)
-                    self.serializer.feed(serialized_record)   # Send to the MsgPackBufferedSerializer...
+                    if len(serialized_record):
+                        self.serializer.feed(serialized_record)   # Send to the MsgPackBufferedSerializer...
+                        self.logger.debug("Received new records from socket (%s):  %s"%(str(self.serializer), str(serialized_record)))
                 except socket.timeout as e: # No records received
+                    #self.logger.debug("Socket timed out")
                     pass
+        self.logger.debug("IngestBuffer -- raw buffer record (2)   %s", str(record))
         return record
                 
                 
