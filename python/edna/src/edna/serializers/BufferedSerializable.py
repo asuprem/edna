@@ -21,6 +21,7 @@ class BufferedSerializable(Serializable):
             buffer. `next()` should follow the ingest order and yield records in FIFO fashion.
         - Implement the `write()` method. `write()` should serialize a record and return a byte array.
     """
+    deserializer: None
     def __init__(self):
         """Initializes the serializer.
         """

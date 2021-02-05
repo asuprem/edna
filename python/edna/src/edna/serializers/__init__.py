@@ -4,7 +4,8 @@ class Serializable:
     """Interface for Serialization.    
     """
     __metaclass__ = ABCMeta
-
+    deserializer: None = None
+    
     @abstractmethod
     def read(cls, in_stream: bytes): 
         """Convert from bytes to Serializable
