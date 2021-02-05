@@ -55,9 +55,9 @@ class EdnaPrimitive(object):
         self.serializer = serializer
         if self.serializer is None:
             if in_serializer is None:
-                self.logger.warn("`in_serializer` is `None` for Primitive")
+                self.logger.warning("`in_serializer` is `None` for Primitive %s"%self.logger_name)
             if out_serializer is None:
-                self.logger.warn("`out_serializer` is `None` for Primitive")
+                self.logger.warning("`out_serializer` is `None` for Primitive %s"%self.logger_name)
             self.in_serializer = in_serializer
             self.out_serializer = out_serializer
         else:
