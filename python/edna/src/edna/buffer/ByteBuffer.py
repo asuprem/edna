@@ -5,6 +5,7 @@ import socket
 from edna.types.enums import BufferMode
 from edna.utils import NameUtils
 from edna.defaults import EdnaDefault
+import logging
 
 class ByteBuffer:
     """A ByteBuffer is a wrapper around an `io.BytesIO()` buffer. EDNA uses the ByteBuffer to
@@ -18,7 +19,8 @@ class ByteBuffer:
     buffer: io.BytesIO
     name: str
     buffer_mode: BufferMode
-    def __init__(self, socket: socket.socket, 
+    def __init__(self, logger: logging.Logger,
+            socket: socket.socket, 
             max_buffer_size : int = EdnaDefault.BUFFER_MAX_SIZE, 
             max_buffer_timeout: float = EdnaDefault.BUFFER_MAX_TIMEOUT_S, 
             name: str = EdnaDefault.BUFFER_NAME,
@@ -35,12 +37,13 @@ class ByteBuffer:
             buffer_mode (BufferMode, optional): An `edna.types.enums.BufferMode` for this ByteBuffer. 
                 Defaults to BufferMode.READ.
         """
+        self.logger = logger
         self.MAX_BUFFER_SIZE = max_buffer_size
         self.MAX_BUFFER_TIMEOUT_S = max_buffer_timeout  # Unused for now...
         self.name = self.setName(name)
         self.buffer_mode = buffer_mode
         self.socket = socket
-
+        self.buffer = None
         self.reset()
 
     def setName(self, name: str) -> str:
@@ -93,7 +96,9 @@ class ByteBuffer:
         """
         # TODO for java, add a reentrant lock here
         # First send the buffer contents
+        self.logger.debug("Ready to emit to network buffer")
         if self.buffer.tell():  #i.e. if there is something in buffer
+            self.logger.debug("Buffer contains values. Sending")
             self.socket.send(self.buffer.getvalue())
             self.reset()
 
