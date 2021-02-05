@@ -1,12 +1,13 @@
 from edna.serializers import BufferedSerializable
 import msgpack
 
+
 class MsgPackBufferedSerializer(BufferedSerializable):
     #serializer = msgpack.Packer().pack
     serializer = msgpack.Packer().pack
-    deserializer = msgpack.Unpacker()
+    deserializer: msgpack.Unpacker
     def __init__(self):
-        pass
+        self.deserializer = msgpack.Unpacker()
 
     def feed(self, buffered_record: bytes):
         self.deserializer.feed(buffered_record)
