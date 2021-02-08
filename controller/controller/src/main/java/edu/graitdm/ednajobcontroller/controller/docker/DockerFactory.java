@@ -46,6 +46,41 @@ public class DockerFactory {
     private final BaseConfiguration configuration;
 
     /**
+     * A custom {@link BuildImageResultCallback} that logs the text content of an Http Response Object
+     * to the Log at an INFO log-level (in addition to the logging of the entire Response Object
+     * at DEBUG log-level in the parent.
+     */
+    private static class DockerBuildImageResultCallback extends BuildImageResultCallback {
+        private Logger LOGGER;
+        private String imageId;
+        private String error;
+
+        /**
+         * Constructor for the <code>DockerBuildImageResultCallback</code>
+         * @param logger An instance of a {@link Logger} passed from {@link DockerFactory}
+         */
+        DockerBuildImageResultCallback(Logger logger) {
+            this.LOGGER = logger;
+        }
+
+        /**
+         * Method that is called whenever a {@link BuildResponseItem} is received. Our version logs the text content
+         * of the HTTP Response item to the logger at INFO log-level, and also calls the super.
+         *
+         * @param item A {@link BuildResponseItem} item.
+         */
+        public void onNext(BuildResponseItem item) {
+            String text = item.getStream();
+            if(nonNull(text)){
+                LOGGER.info(StringUtils.removeEnd(text, "\n"));
+            }
+            super.onNext(item);
+
+        }
+
+    }
+
+    /**
      * Constructor for <code>DockerFactory</code>
      *
      * @param dockerClient A instance of {@link DockerClient} to connect to the docker daemon.
@@ -55,6 +90,7 @@ public class DockerFactory {
         this.dockerClient = dockerClient;
         this.configuration = configuration;
     }
+
 
 
     /**
@@ -143,43 +179,5 @@ public class DockerFactory {
         Files.delete(context.resolve(".dockerignore"));
     }
 
-
-    /**
-     * A custom {@link BuildImageResultCallback} that logs the text content of an Http Response Object
-     * to the Log at an INFO log-level (in addition to the logging of the entire Response Object
-     * at DEBUG log-level in the parent.
-     */
-    private static class DockerBuildImageResultCallback extends BuildImageResultCallback {
-        private Logger LOGGER;
-        private String imageId;
-        private String error;
-
-        /**
-         * Constructor for the <code>DockerBuildImageResultCallback</code>
-         * @param logger An instance of a {@link Logger} passed from {@link DockerFactory}
-         */
-        DockerBuildImageResultCallback(Logger logger) {
-            this.LOGGER = logger;
-        }
-
-        /**
-         * Method that is called whenever a {@link BuildResponseItem} is received. Our version logs the text content
-         * of the HTTP Response item to the logger at INFO log-level, and also calls the super.
-         *
-         * @param item A {@link BuildResponseItem} item.
-         */
-        public void onNext(BuildResponseItem item) {
-            String text = item.getStream();
-            if(nonNull(text)){
-                LOGGER.info(StringUtils.removeEnd(text, "\n"));
-            }
-            super.onNext(item);
-
-        }
-
-    }
-    
-
-    
 
 }
