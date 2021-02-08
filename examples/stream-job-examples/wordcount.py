@@ -73,5 +73,6 @@ def main():
     # Execute the stream. This in turn converts this graph to a PhysicalGraph for optimization, then to an ExecutionGraph for execution.
     context.execute()
 
+# The entrypoint
 if __name__ == "__main__":
     main()
