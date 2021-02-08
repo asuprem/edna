@@ -4,6 +4,8 @@ import edu.graitdm.ednajobcontroller.controller.ednajob.EdnaJob;
 import edu.graitdm.ednajobcontroller.controller.ednajob.EdnaJobFactory;
 
 
+import io.fabric8.kubernetes.api.model.OwnerReference;
+import io.fabric8.kubernetes.api.model.OwnerReferenceBuilder;
 import io.fabric8.kubernetes.api.model.apiextensions.CustomResourceDefinition;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
@@ -16,6 +18,9 @@ import org.slf4j.LoggerFactory;
 
 import static edu.graitdm.ednajobcontroller.controller.ICustomResourceCommons.EJ_APP_LABEL_KEY;
 import static edu.graitdm.ednajobcontroller.controller.ICustomResourceCommons.EJ_APP_LABEL_VALUE;
+import static edu.graitdm.ednajobcontroller.controller.ICustomResourceCommons.EJ_CRD_GROUP;
+import static edu.graitdm.ednajobcontroller.controller.ICustomResourceCommons.EJ_CRD_VERSION;
+import static edu.graitdm.ednajobcontroller.controller.ICustomResourceCommons.EJ_KIND_NAME;
 import static edu.graitdm.ednajobcontroller.controller.ICustomResourceCommons.EJ_NAME_KEY;
 
 /**
@@ -104,6 +109,14 @@ public class DeploymentFactory {
                 .withName(ednaJob.getMetadata().getName())
                 .addToLabels(EJ_APP_LABEL_KEY, EJ_APP_LABEL_VALUE)
                 .addToLabels(EJ_NAME_KEY, ednaJob.getMetadata().getName())
+                .withOwnerReferences(new OwnerReferenceBuilder()
+                        .withApiVersion(EJ_CRD_GROUP + '/' + EJ_CRD_VERSION)
+                        .withKind(EJ_KIND_NAME)
+                        .withName(ednaJob.getMetadata().getName())
+                        .withUid(ednaJob.getMetadata().getUid())
+                        .withController(true)
+                        .withBlockOwnerDeletion(true).
+                                build())
             .endMetadata()
             .withNewSpec()
                 .withReplicas(Integer.parseInt(crd.getMetadata().getAnnotations().get("replicas")))
